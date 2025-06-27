@@ -1,0 +1,137 @@
+* {
+    margin: 0;
+    padding: 0;
+}
+ul, li {
+    list-style: none;
+}
+a {
+    text-decoration: none;
+}
+.cf:after {
+    content: '';
+    display: block;
+    clear: both;
+}
+
+.carousel-inner {
+    width: 100%;
+    margin: 0 auto;
+}
+
+.carousel-item img {
+    height: 100%;
+    width: 100%;
+    object-fit: contain;
+}
+.carousel-control-prev-icon,
+.carousel-control-next-icon {
+    /* background-color: 000; */
+    border-radius: 50%;
+}
+.carousel-control-prev {
+    left: 5%;
+}
+.carousel-control-next {
+    right: 5%;
+}
+.carousel-control-prev,
+.carousel-control-next {
+    width: 50px;
+    height: 50px;
+    background: rgba(0, 0, 0, 0.1);
+    border-radius: 50%;
+    top: 50%;
+    transform: translateY(-50%);
+}
+.carousel-indicators [data-bs-target] {
+    background-color: #ffcc00;
+}
+.carousel-indicators .active {
+    background-color: #ff9900;
+}
+
+.index-container {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding-top: 30px;
+    padding-left: 30px;
+}
+.circle_group{
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.circle-item {
+    float: left;
+    width: 30%;
+    padding: 10px;
+}
+.circle-item img{
+    width: 100%;
+}
+.product img {
+    width: 100%;
+    height: auto;
+}
+
+.item_text, .more {
+    margin: 40px 0;
+    font-size: 3em;
+    text-align: center;
+    font-family: 'Mochiy Pop One', sans-serif;
+}
+
+.more:hover {
+    color: #ff9900;
+    cursor: pointer;
+}
+
+.product-list{
+    max-width: 1500px;
+    margin: 0 auto;
+}
+.product {
+    width: 20%;
+    max-height: 280px;
+    float: left;
+    text-align: center;
+    margin-bottom: 10px;
+}
+.product-item{
+    width: 90%;
+}
+.product-image img {
+    width: 100%;
+    height: 190px;
+    object-fit: cover;
+}
+
+.product-info {
+    margin-top: 10px;
+}
+.product-name {
+    width: 190px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.hidden {
+    display: none;
+}
+
+@media (max-width: 767px) {
+    .circle-item {
+        float: left;
+        width: 50%;
+        padding: 10px;
+    }
+    .product {
+        width: 50%;
+        float: left;
+        text-align: center;
+    }
+}

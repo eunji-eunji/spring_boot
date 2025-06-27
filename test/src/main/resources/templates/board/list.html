@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml" xmlns:sec="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+  <link th:href="@{/css/bootstrap.min.css}" rel="stylesheet">
+</head>
+<style>
+  a{
+  text-decoration : none;
+  }
+</style>
+<body>
+<div class="container py-4">
+  <th:block th:replace="~{/module/header}"></th:block>
+  <div class="p-5 mb-4 bg-body-tertiary rounded-3">
+    <div class="container-fluid py-5">
+      <h1 class="display-5 fw-bold">게시판</h1>
+      <p class="col-md-8 fs-4">Spring Boot</p>
+    </div>
+  </div>
+  <div class="row align-items-md-stretch">
+    <div style="padding-top:50px">
+      <table class="table">
+        <thead class="thead-light">
+        <tr class="text-center">
+          <th>#</th>
+          <th>제목</th>
+          <th>작성자</th>
+          <th>작성일</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr class="text-center" th:each="board : ${boards}">
+          <th scope="row">
+            <span th:text="${board.id}"></span>
+          </th>
+          <td scope="row">
+            <a th:href="@{'view/'+${board.id}}">
+              <span th:text="${board.title}"></span>
+            </a>
+          </td>
+          <td scope="row">
+            <span th:text="${board.writer}"></span>
+          </td>
+          <td>
+            <span th:text="${#temporals.format(board.createdDate, 'yyyy-MM-dd HH:mm')}"></span>
+          </td>
+        </tr>
+        </tbody>
+      </table>
+      <div>&nbsp;</div>
+      <div>&nbsp;</div>
+
+      <div class="row" style="padding-top: 20px">
+        <div class="col-auto mr-auto"></div>
+        <div class="col-auto">
+          <a sec:authorize="isAuthenticated()" class="btn btn-primary" th:href="@{/board/write}" role="button">글쓰기</a>
+        </div>
+      </div>
+    </div>
+  </div>
+  <th:block th:replace="~{/module/footer}"></th:block>
+</div>
+<script th:src="@{/js/bootstrap.bundle.min.js}"></script>
+</body>
+</html>

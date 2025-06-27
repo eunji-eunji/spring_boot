@@ -1,0 +1,27 @@
+    <!DOCTYPE html>
+    <html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+    <head>
+        <meta charset="UTF-8">
+        <title>Welcome</title>
+        <link th:href="@{/css/bootstrap.min.css}" rel="stylesheet">
+    </head>
+    <body>
+    <div class="container py-4">
+        <th:block th:replace="~{/module/header}"></th:block>
+        <div class="p-5 mb-4 bg-body-tertiary rounded-3">
+            <div class="container-fluid py-5">
+                <h1 class="display-5 fw-bold">스프링 부트</h1>
+                <p class="col-md-8 fs-4">Spring Boot</p>
+            </div>
+        </div>
+        <div class="row align-items-md-stretch text-center">
+            <div class="col-md-12">
+                <div class="h-100 p-5">
+                    <h2>Welcome to Spring Boot!</h2>
+                </div>
+            </div>
+        </div>
+    <th:block th:replace="~{/module/footer}"></th:block>
+    </div>
+    </body>
+    </html>

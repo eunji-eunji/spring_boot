@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<form th:action="@{'/boards/edit/'+${board.id}}" method="post" enctype="multipart/form-data">
+    <p>제목: <input type="text" name="title" th:value="${board.title}"/></p>
+    <p>내용: <textarea name="content" th:text="${board.content}"></textarea></p>
+    <p>이미지: <input type="file" name="image"/></p>
+    <img th:if="${board.imagePath}" th:src="@{${board.imagePath}}" width="200" alt="">
+    <button type="submit">등록</button>
+</form>
+<a th:href="@{/boards}">목록</a>
+</body>
+</html>

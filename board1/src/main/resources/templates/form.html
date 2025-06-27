@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>글쓰기</title>
+</head>
+<body>
+    <h1>글쓰기</h1>
+    <form id="boardForm">
+        <div><input type="text" id="title" placeholder="제목"></div>
+        <div><textarea id="content" placeholder="내용"></textarea></div>
+        <div><input type="text" id="writer" placeholder="작성자"></div>
+        <button type="submit">저장</button>
+    </form>
+<script>
+    document.getElementById('boardForm').addEventListener('submit', function(e){
+        e.preventDefault();
+        const board = {
+            title : document.getElementById('title').value,
+            content : document.getElementById('content').value,
+            writer : document.getElementById('writer').value
+        };
+        console.log(board);
+
+        <!-- json 전송 -->
+        <!-- fetch(`URL`, {동작}), URL 백틱`으로 감싸기 -->
+        <!-- 'URL'이 들어오면, {동작} 실행 -->
+        fetch(`/api/boards`, {
+            method : 'POST',
+            headers : {'Content-Type':'application/json'},
+            body : JSON.stringify(board)
+            <!-- board : 객체 리터럴 타입 -->
+        }).then(() => { <!-- 성공하면 -->
+            alert('저장 완료.');
+            <!--location.href = 'list.html';  static에 있는 list.html로 인식-->
+            location.href = '/list';
+        })
+    });
+</script>
+</body>
+</html>

@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<h2 th:text="${board.title}"></h2>
+<p><strong>작성자:</strong> <span th:text="${board.writer}"></span></p>
+<p><strong>내용:</strong></p>
+<p th:text="${board.content}"></p>
+<p><strong>작성일:</strong>
+  <span th:text="${#temporals.format(board.createdDate, 'yyyy-MM-dd HH:mm')}"></span></p>
+<a th:href="@{/boards}">목록으로</a>
+</body>
+</html>

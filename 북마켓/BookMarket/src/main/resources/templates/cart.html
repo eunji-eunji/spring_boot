@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link href="/BookMarket/css/bootstrap.min.css" rel="stylesheet" >
+    <script src="/BookMarket/js/controllers.js"></script>
+</head>
+<body>
+<div class="container py-4">
+  <th:block th:replace="~{/module/header}"></th:block>
+  <div class="p-5 mb-4 bg-body-tertiary rounded-3">
+    <div class="container-fluid py-5">
+      <h1 class="display-5 fw-bold">장바구니</h1>
+      <p class="col-md-8 fs-4">BookMarket</p>
+    </div>
+  </div>
+
+  <div class="row align-items-md-stretch">
+    <div class="col-md-12">
+      <form  name="clearForm"   method="post">
+        <input type="hidden" name="_method" value="delete"/>
+        <a th:href="'javascript:clearCart()'"  class="btn btn-danger" style="float:left">삭제하기</a>
+        <a href="#" class="btn btn-success  text-right" style="float:right">주문하기    </a>
+      </form >
+    </div>
+    <div style="padding-top: 50px">
+      <table class="table table-hover">
+        <tr>
+          <th>도서</th>
+          <th>가격</th>
+          <th>수량</th>
+          <th>소계</th>
+          <th>비고</th>
+          <th></th>
+        </tr>
+        <form  name="removeForm"   id="removeForm"  method="post">
+          <input type="hidden" name="_method" value="delete"/>
+          <div th:if="${cart != null}" >
+            <div th:each="item:${cart.cartItems}">
+              <tr>
+                <td th:text="${item.value.book.bookId} + '-' + ${item.value.book.name}"/></td>
+                <td th:text="${item.value.book.bookId} + '-' + ${item.value.book.name}"/></td>
+                <td th:text="${item.value.book.unitPrice}"/></td>
+                <td th:text="${item.value.quantity}"/></td>
+                <td th:text="${item.value.totalPrice}"/></td>
+                <td> <a th:href="'javascript:removeFromCart(\'' +${item.value.book.bookId} +'\',\''+${cartId} +'\')'"  ><span class="badge text-bg-danger" th:text ="삭제"></span></a></td>
+              </tr>
+
+            </div>
+          </div>
+        </form>
+      </table>
+
+      <div class="text-end" style="padding-right:30px">
+        <b> 총액
+          <span th:if="${cart != null}" >
+            [[${cart.grandTotal}]]
+         </span>
+        </b>
+      </div>
+      <br>
+      <a href="/BookMarket/books" class="btn btn-secondary "> &laquo; 쇼핑 계속하기</a>
+      <th:block th:replace="~{/module/footer}"></th:block>
+</body>
+</html>

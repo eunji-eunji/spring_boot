@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+  <meta charset="UTF-8">
+  <title>게시글 수정</title>
+  <link th:href="@{/css/bootstrap.min.css}" rel="stylesheet" />
+</head>
+<body>
+<div class="container py-4">
+  <th:block th:replace="~{/module/header}"></th:block>
+
+  <div class="p-5 mb-4 bg-body-tertiary rounded-3">
+    <div class="container-fluid py-5">
+      <h1 class="display-5 fw-bold">게시글 수정</h1>
+      <p class="col-md-8 fs-4">Spring Boot</p>
+    </div>
+  </div>
+
+  <div class="row align-items-md-stretch">
+    <form th:action="@{'/board/update/' + ${boardDto.id}}" method="post"
+          th:object="${boardDto}" enctype="multipart/form-data">
+      <input type="hidden" th:field="*{id}" />
+      <input type="hidden" th:field="*{writerid}" />
+<!--      <input type="hidden" th:field="*{imagePath}" />-->
+
+      <div class="mb-3 row">
+        <label class="col-sm-2 col-form-label">제목</label>
+        <div class="col-sm-4">
+          <input type="text" th:field="*{title}" class="form-control" />
+        </div>
+      </div>
+
+      <div class="mb-3 row">
+        <label class="col-sm-2 col-form-label">작성자</label>
+        <div class="col-sm-4">
+          <input type="text" th:field="*{writer}" class="form-control" readonly />
+        </div>
+      </div>
+
+      <div class="mb-3 row">
+        <label class="col-sm-2 col-form-label">내용</label>
+        <div class="col-sm-6">
+          <textarea th:field="*{content}" class="form-control" rows="6"></textarea>
+        </div>
+      </div>
+
+      <div class="mb-3 row">
+        <label class="col-sm-2 control-label">이미지 파일</label>
+        <div class="col-sm-5">
+          <input type="file" name="imagePath" class="form-control"/>
+        </div>
+      </div>
+
+      <div class="mb-3 row">
+        <label class="col-sm-2 col-form-label">현재 이미지</label>
+        <div class="col-sm-6">
+          <img th:if="${boardDto.imagePath}" th:src="@{${boardDto.imagePath}}" width="200" />
+        </div>
+      </div>
+
+      <div class="mb-3 row">
+        <div class="col-sm-offset-2 col-sm-10">
+          <button type="submit" class="btn btn-success">저장</button>
+          <a th:href="@{'/board/view/' + ${boardDto.id}}" class="btn btn-secondary">취소</a>
+        </div>
+      </div>
+    </form>
+  </div>
+
+  <th:block th:replace="~{/module/footer}"></th:block>
+</div>
+</body>
+</html>

@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<h2>게시판 목록</h2>
+<h3 th:text="${loginUser.username} + '님 환영합니다.'"></h3>
+<a href="/boards/write">글쓰기</a>
+<table border="1">
+    <thead>
+    <tr>
+        <th>번호</th>
+        <th>제목</th>
+        <th>작성자</th>
+        <th>액션</th>
+    </tr>
+    </thead>
+    <tbody>
+<!--    <tr th:each="board, stat : ${boards}">-->
+<!-- 인덱스 순자를 1,2,3, ... 순서대로 불러옴-->
+<!--        <td th:text="${stat.index + 1}">1</td>-->
+<!--        <td th:text="${board.title}">제목</td>-->
+<!--        <td th:text="${board.writer.username}">작성자</td>-->
+<!--    </tr>-->
+
+<!--        board의 id를 역순으로 불러옴-->
+        <tr th:each="board : ${boards}">
+            <td th:text="${board.id}">1</td>
+            <td th:text="${board.title}">제목</td>
+            <td th:text="${board.writer.username}">작성자</td>
+            <td th:if="${session.loginUser != null and board.writer.id == session.loginUser.id}">
+                <a th:href="@{/boards/edit/{id}(id=${board.id})}">수정</a>
+                <a th:href="@{/boards/delete/{id}(id=${board.id})}"
+                   onclick="return confirm('정말 삭제하시겠습니까?')">삭제</a>
+            </td>
+        </tr>
+    </tbody>
+</table>
+</body>
+</html>

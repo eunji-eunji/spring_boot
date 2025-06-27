@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>글 수정</title>
+</head>
+<body>
+    <h1>글 수정</h1>
+    <form th:action="@{'/api/boards/' + ${board.id}}" method="post" th:object="${board}" onsubmit="event.preventDefault(); updateBoard();">
+        <input type="hidden" th:value="${board.id}" id="id">
+        <div><input type="text" th:value="${board.title}" id="title"></div>
+        <div><textarea id="content" th:text="${board.content}"></textarea></div>
+        <div><input type="text" th:value="${board.writer}" id="writer"></div>
+        <button type="submit">수정</button>
+    </form>
+<script>
+    function updateBoard() {
+        const id = document.getElementById('id').value;
+        const board = {
+            title : document.getElementById('title').value,
+            content : document.getElementById('writer').value,
+            writer : document.getElementById('content').value
+        };
+        fetch(`/api/boards/${id}`, {
+            method : 'PUT',
+            headers : {'Content-Type':'application/json'},
+            body : JSON.stringify(board)
+        }).then(() => {
+            alert('수정 완료.');
+            location.href = '/list';
+        })
+    }
+</script>
+</body>
+</html>

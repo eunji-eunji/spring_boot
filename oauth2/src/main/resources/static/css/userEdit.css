@@ -1,0 +1,207 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    width: 100%;
+    background-color: #f5f5f5;
+    font-family: Arial, sans-serif;
+}
+
+.tit {
+    text-align: center;
+    margin-bottom: 80px;
+}
+
+.pwpw {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 15px;
+}
+
+.ppww {
+    margin-bottom: 5px;
+}
+
+input[type="text"],
+input[type="password"],
+input[type="email"],
+input[type="tel"] {
+    padding: 10px;
+    box-sizing: border-box;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    margin-bottom: 10px;
+}
+
+#userId, #name, #phone {
+    max-width: 200px;
+}
+
+#email, #userPw, #confirm-userPw {
+    max-width: 400px;
+}
+
+.signup {
+    max-width: 1100px;
+    border: 3px solid #aaa;
+    background-color: #fff;
+    padding: 20px;
+    margin: 20px auto;
+    width: 60%;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+}
+
+#userId{
+    width: 200px;
+}
+
+#userPw{
+    max-width: 350px;
+}
+#confirm-userPw{
+    max-width: 350px;
+}
+#name{
+    max-width: 200px;
+}
+#address{
+    max-width: 400px;
+}
+#phone1{
+    width:  100px;
+    height: 40px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+}
+#phone2{
+    width: 100px;
+    height: 40px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+}
+
+#phone3{
+    width:  100px;
+    height: 40px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+}
+#email{
+    max-width: 350px;
+}
+.input-group-text{
+    height: 45px;
+}
+
+.form-select{
+    height: 45px;
+}
+
+#checkDuplicate{
+    width: 100px;
+}
+
+form label {
+    margin: 10px 0 5px;
+}
+
+strong {
+    margin: 10px 0 5px;
+    color: red;
+}
+
+form button {
+    padding: 10px;
+    border: none;
+    background-color: #000;
+    color: #fff;
+    cursor: pointer;
+}
+
+.btn1 {
+    width: 120px;
+    height: 50px;
+    margin: 20px 0;
+}
+
+.btn2 {
+    width: 120px;
+    height: 50px;
+    margin: 20px 0;
+    background-color: #ccc;
+    color: #000;
+}
+
+.btn1:hover,
+.btn2:hover {
+    opacity: 0.8;
+}
+
+.error {
+    color: red;
+}
+
+.success {
+    color: green;
+}
+
+.col-form-label {
+    display: block;
+    margin-bottom: 10px;
+}
+
+.address-group {
+    display: flex;
+    margin-bottom: 10px;
+}
+
+.address {
+    flex: 1;
+    padding: 10px;
+    margin-right: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.address:last-child {
+    margin-right: 0;
+}
+
+.address[type="button"] {
+    background-color: #999;
+    color: #fff;
+    border: none;
+    cursor: pointer;
+    flex: none;
+}
+
+.address[type="button"]:hover {
+    background-color: #777;
+}
+
+.text-danger {
+    color: red;
+}
+
+#guide {
+    color: #999;
+    display: none;
+}
+
+
+@media (max-width: 767px) {
+    .address-group input[type="text"],
+    .address-group input[type="button"] {
+        flex: 1 1 100%;
+        margin-right: 0;
+    }
+
+}

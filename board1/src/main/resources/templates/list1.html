@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<h1>게시판</h1>
+<button onclick="location.href='/form'">글쓰기</button>
+<table border="1">
+    <thead><tr><th>ID</th><th>제목</th><th>작성자</th><th>작성일</th><th>액션</th></tr></thead>
+    <tbody id="boardList"></tbody>
+</table>
+<script>
+    fetch(`/api/boards`)
+        .then(res => res.json())
+        .then(data => {
+            const tbody = document.getElementById('boardList');
+            <!-- data에 들어있는 item을 b라고 지정, map -> 반복문 -->
+            tbody.innerHTML = data.map(b =>`
+                <tr>
+                    <td>${b.id}</td>
+                    <td><a href="/detail.html?id=${b.id}">${b.title}</a></td>
+                    <td>${b.writer}</td>
+                    <td>${b.createdAt}</td>
+                     <td>
+                        <button onclick="location.href='/update?id=${b.id}'">수정</button>
+                        <button onclick="remove(${b.id})">삭제</button>
+                    </td>
+                </tr>
+            `).join('');
+        });
+
+    function remove(id){
+        if(confirm('삭제하시겠습니까?')){
+            fetch(`api/boards/${id}`,{
+                method : 'DELETE'
+            }).then(() => {
+                alert("삭제 완료.");
+                location.reload();
+            });
+        }
+    }
+</script>
+
+</body>
+</html>
+
+
+
+
+
+

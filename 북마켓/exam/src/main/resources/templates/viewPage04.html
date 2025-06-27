@@ -1,0 +1,26 @@
+<html >
+<head>
+	<title>Chap10</title>
+</head>
+<body>
+<h3>스프링 시큐리티</h3>
+<div sec:authorize="hasRole('ROLE_ADMIN')" >
+ <p><b>관리자 권한 화면입니다.</b>
+</div>
+
+ <div sec:authorize="isAuthenticated()">
+ 	<p>로그인 중입니다.
+ 	<p>사용자 이름 : <span sec:authentication="name"/>   
+  	<p>사용자 권한 : <span sec:authentication="authorities"/>
+ 	<p>사용자 인증여부 : <span sec:authentication="authenticated" /> 
+  	
+ 	<p><a href="/exam04">[웹 요청 URL /exam04로 이동하기]</a>
+  
+ </div>
+  <div sec:authorize="isAnonymous()">
+ <p>로그인이 아닙니다.
+ <p><a href="/admin/tag">[웹 요청 URL /admin/tag로 이동하기]</a>
+</div>
+</body>
+</html>
+

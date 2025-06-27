@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<h2>게시판 목록</h2>
+<h3 th:text="${loginUser.username} + '님 환영'"></h3>
+<a href="/boards/write">글쓰기</a>
+<table border="1">
+    <thead>
+        <tr>
+            <th>번호</th>
+            <th>제목</th>
+            <th>작성자</th>
+            <th>액션</th>
+            <th>댓글</th>
+        </tr>
+    </thead>
+    <tbody>
+<!--    <tr th:each="board, stat : ${boards}">-->
+<!--        <td th:text="${stat.index + 1}">1</td>-->
+<!--        <td th:text="${board.title}">제목</td>-->
+<!--        <td th:text="${board.writer.username}">작성자</td>-->
+<!--    </tr>-->
+        <tr th:each="board : ${boards}">
+            <td th:text="${board.id}">1</td>
+            <td th:text="${board.title}">제목</td>
+            <td th:text="${board.writer.username}">작성자</td>
+            <td th:if="${session.loginUser != null and board.writer.id == session.loginUser.id}">
+                <a th:href="@{/boards/edit/{id}(id=${board.id})}">수정</a>
+                <a th:href="@{/boards/delete/{id}(id=${board.id})}"
+                onclick="return confirm('정말삭제하시겠습니까?)">삭제</a>
+            </td>
+            <td>
+                <button type="button" th:onclick="'toggleComments(' + ${board.id} + ')'">댓글 보기</button>
+            </td>
+        </tr>
+<!-- 댓글 반복 (게시글 반복문 바깥이지만 같은 tbody 안) -->
+<tr th:each="board : ${boards}">
+    <td colspan="5" style="padding: 0; border: none;">
+        <div th:id="'comments-' + ${board.id}" style="display:none; padding: 10px;">
+            <!-- 댓글 목록 -->
+            <div th:each="comment : ${commentMap[board.id]}">
+                <strong th:text="${comment.writer.username}">작성자</strong> :
+                <span th:text="${comment.content}">내용</span>
+                <em th:text="${#temporals.format(comment.createdAt, 'yyyy-MM-dd HH:mm')}"></em>
+                <br>
+            </div>
+
+            <!-- 댓글 작성 폼 (선택 사항) -->
+            <form th:action="@{/comments/add}" method="post">
+                <input type="hidden" name="boardId" th:value="${board.id}">
+                <input type="text" name="content" placeholder="댓글을 입력하세요">
+                <button type="submit">댓글 작성</button>
+            </form>
+        </div>
+    </td>
+</tr>
+    </tbody>
+
+</table>
+</body>
+</html>
+
+<script>
+    function toggleComments(boardId) {
+          const element = document.getElementById('comments-' + boardId);
+          if (element) {
+              element.style.display = element.style.display === 'none' ? 'block' : 'none';
+          }
+      }
+</script>
