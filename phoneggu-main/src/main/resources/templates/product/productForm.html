@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="ko" layout:decorate="~{fragments/layout}" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <title>상품 등록/수정</title>
+    <link rel="stylesheet" th:href="@{/css/productForm.css}">
+    <script defer th:src="@{/js/productFormStock.js}"></script>
+    <script defer th:src="@{/js/productFormImg.js}"></script>
+</head>
+<body>
+<div layout:fragment="content">
+    <div class="container mt-5 productForm_container">
+        <h1 class="text-center mb-4" th:text="${#strings.isEmpty(productFormDto.id) ? '상품 등록' : '상품 수정'}"></h1>
+
+        <!-- Error Message Display Block -->
+        <div th:if="${errorMessage}" class="alert alert-danger" role="alert">
+            <span th:text="${errorMessage}"></span>
+        </div>
+        <!-- End of Error Message Display Block -->
+
+        <form th:action="@{/admin/product/new}" th:object="${productFormDto}" method="post" enctype="multipart/form-data">
+            <input type="hidden" th:field="*{id}">
+
+            <div class="form-group row mb-3">
+                <label for="productSellStatus" class="col-form-label col-sm-2">판매 상태</label>
+                <div class="col-sm-10">
+                    <select id="productSellStatus" th:field="*{productSellStatus}" class="form-select">
+                        <option th:value="SELL">판매중</option>
+                        <option th:value="SOLD_OUT">품절</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-group row mb-3">
+                <label for="prName" class="col-form-label col-sm-2">상품명</label>
+                <div class="col-sm-10">
+                    <input type="text" id="prName" th:field="*{prName}" class="form-control" placeholder="상품명을 입력해주세요">
+                    <div th:if="${#fields.hasErrors('prName')}" class="fieldError" th:errors="*{prName}">잘못된 값 입니다</div>
+                </div>
+            </div>
+
+            <div class="form-group row mb-3">
+                <label for="productCategory" class="col-form-label col-sm-2">카테고리</label>
+                <div class="col-sm-4">
+                    <select id="productCategory" th:field="*{productCategory}" class="form-select select_category">
+                        <option th:value="PHONE_CASE">PHONE_CASE</option>
+                        <option th:value="TOK">TOK</option>
+                        <option th:value="AIRPODS">AIRPODS</option>
+                        <option th:value="DIGITAL">DIGITAL</option>
+                        <option th:value="DEFAULT">DEFAULT</option>
+                    </select>
+                </div>
+
+                <label for="productType" class="col-form-label col-sm-2">종류</label>
+                <div class="col-sm-4">
+                    <select id="productType" th:field="*{productType}" class="form-select select_type">
+                        <!-- JavaScript로 동적으로 옵션이 채워질 예정 -->
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-group row mb-3">
+                <label for="productModelDtoList" class="col-form-label col-sm-2">기종</label>
+                <div class="col-sm-10 model-container">
+                    <div th:each="model, iterStat : ${T(com.jsbs.casemall.constant.ProductModelSelect).values()}"
+                         th:if="${model.name() != 'DEFAULT_MODEL'}"
+                         class="model-item">
+                        <label>
+                            <input type="checkbox" th:field="*{productModelDtoList[__${iterStat.index}__].productModelSelect}"
+                                   th:value="${model.name()}" th:id="${model.name()}" class="model-checkbox">
+                            <span th:text="${model.displayName}"></span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group row mb-3">
+                <label class="col-form-label col-sm-2">재고 수량</label>
+                <div class="col-sm-10 stock-container">
+                    <div th:each="model, iterStat : ${T(com.jsbs.casemall.constant.ProductModelSelect).values()}"
+                         th:if="${model.name() != 'DEFAULT_MODEL'}"
+                         class="stock-item">
+                        <span th:text="${model.displayName}"></span>
+                        <input type="number" th:field="*{productModelDtoList[__${iterStat.index}__].prStock}"
+                               class="form-control stock-input" placeholder="수량" min="0">
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group row mb-3">
+                <label for="prPrice" class="col-form-label col-sm-2">가격</label>
+                <div class="col-sm-10">
+                    <input type="number" id="prPrice" th:field="*{prPrice}" class="form-control" placeholder="가격을 입력해주세요" step="100">
+                    <div th:if="${#fields.hasErrors('prPrice')}" class="fieldError" th:errors="*{prPrice}">잘못된 값 입니다</div>
+                </div>
+            </div>
+
+            <div class="form-group row mb-3">
+                <label for="prDetail" class="col-form-label col-sm-2">상품 상세 내용</label>
+                <div class="col-sm-10">
+                    <textarea id="prDetail" th:field="*{prDetail}" class="form-control" aria-label="With textarea"></textarea>
+                    <div th:if="${#fields.hasErrors('prDetail')}" class="fieldError" th:errors="*{prDetail}">잘못된 값 입니다</div>
+                </div>
+            </div>
+
+
+            <div class="form-group row mb-3">
+                <label for="productImgFile" class="col-form-label col-sm-2">상품이미지</label>
+                <div class="col-sm-10">
+                    <div class="d-flex mb-2">
+                        <button type="button" class="btn btn-primary me-2" onclick="document.getElementById('productImgFile').click()">이미지 추가</button>
+                    </div>
+                    <input type="file" id="productImgFile" class="form-control d-none" name="productImgFile" multiple onchange="handleFiles(this.files)">
+                </div>
+            </div>
+
+            <!-- 이미지 미리보기 라벨 -->
+            <div class="form-group row mb-3">
+                <label class="col-form-label col-sm-2">미리보기</label>
+                <div class="col-sm-10">
+                    <div id="preview-images" class="d-flex flex-wrap"></div>
+                </div>
+            </div>
+
+            <!-- 저장된 이미지 라벨 -->
+            <div class="form-group row mb-3">
+                <label class="col-form-label col-sm-2">저장된 이미지</label>
+                <div class="col-sm-10">
+                    <div id="saved-images" class="d-flex flex-wrap">
+                        <div th:each="image : ${savedImages}" class="saved-image-item me-2">
+                            <img th:src="@{${image.imgUrl}}" class="img-thumbnail" style="width: 100px; height: 100px;">
+                            <button type="button" class="btn btn-danger btn-sm mt-1" th:onclick="'deleteImage(' + ${image.id} + ')'">삭제</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="text-center">
+                <button th:if="${#strings.isEmpty(productFormDto.id)}" th:formaction="@{/admin/product/new}" type="submit" class="btn btn-primary">저장</button>
+                <button th:unless="${#strings.isEmpty(productFormDto.id)}" th:formaction="@{'/admin/product/' + ${productFormDto.id}}" type="submit" class="btn btn-primary">수정</button>
+            </div>
+        </form>
+    </div>
+</div>
+</body>
+</html>

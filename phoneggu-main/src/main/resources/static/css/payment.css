@@ -1,0 +1,190 @@
+
+body {
+    min-height: 100vh;
+    background-color: #f9f9f9;
+}
+
+.payment-container {
+    background-color: #ffffff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    width: 90%;
+    max-width: 1500px;
+    /*min-height: 1000px;*/
+}
+.table th, .table td {
+    text-align: center;
+    vertical-align: middle;
+}
+.table-group-divider td:nth-child(2){
+    padding: 5px;
+    width: 15%;
+    max-height: 100px;
+
+}
+.table-group-divider td:nth-child(2) img{
+    width: 100%;
+}
+
+.table-group-divider td:nth-child(3) {
+    width: 30%;
+}
+
+.table-group-divider td:nth-child(3) .prName {
+    font-weight: bold;
+    margin: 0;
+}
+
+.table-group-divider td:nth-child(3) .prDetail {
+    color: #777;
+    margin: 0;
+}
+.table-group-divider td:nth-child(4),
+.table-group-divider td:nth-child(5),
+.table-group-divider td:nth-child(6),
+.table-group-divider td:nth-child(7),
+.table-group-divider td:nth-child(8),
+.table-group-divider td:nth-child(9){
+    width: 10%;
+    font-weight: bold;    
+}
+
+.prCount input[type="number"] {
+    width: 80px;
+}
+
+.select button {
+    font-size: 11px;
+    width: 90px;
+}
+.tbBot th{text-align: left;}
+.tbBot td{text-align: end;}
+.tbBot .bb{font-weight: bold;}
+
+.border {
+    border: 1px solid #dddddd;
+    border-radius: 8px;
+}
+
+ul {
+    margin-top: 10px;
+}
+
+li {
+    margin-bottom: 5px;
+    font-size: 0.9em;
+    color: #555;
+}
+
+.custom-checkbox {
+    width: 20px;
+    height: 20px;
+    border: 2px solid #555;
+}
+
+.form-text {
+    font-size: 0.8em;
+    color: #888;
+}
+
+.input-group-text, .form-select, .form-control {
+    font-size: 0.9em;
+}
+
+.phoneNumber {
+    max-width: 80px;
+}
+
+.phoneNumber[aria-label="Middle number"], .phoneNumber[aria-label="Last number"] {
+    max-width: 100px;
+}
+
+.summary .table th, .summary .table td {
+    font-size: 1.2em;
+    font-weight: bold;
+}
+
+.form-check-input {
+    margin-right: 0.5em;
+}
+
+.form-check-label {
+    margin-right: 1em;
+}
+
+.btn-dark {
+    background-color: #000;
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+}
+
+.btn-dark:hover {
+    background-color: #333;
+}
+
+.payment-content {
+    margin-top: 20px;
+}
+.submit-btn{
+    margin: 0 auto;
+}
+
+.phone-actionOn{display: none}
+
+@media (max-width: 767px) {
+    .phone-actionOff{display: none}
+    .phone-actionOn{display: block}
+
+    .phone-order-item {
+        display: flex;
+        flex-direction: column;
+        border-bottom: 1px solid #ddd;
+        padding: 10px 0;
+    }
+
+    .phone-order-item .phone-row {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        margin-bottom: 10px;
+    }
+
+    .phone-order-item .phone-row img {
+        max-width: 30%;
+        margin-right: 15px;
+    }
+
+    .phone-order-item .phone-row .phone-prInfo {
+        width: 60%;
+    }
+
+    .phone-order-item .phone-prInfo {
+        flex-grow: 1;
+    }
+
+    .phone-order-item .phone-price-details,
+    .phone-order-item .phone-shipping-details,
+    .phone-order-item .phone-total-details {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 5px;
+    }
+
+    .phone-order-item .btn-danger {
+        width: 100%;
+    }
+
+    .phone-order-item .phone-item-count {
+        width: 20%;
+    }
+
+    .summary .table thead th {
+        font-size: 1em;
+        font-weight: bold;
+        white-space: nowrap;
+    }
+
+}

@@ -1,0 +1,125 @@
+
+.header {
+    position: relative;
+    background-color: #bcdffd;
+    color: #fff;
+    padding: 20px 0;
+    font-family: 'Mochiy Pop One' , sans-serif ;
+}
+.header-container{
+    max-width: 1500px;
+    height: 150px;
+    margin: 0 auto;
+}
+.header .ggu-logo{
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    white-space: nowrap;
+}
+.header .ggu-logo a{
+    color: #007bff;
+    font-size: 40px;
+}
+.header-container a{
+    text-decoration: none;
+}
+
+.header_bottom > .container{
+    margin: 50px auto;
+}
+.mochiy-pop-one-regular {
+    font-family: "Mochiy Pop One", sans-serif;
+    font-weight: 400;
+    font-style: normal;
+    color: #fff;
+}
+.header-notices, .header-links {
+    position: absolute;
+    bottom: 10px;
+}
+.header-notices a, .header-links a {
+    color: #000;
+}
+
+.header-links a,
+.header-links .dropdown {
+    display: inline-block;
+    margin-right: 10px;
+    vertical-align: middle;
+}
+
+.header-links .dropdown-menu {
+    top: 100%;
+    left: -20px;
+    margin-top: 0;
+    width: 80px;
+    background-color: #bcdffd;
+}
+
+.header .ggu-logo a:hover, .header-notices a:hover, .header-links a:hover {
+    color: #ff9900;
+    font-weight: bold;
+}
+.header_bottom img {
+    display: block;
+    margin: 0 auto;
+    width: 200px;
+    padding-top: 10px;
+}
+
+.navbar {
+    z-index: 10;
+}
+.navbar-nav > .nav-item {
+    height: 40px;
+    margin: 10px 20px;
+}
+.navbar a {
+    text-decoration: none;
+    color: #000;
+    text-align: center;
+}
+.navbar li:hover {
+    text-align: center;
+    transform: scale(1.4);
+    font-weight: bold;
+}
+.navbar li ul {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    background-color: #fff;
+    z-index: 1;
+    border: none;
+}
+.navbar li:hover ul {
+    display: block;
+}
+.navbar li ul li {
+    margin: 0;
+}
+.navbar li ul li a {
+    padding: 10px;
+    display: block;
+}
+.dropdown-menu {
+    border: none;
+    box-shadow: none;
+}
+.dropdown-item:hover,
+.dropdown-item:focus {
+    background-color: transparent !important; /* 부트스트랩 기본 호버 배경색 제거 */
+    color: inherit; /* 텍스트 색상 유지 */
+}
+.backgroundOff{background-color: transparent}
+
+.actionOn{display: none;}
+.actionOff{display: block;}
+
+@media (max-width: 767px) {
+    .actionOn{display: block;}
+    .actionOff{display: none;}
+}
