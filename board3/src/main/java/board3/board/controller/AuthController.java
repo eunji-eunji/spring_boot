@@ -28,6 +28,7 @@ public class AuthController {
     public String loginForm() {
         return "login";
     }
+
     @PostMapping("/login")
     public  String login(MemberDTO dto, HttpSession session){
         Member member = memberService.login(dto);
