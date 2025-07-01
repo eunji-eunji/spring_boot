@@ -21,10 +21,6 @@ public class SecurityConfig {
                         .requestMatchers("index.html", "/user/**", "/css/**", "/js/**").permitAll() // 회원가입 경로 허용
                         .anyRequest().authenticated() // 나머지는 인증 필요
                 )
-                .formLogin(form -> form
-                        .loginPage("/user/login")
-                        .permitAll()
-                )
                 .logout(logout -> logout
                         .logoutSuccessUrl("/")
                         .permitAll()
