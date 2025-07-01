@@ -1,20 +1,21 @@
 package com.example.demo.service;
 
-import com.example.demo.dto.MemberDto;
-import com.example.demo.entity.Member;
+import com.example.demo.dto.UserDto;
+import com.example.demo.entity.Users;
 import com.example.demo.repository.LoginRepository;
-import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
 public class LoginService {
     private final LoginRepository loginRepository;
+    private final BCryptPasswordEncoder passwordEncoder=new BCryptPasswordEncoder();
 
-    public Member login(MemberDto dto) {
-        return loginRepository.findByUserId(dto.getUserId())
-                .filter(m -> m.getUserPw().equals(dto.getUserPw()))
+    public Users login(UserDto dto) {
+        return loginRepository.findByEmail(dto.getEmail())
+                .filter(m -> passwordEncoder.matches(dto.getUserPw(), m.getUserPw()))
                 .orElse(null);
     }
 }
