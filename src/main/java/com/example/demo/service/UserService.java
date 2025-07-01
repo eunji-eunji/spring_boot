@@ -22,4 +22,8 @@ public class UserService {
 
         userRepository.save(user);
     }
+
+    public Users findById(Long id) {
+        return userRepository.findById(id).orElseThrow();
+    }
 }
