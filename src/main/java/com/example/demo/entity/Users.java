@@ -77,8 +77,8 @@ public class Users {
         String encodedPassword = passwordEncoder.encode(dto.getUserPw());
         return Users.builder()
                 .email(dto.getEmail())
-                // .userPw(encodedPassword)
-                .userPw(dto.getUserPw())
+                .userPw(encodedPassword)
+                //.userPw(dto.getUserPw())
                 .phone(dto.getPhone())
                 .nickname(dto.getNickname())
                 .gender(dto.getGender())
@@ -92,4 +92,22 @@ public class Users {
                 .role(Role.USER)
                 .build();
     }
+
+    public void updateUser(UserDto dto, PasswordEncoder passwordEncoder) {
+        if (dto.getUserPw() != null && !dto.getUserPw().isBlank()) {
+            this.userPw = passwordEncoder.encode(dto.getUserPw());
+        }
+
+        this.phone = dto.getPhone();
+        this.nickname = dto.getNickname();
+        this.gender = dto.getGender();
+        this.birth = dto.getBirth();
+        this.p_code = dto.getP_code();
+        this.loadAddr = dto.getLoadAddr();
+        this.lotAddr = dto.getLotAddr();
+        this.detailAddr = dto.getDetailAddr();
+        this.extraAddr = dto.getExtraAddr();
+        this.residenceType = dto.getResidenceType();
+    }
+
 }

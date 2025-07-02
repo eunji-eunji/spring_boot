@@ -27,10 +27,31 @@ public class UserController {
         return "redirect:/";
     }
 
+    @GetMapping("/mypage")
+    public String myPage(HttpSession session, Model model){
+        Users loginUser = (Users) session.getAttribute("loginUser");
+        model.addAttribute("loginUser", loginUser);
+        return "/user/mypage";
+    }
+
     @GetMapping("/edit/{id}")
     public String editForm(@PathVariable("id") Long id, Model model){
         model.addAttribute("loginUser", userService.findById(id));
         return "/user/edit";
+    }
+
+    @PostMapping("/edit/{id}")
+    public String editInfo(@PathVariable("id") Long id, @ModelAttribute UserDto dto, HttpSession session){
+        Users updateUser = userService.edit(dto, id);
+        session.setAttribute("loginUser", updateUser);
+        return "redirect:/user/mypage";
+    }
+
+    @GetMapping("/delete/{id}")
+    public String delete(@PathVariable("id") Long id, HttpSession session) {
+        userService.delete(id);
+        session.invalidate();
+        return "redirect:/";
     }
 
 }
