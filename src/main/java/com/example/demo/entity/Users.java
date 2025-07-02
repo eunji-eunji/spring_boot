@@ -1,12 +1,12 @@
 package com.example.demo.entity;
 
+import com.example.demo.constant.Role;
 import com.example.demo.dto.UserDto;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.springframework.cglib.core.Local;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.time.LocalDate;
@@ -89,7 +89,7 @@ public class Users {
                 .detailAddr(dto.getDetailAddr())
                 .extraAddr(dto.getExtraAddr())
                 .residenceType(dto.getResidenceType())
-                .role(Role.USER)
+                .role(Role.ADMIN)
                 .build();
     }
 

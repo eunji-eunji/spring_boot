@@ -21,6 +21,31 @@ public class ProductDetailDto {
         this.liked = liked;
     }
 
+    public String getName() {
+        return product.getName();
+    }
+
+    public int getPrice() {
+        return product.getPrice();
+    }
+
+    public String getDescription() {
+        return product.getDescription();
+    }
+
+    public List<?> getImages() {
+        return product.getImages();
+    }
+
+    public List<?> getProductModels() {
+        return product.getProductModels();
+    }
+
+    public Long getId() {
+        return product.getId();
+    }
+
+
 
 
 }

@@ -10,10 +10,11 @@ import java.nio.file.Paths;
 public class WebConfig implements WebMvcConfigurer {
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        // 절대 경로로 매핑해주기
-        String uploadPath = Paths.get(System.getProperty("user.dir"), "uploads").toUri().toString();
+        // ✅ 프로젝트 내부 uploads 폴더 기준 매핑
+        String uploadPath = Paths.get("uploads").toAbsolutePath().toUri().toString();
+        // 예: file:///C:/Users/username/project/uploads/
 
         registry.addResourceHandler("/uploads/**")
-                .addResourceLocations(uploadPath);  // file:/C:/.../uploads/
+                .addResourceLocations(uploadPath);
     }
 }

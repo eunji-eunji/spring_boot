@@ -26,8 +26,18 @@ public class Product { // 상품
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
     private List<ProductModel> productModels = new ArrayList<>();
 
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    private List<ProductImage> images = new ArrayList<>();
+
     public void addProductModel(ProductModel model) {
         this.productModels.add(model);
         model.setProduct(this);
+    }
+
+    public String getThumbnailUrl() {
+        if (images != null && !images.isEmpty()) {
+            return images.get(0).getImageUrl();
+        }
+        return null;
     }
 }
