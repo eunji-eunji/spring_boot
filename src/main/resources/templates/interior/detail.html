@@ -2,24 +2,27 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
   <meta charset="UTF-8">
-  <title th:text="${dto.title}">제목</title>
+  <title th:text="${dto.title}">게시글 상세</title>
 </head>
 <body>
 <h1 th:text="${dto.title}">게시글 제목</h1>
 
+<!-- 작성자, 작성일, 조회수 -->
 <p><strong>작성자:</strong> <span th:text="${dto.nickname}"></span></p>
 <p><strong>작성일:</strong> <span th:text="${#temporals.format(dto.createdAt, 'yyyy-MM-dd HH:mm')}"></span></p>
 <p><strong>조회수:</strong> <span th:text="${dto.views}"></span></p>
 
+<!-- 본문 내용 -->
 <div>
   <strong>내용:</strong>
   <p th:text="${dto.content}"></p>
 </div>
 
+<!-- 이미지 미리보기 -->
 <div th:if="${dto.filePathList != null}">
-  <strong>사진:</strong><br/>
+  <strong>첨부 이미지:</strong><br/>
   <div th:each="path : ${dto.filePathList}">
-    <img th:src="@{${path}}" alt="첨부 이미지" width="400"/><br/><br/>
+    <img th:src="@{${path}}" alt="첨부 이미지" width="400"><br/><br/>
   </div>
 </div>
 
@@ -30,15 +33,15 @@
   </button>
 </div>
 
-<br/>
-<!-- 수정/삭제는 로그인한 사용자만 볼 수 있도록 -->
+<!-- 수정/삭제 -->
 <div th:if="${loginUser != null and dto.email == loginUser.email}">
   <a th:href="@{'/interior/edit/' + ${dto.postId}}">수정</a>
-
   <form th:action="@{'/interior/delete/' + ${dto.postId}}" method="post" style="display:inline;">
     <button type="submit">삭제</button>
   </form>
 </div>
+
+<hr/>
 
 <!-- 댓글 목록 -->
 <h3>댓글</h3>
@@ -52,15 +55,13 @@
       <small th:text="${#temporals.format(comment.createdAt, 'yyyy-MM-dd HH:mm')}">작성일</small>
     </p>
 
-    <!-- 로그인 사용자가 댓글 작성자일 때만 수정/삭제 버튼 보이기 -->
+    <!-- 댓글 수정/삭제 버튼 -->
     <div th:if="${loginUser != null and comment.email == loginUser.email}">
-      <!-- 댓글 수정 폼 -->
       <form th:action="@{'/interior/' + ${dto.postId} + '/comment/edit/' + ${comment.commentId}}" method="post">
         <textarea name="content" rows="2" cols="50" th:text="${comment.content}"></textarea>
         <button type="submit">댓글 수정</button>
       </form>
 
-      <!-- 댓글 삭제 버튼 -->
       <form th:action="@{'/interior/' + ${dto.postId} + '/comment/delete/' + ${comment.commentId}}" method="post">
         <button type="submit">댓글 삭제</button>
       </form>
@@ -71,12 +72,12 @@
 </div>
 
 <!-- 댓글 작성 -->
-<h3>댓글 작성</h3>
 <div th:if="${loginUser != null}">
+  <h3>댓글 작성</h3>
   <p>작성자: <span th:text="${loginUser.nickname}"></span></p>
 
   <form th:action="@{'/interior/' + ${dto.postId} + '/comment'}" method="post">
-    <label>내용:</label>
+    <label>내용:</label><br/>
     <textarea name="content" rows="3" cols="50" required></textarea><br/>
     <button type="submit">댓글 등록</button>
   </form>
@@ -87,8 +88,6 @@
 
 <br/>
 <a th:href="@{/interior}">목록으로</a>
-
-
 
 <script>
   document.getElementById('likeBtn').addEventListener('click', function () {
@@ -101,7 +100,7 @@
       }
     })
     .then(response => {
-      if (response.status === 401) {
+      if (response.status === 401 || response.status === 403) {
         alert('로그인 후 이용해주세요.');
         location.href = '/user/login';
         return;
@@ -109,11 +108,10 @@
       return response.text();
     })
     .then(status => {
+      const count = document.getElementById('likeCount');
       if (status === 'liked') {
-        const count = document.getElementById('likeCount');
         count.textContent = parseInt(count.textContent) + 1;
       } else if (status === 'unliked') {
-        const count = document.getElementById('likeCount');
         count.textContent = parseInt(count.textContent) - 1;
       }
     })
@@ -124,9 +122,5 @@
   });
 </script>
 
-
-
 </body>
 </html>
-
-
