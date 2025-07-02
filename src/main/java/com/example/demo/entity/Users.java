@@ -51,10 +51,13 @@ public class Users {
 
     private int residenceType;
 
+    @Enumerated(EnumType.STRING)
+    private Role role;
+
     @Builder
     public Users(String email, String userPw, String phone, String nickname, String gender, LocalDate birth,
                  String p_code, String loadAddr, String lotAddr, String detailAddr, String extraAddr,
-                 int residenceType){
+                 int residenceType, Role role){
         this.email = email;
         this.userPw = userPw;
         this.phone = phone;
@@ -67,13 +70,15 @@ public class Users {
         this.detailAddr = detailAddr;
         this.extraAddr = extraAddr;
         this.residenceType = residenceType;
+        this.role = role;
     }
 
     public static Users createUser(UserDto dto, PasswordEncoder passwordEncoder) {
         String encodedPassword = passwordEncoder.encode(dto.getUserPw());
         return Users.builder()
                 .email(dto.getEmail())
-                .userPw(encodedPassword)
+                // .userPw(encodedPassword)
+                .userPw(dto.getUserPw())
                 .phone(dto.getPhone())
                 .nickname(dto.getNickname())
                 .gender(dto.getGender())
@@ -84,6 +89,7 @@ public class Users {
                 .detailAddr(dto.getDetailAddr())
                 .extraAddr(dto.getExtraAddr())
                 .residenceType(dto.getResidenceType())
+                .role(Role.USER)
                 .build();
     }
 }
