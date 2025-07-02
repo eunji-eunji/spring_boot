@@ -1,0 +1,300 @@
+body {
+    margin: 0;
+    padding: 0;
+    background-color: #ffffff;
+    color: #222;
+    font-family: 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif;
+    line-height: 1.6;
+}
+
+a {
+    color: inherit;
+    text-decoration: none;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 40px 20px;
+    display: flex;
+    gap: 40px;
+    flex-wrap: wrap;
+}
+
+/* 🖼️ 상품 이미지 영역 */
+.product-images {
+    flex: 1 1 50%;
+    min-width: 300px;
+}
+
+.main-image-placeholder {
+    background-color: #f4f4f4;
+    color: #999;
+    width: 100%;
+    height: 500px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+}
+
+.thumbnail-list {
+    display: flex;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.thumb-placeholder {
+    background-color: #eee;
+    color: #aaa;
+    width: 80px;
+    height: 80px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* 📦 상품 요약 영역 */
+.product-summary {
+    flex: 1 1 40%;
+    min-width: 300px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.product-title {
+    font-size: 24px;
+    font-weight: 600;
+    color: #111;
+}
+
+.rating {
+    font-size: 14px;
+    color: #ff9f1a;
+}
+
+.price-box .discount-price {
+    font-size: 22px;
+    font-weight: bold;
+    color: #e60023;
+}
+
+.price-box .original-price {
+    color: #aaa;
+    font-size: 14px;
+}
+
+.benefit {
+    font-size: 13px;
+    color: #666;
+}
+
+.delivery-info,
+.option-select,
+.quantity {
+    font-size: 14px;
+}
+
+input[type="number"],
+select {
+    padding: 8px;
+    background: #fff;
+    border: 1px solid #ccc;
+    color: #222;
+    border-radius: 4px;
+    width: 100%;
+    max-width: 200px;
+}
+
+/* 버튼들 */
+.action-buttons button,
+.extra-buttons button,
+.qna-write {
+    padding: 12px 16px;
+    border: none;
+    cursor: pointer;
+    border-radius: 6px;
+    font-weight: bold;
+    transition: background 0.2s ease;
+}
+
+.btn-cart {
+    background: #f5f5f5;
+    color: #111;
+    border: 1px solid #ccc;
+}
+
+.btn-buy {
+    background: #e60023;
+    color: #fff;
+}
+
+.btn-scrap,
+.btn-share {
+    background: transparent;
+    color: #666;
+}
+
+/* 📌 탭 메뉴 (Sticky) */
+.product-tabs {
+    position: sticky;
+    top: 0;
+    background: #fff;
+    z-index: 10;
+    border-bottom: 1px solid #ddd;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.03);
+}
+
+.product-tabs ul {
+    display: flex;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    justify-content: center;
+}
+
+.product-tabs li {
+    flex: 1;
+    text-align: center;
+}
+
+.product-tabs a {
+    display: block;
+    padding: 16px 0;
+    font-weight: bold;
+    color: #666;
+    border-bottom: 2px solid transparent;
+}
+
+.product-tabs a:focus,
+.product-tabs a:hover {
+    color: #111;
+    border-bottom: 2px solid #e60023;
+}
+
+/* 📄 탭 콘텐츠 영역 */
+.product-detail-body {
+    max-width: 1024px;
+    margin: 40px auto;
+    padding: 0 20px;
+}
+
+.tab-content {
+    margin-bottom: 60px;
+}
+
+/* 상세 이미지 */
+.detail-images {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.image-placeholder {
+    background-color: #f2f2f2;
+    color: #aaa;
+    height: 400px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* 상품 스펙 테이블 */
+.spec-table {
+    width: 100%;
+    margin-top: 30px;
+    border-collapse: collapse;
+    font-size: 14px;
+}
+
+.spec-table td,
+.spec-table th {
+    border: 1px solid #ddd;
+    padding: 10px;
+    text-align: left;
+}
+
+.spec-table th {
+    width: 120px;
+    background: #fafafa;
+}
+
+/* 리뷰 섹션 */
+.review-summary {
+    margin-bottom: 20px;
+}
+
+.review-stars p {
+    margin: 4px 0;
+}
+
+.review-list {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.review-card {
+    background: #f9f9f9;
+    padding: 20px;
+    border-radius: 8px;
+    border: 1px solid #eee;
+}
+
+.review-meta {
+    font-size: 13px;
+    color: #888;
+}
+
+.review-text {
+    margin: 10px 0;
+}
+
+.review-image {
+    background: #eee;
+    height: 200px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #aaa;
+}
+
+/* 문의 섹션 */
+.qna-list {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.qna-item {
+    background: #fdfdfd;
+    padding: 16px;
+    border: 1px solid #eee;
+    border-radius: 6px;
+}
+
+.q-title {
+    font-weight: bold;
+    margin-bottom: 8px;
+}
+
+.q-answer {
+    color: #555;
+    font-size: 14px;
+}
+
+/* 📱 반응형 대응 */
+@media (max-width: 768px) {
+    .container {
+        flex-direction: column;
+    }
+
+    .product-tabs ul {
+        flex-wrap: wrap;
+    }
+
+    .product-tabs li {
+        flex: 1 1 33%;
+    }
+}

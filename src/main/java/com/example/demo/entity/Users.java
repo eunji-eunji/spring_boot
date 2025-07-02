@@ -77,8 +77,8 @@ public class Users {
         String encodedPassword = passwordEncoder.encode(dto.getUserPw());
         return Users.builder()
                 .email(dto.getEmail())
-                .userPw(encodedPassword)
-//              .userPw(dto.getUserPw())
+                // .userPw(encodedPassword)
+                .userPw(dto.getUserPw())
                 .phone(dto.getPhone())
                 .nickname(dto.getNickname())
                 .gender(dto.getGender())

@@ -26,4 +26,16 @@ public class UserService {
     public Users findById(Long id) {
         return userRepository.findById(id).orElseThrow();
     }
+
+    @Transactional
+    public Users edit(UserDto dto, Long id) {
+        Users user = userRepository.findById(id).orElseThrow();
+
+        user.updateUser(dto, passwordEncoder);  // 핵심 변경
+        return user;
+    }
+
+    public void delete(Long id) {
+        userRepository.deleteById(id);
+    }
 }
