@@ -13,5 +13,7 @@
 <a th:if="${loginUser != null}" href="/interior">게시판</a>
 <a th:if="${loginUser != null}" href="/user/logout">로그아웃</a>
 <a th:if="${loginUser == null}" href="/user/signup">회원가입</a>
+<a th:if="${loginUser != null}" href="/admin/products">상품등록</a>
+<a th:if="${loginUser != null}" href="/products">상품목록</a>
 </body>
 </html>
