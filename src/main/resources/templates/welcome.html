@@ -10,6 +10,7 @@
 <a th:if="${loginUser == null}" href="/user/login">로그인</a>
 <p th:if="${loginUser != null}" th:text="${loginUser.nickname}+'님'"></p>
 <a th:if="${loginUser != null}" href="/user/mypage">마이페이지</a>
+<a th:if="${loginUser != null}" href="/interior">게시판</a>
 <a th:if="${loginUser != null}" href="/user/logout">로그아웃</a>
 <a th:if="${loginUser == null}" href="/user/signup">회원가입</a>
 </body>
