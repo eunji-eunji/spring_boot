@@ -22,6 +22,8 @@ public class Users {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    private String name;
+
     private String email;
 
     private String userPw;
@@ -51,13 +53,18 @@ public class Users {
 
     private int residenceType;
 
+    private String social;
+
     @Enumerated(EnumType.STRING)
     private Role role;
 
+
     @Builder
-    public Users(String email, String userPw, String phone, String nickname, String gender, LocalDate birth,
+    public Users(String name, String email, String userPw, String phone, String nickname, String gender, LocalDate birth,
                  String p_code, String loadAddr, String lotAddr, String detailAddr, String extraAddr,
-                 int residenceType, Role role){
+                 int residenceType, String social, Role role){
+      
+        this.name = name;
         this.email = email;
         this.userPw = userPw;
         this.phone = phone;
@@ -70,12 +77,14 @@ public class Users {
         this.detailAddr = detailAddr;
         this.extraAddr = extraAddr;
         this.residenceType = residenceType;
+        this.social = social;
         this.role = role;
     }
 
     public static Users createUser(UserDto dto, PasswordEncoder passwordEncoder) {
         String encodedPassword = passwordEncoder.encode(dto.getUserPw());
         return Users.builder()
+                .name(dto.getName())
                 .email(dto.getEmail())
                 .userPw(encodedPassword)
                 //.userPw(dto.getUserPw())
