@@ -7,11 +7,11 @@
     </Properties>
     <Appenders>
         <!-- 콘솔 로그-->
-        <Console name="Console-Appneder" target="SYSTEM_OUT" follow="true">
+        <Console name="Console-Appender" target="SYSTEM_OUT" follow="true">
             <PatternLayout pattern="${LOG_FORMAT}"/>
         </Console>
 
-        <RollingFile name="File-Appneder" fileName="${BASE_DIR}/woorizip.log" filePattern="${BASE_DIR}/%d{yyyy-MM-dd}.log.zip">
+        <RollingFile name="File-Appender" fileName="${BASE_DIR}/woorizip.log" filePattern="${BASE_DIR}/%d{yyyy-MM-dd}.log.zip">
             <PatternLayout pattern="${LOG_FORMAT}"/>
             <Policies>
                 <SizeBasedTriggeringPolicy size="10KB"/>                  <!-- 15MB 용량이 초과시 DefaultRolloverStrategy 정책만큼 넘버링 -->
@@ -29,11 +29,11 @@
 
     <Loggers name="com.springboot">
         <Root level="INFO">
-            <AppenderRef ref="Console-Appneder"/>
+            <AppenderRef ref="Console-Appender"/>
         </Root>
 
-        <Logger name="com.springboot.interceptor.MonitoringInterceptor" level="INFO"  additivity="true">
-            <AppenderRef ref="File-Appneder"/>
+        <Logger name="com.example.demo.interceptor.MonitoringInterceptor" level="INFO" additivity="true">
+            <AppenderRef ref="File-Appender"/>
         </Logger>
     </Loggers>
 </Configuration>
