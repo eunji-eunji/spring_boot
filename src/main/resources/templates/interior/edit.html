@@ -14,7 +14,7 @@
   <label>제목:</label><br/>
   <input type="text" name="title" th:value="${dto.title}" required/><br/><br/>
 
-  <!-- 작성자 (변경 불가) - 제목 아래로 이동 -->
+  <!-- 작성자 (제목 아래로 이동) -->
   <div th:if="${loginUser != null}">
     <label>작성자:</label><br/>
     <input type="text" th:value="${loginUser.nickname}" readonly/><br/><br/>
@@ -28,17 +28,40 @@
   <div th:if="${dto.filePathList != null}">
     <label>기존 이미지:</label><br/>
     <div th:each="path : ${dto.filePathList}">
-      <img th:src="@{${path}}" alt="기존 이미지" width="300"/><br/><br/>
-    </div>
+      <img th:src="@{${path}}" alt="기존 이미지" width="200" style="margin: 10px;"/><br/>
+    </div><br/>
   </div>
 
   <label>새 이미지 첨부 (기존 이미지 유지 시 무시):</label><br/>
-  <input type="file" name="files" multiple accept="image/*"/><br/><br/>
+  <input type="file" name="files" multiple accept="image/*" id="imageInput"/><br/><br/>
+
+  <!-- 새 이미지 미리보기 -->
+  <div id="previewContainer"></div><br/>
 
   <button type="submit">수정</button>
   <a th:href="@{'/interior/' + ${dto.postId}}">취소</a>
 </form>
 
+<!-- JS: 새 이미지 미리보기 -->
+<script>
+  const input = document.getElementById('imageInput');
+  const previewContainer = document.getElementById('previewContainer');
+
+  input.addEventListener('change', function () {
+    previewContainer.innerHTML = ''; // 초기화
+    Array.from(this.files).forEach(file => {
+      const reader = new FileReader();
+      reader.onload = function (e) {
+        const img = document.createElement('img');
+        img.src = e.target.result;
+        img.style.width = '200px';
+        img.style.margin = '10px';
+        previewContainer.appendChild(img);
+      };
+      reader.readAsDataURL(file);
+    });
+  });
+</script>
 
 </body>
 </html>

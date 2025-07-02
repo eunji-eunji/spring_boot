@@ -11,22 +11,47 @@
   <label>제목:</label><br/>
   <input type="text" name="title" required><br/><br/>
 
-  <label>내용:</label><br/>
-  <textarea name="content" rows="10" cols="60" required></textarea><br/><br/>
-
-  <label>사진 첨부 (최대 4장):</label><br/>
-  <input type="file" name="files" multiple accept="image/*"><br/><br/>
-
-  <!-- 작성자 정보 -->
+  <!-- 작성자 정보 (제목 아래로 이동) -->
   <div th:if="${loginUser != null}">
     <label>작성자:</label><br/>
     <input type="text" th:value="${loginUser.nickname}" readonly><br/><br/>
     <input type="hidden" name="email" th:value="${loginUser.email}">
   </div>
 
+  <label>내용:</label><br/>
+  <textarea name="content" rows="10" cols="60" required></textarea><br/><br/>
+
+  <label>사진 첨부 (최대 4장):</label><br/>
+  <input type="file" name="files" multiple accept="image/*" id="imageInput"><br/><br/>
+
+  <!-- 이미지 미리보기 -->
+  <div id="previewContainer"></div><br/>
+
   <button type="submit">등록</button>
   <a th:href="@{/interior}">취소</a>
 </form>
+
+<!-- JS: 파일 미리보기 -->
+<script>
+  const input = document.getElementById('imageInput');
+  const previewContainer = document.getElementById('previewContainer');
+
+  input.addEventListener('change', function () {
+    previewContainer.innerHTML = ''; // 기존 미리보기 초기화
+
+    Array.from(this.files).forEach(file => {
+      const reader = new FileReader();
+      reader.onload = function (e) {
+        const img = document.createElement('img');
+        img.src = e.target.result;
+        img.style.width = '200px';
+        img.style.margin = '10px';
+        previewContainer.appendChild(img);
+      };
+      reader.readAsDataURL(file);
+    });
+  });
+</script>
 
 </body>
 </html>
