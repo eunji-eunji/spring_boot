@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>상품 등록</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+<h2>상품 등록</h2>
+
+<form th:action="@{/admin/products}" method="post" enctype="multipart/form-data" th:object="${productForm}">
+    <label>상품명: <input type="text" th:field="*{name}" required /></label><br/>
+    <label>가격: <input type="number" th:field="*{price}" required /></label><br/>
+    <label>카테고리: <input type="text" th:field="*{category}" /></label><br/>
+    <label>설명: <textarea th:field="*{description}"></textarea></label><br/>
+
+    <label>모델 및 재고:</label><br/>
+    <div th:each="model, i : *{productModelDtoList}">
+        모델명: <input type="text" th:field="*{productModelDtoList[__${i.index}__].productModelSelect}" />
+        재고: <input type="number" th:field="*{productModelDtoList[__${i.index}__].prStock}" /><br/>
+    </div>
+
+    <label>이미지 업로드: <input type="file" name="images" multiple /></label><br/>
+
+    <button type="submit">등록하기</button>
+</form>
+
+</body>
+</html>
