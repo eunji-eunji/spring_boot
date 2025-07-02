@@ -3,6 +3,16 @@
 <head>
     <title>인테리어 자랑 게시판</title>
     <meta charset="UTF-8">
+    <style>
+        .pagination a {
+            margin: 0 5px;
+            text-decoration: none;
+        }
+        .pagination .active {
+            font-weight: bold;
+            color: red;
+        }
+    </style>
 </head>
 <body>
 <h1>인테리어 자랑 게시판</h1>
@@ -22,7 +32,13 @@
     </tr>
     </thead>
     <tbody>
-    <tr th:each="post : ${posts}">
+    <!-- 게시글이 없는 경우 안내 메시지 -->
+    <tr th:if="${postPage.content.empty}">
+        <td colspan="5" style="text-align: center;">게시글이 없습니다.</td>
+    </tr>
+
+    <!-- 게시글 출력 -->
+    <tr th:each="post : ${postPage.content}">
         <td th:text="${post.postId}"></td>
         <td>
             <a th:href="@{|/interior/${post.postId}|}" th:text="${post.title}"></a>
@@ -33,5 +49,24 @@
     </tr>
     </tbody>
 </table>
+
+<!-- 페이지네이션 (게시글 있을 때만 보이게) -->
+<div class="pagination" th:if="${totalPages > 0}">
+    <span th:if="${currentPage > 1}">
+        <a th:href="@{/interior(page=${currentPage - 1})}">이전</a>
+    </span>
+
+    <span th:each="i : ${#numbers.sequence(1, totalPages)}">
+        <a th:href="@{/interior(page=${i})}"
+           th:text="${i}"
+           th:classappend="${i == currentPage} ? 'active' : ''">
+        </a>
+    </span>
+
+    <span th:if="${currentPage < totalPages}">
+        <a th:href="@{/interior(page=${currentPage + 1})}">다음</a>
+    </span>
+</div>
+
 </body>
 </html>
