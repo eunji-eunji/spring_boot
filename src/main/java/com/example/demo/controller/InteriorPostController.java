@@ -9,6 +9,7 @@ import com.example.demo.service.PostCommentService;
 import com.example.demo.service.PostLikeService;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -29,17 +30,25 @@ public class InteriorPostController {
     private final PostCommentService commentService;
     private final PostLikeService postLikeService;
 
-    /** 글 목록 */
+    /** 글 목록 + 페이지네이션 추가 */
     @GetMapping
-    public String list(Model model, HttpSession session) {
-        model.addAttribute("posts", service.findAll());
+    public String list(@RequestParam(defaultValue = "1") int page,
+                       Model model,
+                       HttpSession session) {
 
-        // 로그인 사용자 세션 전달
+        int pageSize = 10; // 한 페이지에 보여줄 게시글 수
+        Page<InteriorPostDto> postPage = service.findPagedPosts(page, pageSize);
+
+        model.addAttribute("postPage", postPage); // 페이지 객체 전달
+        model.addAttribute("currentPage", page);
+        model.addAttribute("totalPages", postPage.getTotalPages());
+
         Users loginUser = (Users) session.getAttribute("loginUser");
         model.addAttribute("loginUser", loginUser);
 
         return "interior/list";
     }
+
 
     /** 글 작성 폼 */
     @GetMapping("/write")
@@ -56,7 +65,7 @@ public class InteriorPostController {
     @PostMapping("/write")
     @ResponseBody
     public String writePost(@ModelAttribute InteriorPostDto dto,
-                            @RequestParam("files") MultipartFile[] files,
+                            @RequestParam(value = "files", required = false) MultipartFile[] files,
                             HttpSession session) {
 
         Users loginUser = (Users) session.getAttribute("loginUser");
@@ -65,11 +74,16 @@ public class InteriorPostController {
         dto.setEmail(loginUser.getEmail());
         dto.setNickname(loginUser.getNickname());
 
-        handleMultipleFiles(dto, files);
+        // 이미지가 없어도 등록 가능하게 처리
+        if (files != null && files.length > 0 && !files[0].isEmpty()) {
+            handleMultipleFiles(dto, files);
+        }
+
         service.save(dto);
 
         return "success";
     }
+
 
 
 

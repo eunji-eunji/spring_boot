@@ -1,10 +1,13 @@
 package com.example.demo.dto;
 
+import com.example.demo.entity.InteriorPost;
 import lombok.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Getter
 @Setter
@@ -30,5 +33,31 @@ public class    InteriorPostDto {
     private int views;
     private int liked;
     private boolean likedByCurrentUser;
+
+
+
+    public static InteriorPostDto fromEntity(InteriorPost post) {
+        List<String> filePathList = null;
+        if (post.getFilePath() != null && !post.getFilePath().isEmpty()) {
+            filePathList = Arrays.stream(post.getFilePath().split(","))
+                    .map(String::trim)
+                    .collect(Collectors.toList());
+        }
+
+        return InteriorPostDto.builder()
+                .postId(post.getPostId())
+                .title(post.getTitle())
+                .content(post.getContent())
+                .fileNames(post.getFileName())
+                .filePaths(post.getFilePath())
+                .filePathList(filePathList)
+                .createdAt(post.getCreatedAt())
+                .updatedAt(post.getUpdatedAt())
+                .email(post.getUser().getEmail())
+                .nickname(post.getUser().getNickname())
+                .liked(post.getLiked())
+                .views(post.getViews())
+                .build();
+    }
 
 }
