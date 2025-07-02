@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>회원 정보 수정</title>
+    <script src="https://t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+</head>
+<body>
+<h2>회원 정보 수정</h2>
+
+<form th:action="'/user/edit/' + ${loginUser.id}" method="post" th:object="${loginUser}">
+    이메일 : <input type="email" th:field="*{email}" readonly><br>
+
+    새 비밀번호 : <input type="password" name="userPw" id="userPw"><br>
+    비밀번호 확인 : <input type="password" name="checkPw" id="checkPw"><br>
+    <div id="pwCheckResult"></div><br/>
+
+    <label for="phone">휴대전화</label>
+    <label for="phone">
+        <input id="phone" name="phone" type="hidden" th:value="*{phone}">
+        <input id="phone1" name="phone1" maxlength="3" size="3" type="tel" required pattern="[0-9]*"
+               oninput="this.value=this.value.replace(/[^0-9]/g,'');"> -
+        <input id="phone2" name="phone2" maxlength="4" size="4" type="tel" required pattern="[0-9]*"
+               oninput="this.value=this.value.replace(/[^0-9]/g,'');"> -
+        <input id="phone3" name="phone3" maxlength="4" size="4" type="tel" required pattern="[0-9]*"
+               oninput="this.value=this.value.replace(/[^0-9]/g,'');">
+    </label>
+    <br>
+
+    닉네임 : <input type="text" th:field="*{nickname}"><br>
+
+    성별 :
+    <input type="radio" th:field="*{gender}" value="m" id="male">
+    <label for="male">남자</label>
+    <input type="radio" th:field="*{gender}" value="f" id="female">
+    <label for="female">여자</label><br>
+
+    생년월일 :
+    <input type="date" th:value="${#temporals.format(loginUser.birth, 'yyyy-MM-dd')}" name="birth"><br>
+
+    <label>주소</label><br>
+    <input type="text" th:field="*{p_code}" id="sample4_postcode" placeholder="우편번호" required>
+    <input type="button" class="address btn-secondary" onclick="sample4_execDaumPostcode()" value="우편번호 찾기"><br>
+
+    <input type="text" th:field="*{loadAddr}" id="sample4_roadAddress" placeholder="도로명주소" required><br>
+    <input type="text" th:field="*{lotAddr}" id="sample4_jibunAddress" placeholder="지번주소" required><br>
+    <input type="text" th:field="*{detailAddr}" id="sample4_detailAddress" placeholder="상세주소" required><br>
+    <input type="text" id="sample4_extraAddress" placeholder="참고항목"><br>
+    <span id="guide" style="color:#999;display:none"></span><br>
+
+    가구 유형 선택 :<br>
+    <input type="radio" th:field="*{residenceType}" value="1" id="single">
+    <label for="single">자취 (1인가구)</label><br>
+    <input type="radio" th:field="*{residenceType}" value="2" id="shared">
+    <label for="shared">동거 (다인가구)</label><br>
+    <input type="radio" th:field="*{residenceType}" value="0" id="none">
+    <label for="none">미선택</label><br>
+
+    <input type="submit" value="정보 수정">
+</form>
+
+<!-- SCRIPT -->
+<script th:inline="javascript">
+    // 비밀번호 확인
+    document.addEventListener('DOMContentLoaded', function () {
+        const userPwInput = document.getElementById('userPw');
+        const checkPwInput = document.getElementById('checkPw');
+        const pwCheckResult = document.getElementById('pwCheckResult');
+
+        function checkPasswordsMatch() {
+            if (userPwInput.value === checkPwInput.value) {
+                pwCheckResult.textContent = '비밀번호가 일치합니다.';
+                pwCheckResult.className = 'success';
+            } else {
+                pwCheckResult.textContent = '비밀번호가 일치하지 않습니다. 다시 입력해 주세요.';
+                pwCheckResult.className = 'error';
+            }
+        }
+
+        userPwInput.addEventListener('input', checkPasswordsMatch);
+        checkPwInput.addEventListener('input', checkPasswordsMatch);
+    });
+
+    // 전화번호 불러오기 및 hidden 필드 업데이트
+    window.addEventListener("DOMContentLoaded", function () {
+        const fullPhone = /*[[${loginUser.phone}]]*/ '';
+
+        if (fullPhone && fullPhone.length === 11) {
+            document.getElementById("phone1").value = fullPhone.substring(0, 3);
+            document.getElementById("phone2").value = fullPhone.substring(3, 7);
+            document.getElementById("phone3").value = fullPhone.substring(7);
+            document.getElementById("phone").value = fullPhone;
+        }
+
+        // 입력할 때마다 hidden 값 갱신
+        function updatePhoneValue() {
+            const phone1 = document.getElementById("phone1").value;
+            const phone2 = document.getElementById("phone2").value;
+            const phone3 = document.getElementById("phone3").value;
+            document.getElementById("phone").value = phone1 + phone2 + phone3;
+        }
+
+        document.getElementById("phone1").addEventListener("input", updatePhoneValue);
+        document.getElementById("phone2").addEventListener("input", updatePhoneValue);
+        document.getElementById("phone3").addEventListener("input", updatePhoneValue);
+    });
+
+    // 다음 주소 API
+    function sample4_execDaumPostcode() {
+        new daum.Postcode({
+            oncomplete: function (data) {
+                const roadAddr = data.roadAddress;
+                let extraRoadAddr = '';
+
+                if (data.bname !== '' && /[동|로|가]$/g.test(data.bname)) {
+                    extraRoadAddr += data.bname;
+                }
+                if (data.buildingName !== '' && data.apartment === 'Y') {
+                    extraRoadAddr += (extraRoadAddr !== '' ? ', ' + data.buildingName : data.buildingName);
+                }
+                if (extraRoadAddr !== '') {
+                    extraRoadAddr = ' (' + extraRoadAddr + ')';
+                }
+
+                document.getElementById("sample4_postcode").value = data.zonecode;
+                document.getElementById("sample4_roadAddress").value = roadAddr;
+                document.getElementById("sample4_jibunAddress").value = data.jibunAddress;
+                document.getElementById("sample4_extraAddress").value = extraRoadAddr;
+
+                const guideTextBox = document.getElementById("guide");
+                if (data.autoRoadAddress) {
+                    const expRoadAddr = data.autoRoadAddress + extraRoadAddr;
+                    guideTextBox.innerHTML = '(예상 도로명 주소 : ' + expRoadAddr + ')';
+                    guideTextBox.style.display = 'block';
+                } else if (data.autoJibunAddress) {
+                    const expJibunAddr = data.autoJibunAddress;
+                    guideTextBox.innerHTML = '(예상 지번 주소 : ' + expJibunAddr + ')';
+                    guideTextBox.style.display = 'block';
+                } else {
+                    guideTextBox.innerHTML = '';
+                    guideTextBox.style.display = 'none';
+                }
+            }
+        }).open();
+    }
+</script>
+
+</body>
+</html>

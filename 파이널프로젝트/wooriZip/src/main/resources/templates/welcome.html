@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en"
-      xmlns:th="http://www.thymeleaf.org">
+      xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
 <head>
   <meta charset="UTF-8">
   <title>Title</title>
@@ -9,7 +9,11 @@
 <h2>WELCOME!</h2>
 <a th:if="${loginUser == null}" href="/user/login">로그인</a>
 <p th:if="${loginUser != null}" th:text="${loginUser.nickname}+'님'"></p>
+<a th:if="${loginUser != null}" href="/user/mypage">마이페이지</a>
+<a th:if="${loginUser != null}" href="/interior">게시판</a>
 <a th:if="${loginUser != null}" href="/user/logout">로그아웃</a>
 <a th:if="${loginUser == null}" href="/user/signup">회원가입</a>
+<a th:if="${loginUser != null}" href="/admin/products">상품등록</a>
+<a th:if="${loginUser != null}" href="/products">상품목록</a>
 </body>
 </html>
