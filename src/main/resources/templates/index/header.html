@@ -1,0 +1,75 @@
+<!-- templates/index/header.html -->
+<header class="header" th:fragment="header">
+    <style>
+        .header {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background-color: transparent;
+            transition: all 0.3s ease;
+            z-index: 1000;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+        }
+        .header.scrolled {
+            background-color: #F9F7F0;
+        }
+        .header-inner {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .logo a {
+            font-size: 30px;
+            font-weight: bold;
+            color: #B17457;
+            text-decoration: none;
+        }
+        .gnb-wrap {
+            display: flex;
+            align-items: center;
+            gap: 30px;
+        }
+        .divider {
+            width: 1px;
+            height: 16px;
+            background-color: #F9F7F0;
+            margin: 0 5px;
+        }
+        .gnb-group-1 a {
+            color: #4A4947;
+            font-size: 18px;
+            margin: 0 10px;
+            text-decoration: none;
+        }
+        .gnb-group-2 a {
+            color: #4A4947;
+            font-size: 15px;
+            margin: 0 5px;
+            text-decoration: none;
+        }
+    </style>
+    <div class="header-inner">
+        <h1 class="logo">
+            <a href="/">WooriZIP</a>
+        </h1>
+        <div class="gnb-wrap">
+            <div class="gnb-group-1">
+                <a href="#">쇼핑</a>
+                <a href="#">커뮤니티</a>
+                <a href="#">공지/이벤트</a>
+            </div>
+            <div class="divider"></div>
+            <div class="gnb-group-2">
+                <a href="#">BRAND</a>
+                <a href="#">고객센터</a>
+                <a th:if="${loginUser == null}" href="/user/login">로그인</a>
+                <a th:if="${loginUser != null}" href="/user/logout">로그아웃</a>
+                <a th:if="${loginUser == null}" href="/user/signup">회원가입</a>
+                <a th:if="${loginUser != null}" href="/user/mypage">마이페이지</a>
+            </div>
+        </div>
+    </div>
+</header>
