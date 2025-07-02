@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>글쓰기</title>
+  <style>
+    .img-box {
+      display: inline-block;
+      margin: 10px;
+    }
+    .img-box img {
+      width: 150px;
+      height: auto;
+      border: 1px solid #ccc;
+    }
+  </style>
+</head>
+<body>
+
+<h1>인테리어 글쓰기</h1>
+
+<form id="writeForm" enctype="multipart/form-data">
+  <label>제목:</label><br/>
+  <input type="text" name="title" required><br/><br/>
+
+  <div th:if="${loginUser != null}">
+    <label>작성자:</label><br/>
+    <input type="text" th:value="${loginUser.nickname}" readonly><br/><br/>
+    <input type="hidden" name="email" th:value="${loginUser.email}">
+  </div>
+
+  <label>내용:</label><br/>
+  <textarea name="content" rows="10" cols="60" required></textarea><br/><br/>
+
+  <label>사진 첨부 (최대 4장):</label><br/>
+  <input type="file" id="imageInput" accept="image/*"><br/><br/>
+
+  <!-- 미리보기 영역 -->
+  <div id="previewContainer"></div><br/>
+
+  <button type="button" id="submitBtn">등록</button>
+  <a th:href="@{/interior}">취소</a>
+</form>
+
+<script>
+  let selectedFiles = [];
+
+  const input = document.getElementById('imageInput');
+  const preview = document.getElementById('previewContainer');
+
+  input.addEventListener('change', function () {
+    const newFiles = Array.from(this.files);
+
+    if (selectedFiles.length + newFiles.length > 4) {
+      alert("이미지는 최대 4장까지 첨부할 수 있습니다.");
+      return;
+    }
+
+    newFiles.forEach(file => {
+      selectedFiles.push(file);
+
+      const reader = new FileReader();
+      reader.onload = e => {
+        const box = document.createElement('div');
+        box.className = 'img-box';
+
+        const img = document.createElement('img');
+        img.src = e.target.result;
+
+        box.appendChild(img);
+        preview.appendChild(box);
+      };
+      reader.readAsDataURL(file);
+    });
+
+    this.value = '';
+  });
+
+  document.getElementById('submitBtn').addEventListener('click', function () {
+    const form = document.getElementById('writeForm');
+    const formData = new FormData(form);
+
+    selectedFiles.forEach(file => {
+      formData.append("files", file);
+    });
+
+    fetch('/interior/write', {
+      method: 'POST',
+      body: formData
+    }).then(res => res.text())
+      .then(result => {
+        if (result === 'success') {
+          alert("등록 완료!");
+          location.href = '/interior';
+        } else if (result === 'unauthorized') {
+          alert("로그인 후 작성 가능합니다.");
+          location.href = '/user/login';
+        } else {
+          alert("등록 실패");
+        }
+      });
+  });
+</script>
+
+</body>
+</html>

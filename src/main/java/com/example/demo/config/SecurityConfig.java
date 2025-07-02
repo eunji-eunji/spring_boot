@@ -22,9 +22,10 @@ public class SecurityConfig {
         http
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("index.html", "/user/**", "/css/**", "/js/**").permitAll() // 회원가입 경로 허용
+                        // .requestMatchers("/admin/**").hasRole("ADMIN")
                         .requestMatchers("/oauth2/**").permitAll()
-                        .anyRequest().authenticated() // 나머지는 인증 필요
+                        .anyRequest().permitAll()
+
                 )
                 .logout(logout -> logout
                         .logoutSuccessUrl("/")

@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="ko">
+    <head>
+        <meta charset="UTF-8"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+        <title>제품 상세 페이지</title>
+        <link rel="stylesheet" href="../css/product_style.css"/>
+    </head>
+    <body>
+
+        <!-- 🧱 상품 정보 영역 (이미지 + 요약 정보) -->
+        <section id="product-info" class="container">
+            <div class="product-images">
+                <!-- 상품 이미지 자리: 고정 비율의 박스로 대체 -->
+                <div class="main-image-placeholder">Main Image</div>
+                <div class="thumbnail-list">
+                    <div class="thumb-placeholder">Thumb 1</div>
+                    <div class="thumb-placeholder">Thumb 2</div>
+                    <div class="thumb-placeholder">Thumb 3</div>
+                </div>
+            </div>
+
+            <div class="product-summary">
+                <h2 class="product-title">[브랜드] 상품 이름</h2>
+                <div class="rating">
+                    ★ 4.8
+                    <span class="review-count">(102개 리뷰)</span>
+                </div>
+                <div class="price-box">
+                    <p class="discount-price">49,000원</p>
+                    <p class="original-price">
+                        <del>69,000원</del>
+                    </p>
+                    <p class="benefit">혜택가 적용 시 최대 10% 할인</p>
+                </div>
+                <div class="delivery-info">
+                    <strong>배송</strong>: 일반택배 / 2,500원 (50,000원 이상 무료배송)
+                </div>
+                <div class="option-select">
+                    <label for="option">옵션 선택</label>
+                    <select id="option">
+                        <option>옵션을 선택하세요</option>
+                        <option>화이트</option>
+                        <option>블랙</option>
+                    </select>
+                </div>
+                <div class="quantity">
+                    <label for="qty">수량</label>
+                    <input type="number" id="qty" value="1" min="1"/>
+                </div>
+                <div class="action-buttons">
+                    <button class="btn-cart">장바구니</button>
+                    <button class="btn-buy">구매하기</button>
+                </div>
+                <div class="extra-buttons">
+                    <button class="btn-scrap">스크랩</button>
+                    <button class="btn-share">공유</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- 🧱 탭 메뉴 (Sticky) -->
+        <nav class="product-tabs">
+            <ul>
+                <li>
+                    <a href="#tab-info">상품정보</a>
+                </li>
+                <li>
+                    <a href="#tab-review">리뷰</a>
+                </li>
+                <li>
+                    <a href="#tab-qna">문의</a>
+                </li>
+            </ul>
+        </nav>
+
+        <!-- 🧱 상세 내용 (상품정보 / 리뷰 / 문의) -->
+        <section class="product-detail-body">
+
+            <!-- 📌 상품 정보 -->
+            <div id="tab-info" class="tab-content">
+                <h3>상품 상세 설명</h3>
+                <div class="detail-images">
+                    <div class="image-placeholder">상세 이미지 1</div>
+                    <div class="image-placeholder">상세 이미지 2</div>
+                </div>
+                <table class="spec-table">
+                    <tr>
+                        <th>사이즈</th>
+                        <td>W100 x D50 x H75cm</td>
+                    </tr>
+                    <tr>
+                        <th>소재</th>
+                        <td>우드, 철제 프레임</td>
+                    </tr>
+                    <tr>
+                        <th>제조국</th>
+                        <td>대한민국</td>
+                    </tr>
+                </table>
+            </div>
+
+            <!-- 📌 리뷰 -->
+            <div id="tab-review" class="tab-content">
+                <h3>상품 리뷰</h3>
+                <div class="review-summary">
+                    <p>평균 ★ 4.8 / 리뷰 102개</p>
+                    <div class="review-stars">
+                        <p>★★★★★ - 80</p>
+                        <p>★★★★☆ - 15</p>
+                        <p>★★★☆☆ 이하 - 7</p>
+                    </div>
+                </div>
+                <div class="review-list">
+                    <div class="review-card">
+                        <div class="review-meta">⭐️⭐️⭐️⭐️⭐️ | 홍길동 | 2025.06.30</div>
+                        <p class="review-text">생각보다 튼튼하고 예뻐요! 배송도 빠릅니다.</p>
+                        <div class="review-image">[리뷰 이미지 자리]</div>
+                    </div>
+                    <div class="review-card">
+                        <div class="review-meta">⭐️⭐️⭐️⭐️ | 김영희 | 2025.06.29</div>
+                        <p class="review-text">색감이 화면이랑 조금 다르지만 만족해요~</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 📌 문의 -->
+            <div id="tab-qna" class="tab-content">
+                <h3>상품 문의</h3>
+                <div class="qna-list">
+                    <div class="qna-item">
+                        <p class="q-title">Q. 재입고 예정 있나요?</p>
+                        <p class="q-answer">A. 네, 7월 중순 입고 예정입니다 :)</p>
+                    </div>
+                    <div class="qna-item">
+                        <p class="q-title">Q. 조립이 쉬운 편인가요?</p>
+                        <p class="q-answer">A. 기본 공구로 10분 정도 소요됩니다.</p>
+                    </div>
+                </div>
+                <button class="qna-write">문의하기</button>
+            </div>
+
+        </section>
+    </body>
+</html>
