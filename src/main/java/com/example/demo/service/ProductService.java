@@ -17,6 +17,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.List;
 
 @Slf4j
@@ -94,9 +96,29 @@ public class ProductService {
         return new ProductDetailDto(product, liked);
     }
 
-    // ✅ 이미지 저장 메서드 (임시 구현)
+    // ✅ 이미지 저장 메서드
     private String saveImage(MultipartFile file) {
-        // 실제로는 파일 시스템 또는 S3에 저장하고 URL 반환해야 함
-        return "/images/" + file.getOriginalFilename();
+        if (file.isEmpty()) return null;
+
+        try {
+            // ✅ 프로젝트 경로에 uploads 폴더 만들기
+            String uploadDir = new File("uploads").getAbsolutePath() + File.separator;
+
+            File dir = new File(uploadDir);
+            if (!dir.exists()) dir.mkdirs();
+
+            String originalName = file.getOriginalFilename();
+            String uniqueName = System.currentTimeMillis() + "_" + originalName;
+            File dest = new File(uploadDir + uniqueName);
+            file.transferTo(dest);
+
+            // ✅ 웹 접근용 경로 반환
+            return "/uploads/" + uniqueName;
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
+
 }

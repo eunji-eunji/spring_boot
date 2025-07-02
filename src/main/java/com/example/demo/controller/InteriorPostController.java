@@ -9,6 +9,7 @@ import com.example.demo.service.PostCommentService;
 import com.example.demo.service.PostLikeService;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -17,6 +18,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 @Controller
@@ -28,17 +30,25 @@ public class InteriorPostController {
     private final PostCommentService commentService;
     private final PostLikeService postLikeService;
 
-    /** 글 목록 */
+    /** 글 목록 + 페이지네이션 추가 */
     @GetMapping
-    public String list(Model model, HttpSession session) {
-        model.addAttribute("posts", service.findAll());
+    public String list(@RequestParam(defaultValue = "1") int page,
+                       Model model,
+                       HttpSession session) {
 
-        // 로그인 사용자 세션 전달
+        int pageSize = 10; // 한 페이지에 보여줄 게시글 수
+        Page<InteriorPostDto> postPage = service.findPagedPosts(page, pageSize);
+
+        model.addAttribute("postPage", postPage); // 페이지 객체 전달
+        model.addAttribute("currentPage", page);
+        model.addAttribute("totalPages", postPage.getTotalPages());
+
         Users loginUser = (Users) session.getAttribute("loginUser");
         model.addAttribute("loginUser", loginUser);
 
         return "interior/list";
     }
+
 
     /** 글 작성 폼 */
     @GetMapping("/write")
@@ -53,23 +63,28 @@ public class InteriorPostController {
 
     /** 글 작성 처리 + 파일 업로드 포함 */
     @PostMapping("/write")
+    @ResponseBody
     public String writePost(@ModelAttribute InteriorPostDto dto,
-                            @RequestParam("files") MultipartFile[] files,
+                            @RequestParam(value = "files", required = false) MultipartFile[] files,
                             HttpSession session) {
 
         Users loginUser = (Users) session.getAttribute("loginUser");
-        if (loginUser == null) {
-            return "redirect:/user/login";
-        }
+        if (loginUser == null) return "unauthorized";
 
         dto.setEmail(loginUser.getEmail());
-        dto.setNickname(loginUser.getNickname()); // 닉네임 보여줄 거면 설정
+        dto.setNickname(loginUser.getNickname());
 
-        handleMultipleFiles(dto, files);
+        // 이미지가 없어도 등록 가능하게 처리
+        if (files != null && files.length > 0 && !files[0].isEmpty()) {
+            handleMultipleFiles(dto, files);
+        }
+
         service.save(dto);
 
-        return "redirect:/interior";
+        return "success";
     }
+
+
 
 
     /** 상세 보기 + 조회수 증가 + 댓글 조회 */
@@ -109,21 +124,56 @@ public class InteriorPostController {
 
     /** 수정 */
     @PostMapping("/edit")
+    @ResponseBody
     public String edit(@ModelAttribute InteriorPostDto dto,
-                       @RequestParam("files") MultipartFile[] files,
+                       @RequestParam(value = "files", required = false) MultipartFile[] files,
+                       @RequestParam(value = "deleteIndexes", required = false) List<Integer> deleteIndexes,
                        HttpSession session) {
 
         Users loginUser = (Users) session.getAttribute("loginUser");
-        if (loginUser == null) return "redirect:/user/login";
+        if (loginUser == null) return "unauthorized";
 
         dto.setEmail(loginUser.getEmail());
         dto.setNickname(loginUser.getNickname());
 
-        handleMultipleFiles(dto, files);
-        service.save(dto);
+        // 기존 이미지 경로 목록 가져오기
+        List<String> existingPaths = new ArrayList<>();
+        if (dto.getFilePaths() != null && !dto.getFilePaths().isEmpty()) {
+            existingPaths = new ArrayList<>(List.of(dto.getFilePaths().split(",")));
+        }
 
-        return "redirect:/interior/" + dto.getPostId();
+        // 삭제 대상 인덱스 제거
+        if (deleteIndexes != null && !deleteIndexes.isEmpty()) {
+            // 역순으로 정렬해서 index 밀림 방지
+            deleteIndexes.sort(Comparator.reverseOrder());
+            for (int index : deleteIndexes) {
+                if (index >= 0 && index < existingPaths.size()) {
+                    String path = existingPaths.get(index);
+                    File file = new File(System.getProperty("user.dir") + path);
+                    if (file.exists()) file.delete();
+                    existingPaths.remove(index);
+                }
+            }
+        }
+
+        // 새 이미지 추가
+        List<String> addedPaths = new ArrayList<>();
+        List<String> addedNames = new ArrayList<>();
+        if (files != null) {
+            List<String>[] result = handleAndReturnFiles(files);
+            addedPaths = result[0];
+            addedNames = result[1];
+        }
+
+        // 최종 경로 저장 (기존 - 삭제 + 추가)
+        existingPaths.addAll(addedPaths);
+        dto.setFilePaths(String.join(",", existingPaths));
+        dto.setFileNames(String.join(",", addedNames));
+
+        service.save(dto);
+        return "success";
     }
+
 
 
     /** 삭제 */
@@ -200,34 +250,40 @@ public class InteriorPostController {
 
     /** 파일 업로드 처리 */
     private void handleMultipleFiles(InteriorPostDto dto, MultipartFile[] files) {
-        if (files != null && files.length > 0) {
-            List<String> filePaths = new ArrayList<>();
-            List<String> fileNames = new ArrayList<>();
-            String uploadDir = System.getProperty("user.dir") + "/uploads/";
+        if (files == null || files.length == 0) return;
 
-            File dir = new File(uploadDir);
-            if (!dir.exists()) dir.mkdirs();
+        List<String>[] result = handleAndReturnFiles(files);
+        dto.setFilePaths(String.join(",", result[0]));
+        dto.setFileNames(String.join(",", result[1]));
+    }
 
-            for (MultipartFile file : files) {
-                if (!file.isEmpty()) {
-                    try {
-                        String originalName = file.getOriginalFilename();
-                        String uniqueName = System.currentTimeMillis() + "_" + originalName;
-                        File dest = new File(uploadDir + uniqueName);
-                        file.transferTo(dest);
+    private List<String>[] handleAndReturnFiles(MultipartFile[] files) {
+        List<String> filePaths = new ArrayList<>();
+        List<String> fileNames = new ArrayList<>();
+        String uploadDir = System.getProperty("user.dir") + "/uploads/";
 
-                        filePaths.add("/uploads/" + uniqueName);
-                        fileNames.add(uniqueName);
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
+        File dir = new File(uploadDir);
+        if (!dir.exists()) dir.mkdirs();
+
+        for (MultipartFile file : files) {
+            if (!file.isEmpty()) {
+                try {
+                    String originalName = file.getOriginalFilename();
+                    String uniqueName = System.currentTimeMillis() + "_" + originalName;
+                    File dest = new File(uploadDir + uniqueName);
+                    file.transferTo(dest);
+
+                    filePaths.add("/uploads/" + uniqueName);
+                    fileNames.add(uniqueName);
+                } catch (IOException e) {
+                    e.printStackTrace();
                 }
             }
-
-            dto.setFilePaths(String.join(",", filePaths));
-            dto.setFileNames(String.join(",", fileNames));
         }
+
+        return new List[]{filePaths, fileNames};
     }
+
 
     /** 좋아요 */
     @PostMapping("/{postId}/like")

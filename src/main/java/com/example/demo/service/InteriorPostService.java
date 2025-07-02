@@ -9,6 +9,10 @@ import com.example.demo.repository.PostCommentRepository;
 import com.example.demo.repository.PostLikeRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.Arrays;
@@ -94,6 +98,14 @@ public class InteriorPostService {
             repository.save(post);
         }
     }
+
+
+    /** 페이지네이션 */
+    public Page<InteriorPostDto> findPagedPosts(int page, int size) {
+        Pageable pageable = PageRequest.of(page - 1, size, Sort.by(Sort.Direction.DESC, "postId"));
+        return repository.findAll(pageable).map(InteriorPostDto::fromEntity);
+    }
+
 
     // -----------------------
     // Entity <-> DTO 변환
