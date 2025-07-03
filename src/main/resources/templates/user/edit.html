@@ -133,16 +133,18 @@ header.classList.remove('scrolled');
         <input type="password" name="checkPw" id="checkPw">
         <div id="pwCheckResult"></div>
 
-        <label for="phone1">휴대전화</label>
-        <div class="flex-group">
+        <label for="phone">휴대전화</label>
+        <label for="phone">
             <input id="phone" name="phone" type="hidden" th:value="*{phone}">
-            <input id="phone1" name="phone1" maxlength="3" type="tel" required>
-            <input id="phone2" name="phone2" maxlength="4" type="tel" required>
-            <input id="phone3" name="phone3" maxlength="4" type="tel" required>
-        </div>
+            <input id="phone1" name="phone1" maxlength="3" size="3" type="tel" required pattern="[0-9]*"
+                   oninput="this.value=this.value.replace(/[^0-9]/g,'');"> -
+            <input id="phone2" name="phone2" maxlength="4" size="4" type="tel" required pattern="[0-9]*"
+                   oninput="this.value=this.value.replace(/[^0-9]/g,'');"> -
+            <input id="phone3" name="phone3" maxlength="4" size="4" type="tel" required pattern="[0-9]*"
+                   oninput="this.value=this.value.replace(/[^0-9]/g,'');">
+        </label>
 
-        <label for="nickname">닉네임</label>
-        <input type="text" th:field="*{nickname}">
+        닉네임 <input type="text" th:field="*{nickname}"><br>
 
         <label>성별</label>
         <div class="select-buttons">
