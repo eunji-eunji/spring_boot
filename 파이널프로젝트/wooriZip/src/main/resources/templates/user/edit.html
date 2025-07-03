@@ -3,64 +3,189 @@
 <head>
     <meta charset="UTF-8">
     <title>회원 정보 수정</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Stardos+Stencil:wght@400;700&display=swap" rel="stylesheet">
     <script src="https://t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #fff;
+            color: #4A4947;
+        }
+        main {
+            max-width: 500px;
+            margin: 120px auto;
+            background-color: #F9F7F0;
+            border: 1px solid #ddd;
+            border-radius: 12px;
+            padding: 40px 30px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+        }
+        h2 {
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 24px;
+        }
+        label {
+            display: block;
+            margin-top: 16px;
+            margin-bottom: 6px;
+            font-weight: bold;
+        }
+        input[type="text"],
+        input[type="email"],
+        input[type="password"],
+        input[type="tel"],
+        input[type="date"],
+        input[type="button"] {
+            width: 100%;
+            padding: 12px 14px;
+            font-size: 15px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            box-sizing: border-box;
+            margin-bottom: 10px;
+        }
+        .flex-group {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+        .flex-group input[type="tel"],
+        .flex-group input[type="button"] {
+            flex: 1;
+        }
+        .select-buttons {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(0, 1fr));
+            gap: 10px;
+            margin-top: 8px;
+        }
+        .select-buttons label {
+            padding: 12px 0;
+            text-align: center;
+            background-color: #eee;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            cursor: pointer;
+            user-select: none;
+            transition: background-color 0.2s ease;
+        }
+        .select-buttons label:hover {
+            background-color: #ddd;
+        }
+        .select-buttons input:checked + label,
+        .select-buttons label.active {
+            background-color: #B17457;
+            color: #fff;
+            border-color: #B17457;
+        }
+        .success {
+            color: green;
+            font-size: 14px;
+        }
+        .error {
+            color: red;
+            font-size: 14px;
+        }
+        input[type="submit"] {
+            width: 100%;
+            padding: 12px;
+            background-color: #D8D2C2;
+            color: #4A4947;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 20px;
+            transition: background-color 0.3s ease;
+        }
+        input[type="submit"]:hover {
+            background-color: #B17457;
+            color: #F9F7F0;
+        }
+    </style>
 </head>
+
+<script>
+window.addEventListener('scroll', function () {
+const header = document.querySelector('.header');
+if (window.scrollY > 10) {
+header.classList.add('scrolled');
+} else {
+header.classList.remove('scrolled');
+}
+});
+</script>
+
 <body>
-<h2>회원 정보 수정</h2>
+<div th:replace="~{index/header :: header}"></div>
 
-<form th:action="'/user/edit/' + ${loginUser.id}" method="post" th:object="${loginUser}">
-    이메일 : <input type="email" th:field="*{email}" readonly><br>
+<main>
+    <h2>회원 정보 수정</h2>
+    <form th:action="'/user/edit/' + ${loginUser.id}" method="post" th:object="${loginUser}">
+        <label for="email">이메일</label>
+        <input type="email" th:field="*{email}" readonly>
 
-    새 비밀번호 : <input type="password" name="userPw" id="userPw"><br>
-    비밀번호 확인 : <input type="password" name="checkPw" id="checkPw"><br>
-    <div id="pwCheckResult"></div><br/>
+        <label for="userPw">새 비밀번호</label>
+        <input type="password" name="userPw" id="userPw">
 
-    <label for="phone">휴대전화</label>
-    <label for="phone">
-        <input id="phone" name="phone" type="hidden" th:value="*{phone}">
-        <input id="phone1" name="phone1" maxlength="3" size="3" type="tel" required pattern="[0-9]*"
-               oninput="this.value=this.value.replace(/[^0-9]/g,'');"> -
-        <input id="phone2" name="phone2" maxlength="4" size="4" type="tel" required pattern="[0-9]*"
-               oninput="this.value=this.value.replace(/[^0-9]/g,'');"> -
-        <input id="phone3" name="phone3" maxlength="4" size="4" type="tel" required pattern="[0-9]*"
-               oninput="this.value=this.value.replace(/[^0-9]/g,'');">
-    </label>
-    <br>
+        <label for="checkPw">비밀번호 확인</label>
+        <input type="password" name="checkPw" id="checkPw">
+        <div id="pwCheckResult"></div>
 
-    닉네임 : <input type="text" th:field="*{nickname}"><br>
+        <label for="phone">휴대전화</label>
+        <label for="phone">
+            <input id="phone" name="phone" type="hidden" th:value="*{phone}">
+            <input id="phone1" name="phone1" maxlength="3" size="3" type="tel" required pattern="[0-9]*"
+                   oninput="this.value=this.value.replace(/[^0-9]/g,'');"> -
+            <input id="phone2" name="phone2" maxlength="4" size="4" type="tel" required pattern="[0-9]*"
+                   oninput="this.value=this.value.replace(/[^0-9]/g,'');"> -
+            <input id="phone3" name="phone3" maxlength="4" size="4" type="tel" required pattern="[0-9]*"
+                   oninput="this.value=this.value.replace(/[^0-9]/g,'');">
+        </label>
 
-    성별 :
-    <input type="radio" th:field="*{gender}" value="m" id="male">
-    <label for="male">남자</label>
-    <input type="radio" th:field="*{gender}" value="f" id="female">
-    <label for="female">여자</label><br>
+        닉네임 <input type="text" th:field="*{nickname}"><br>
 
-    생년월일 :
-    <input type="date" th:value="${#temporals.format(loginUser.birth, 'yyyy-MM-dd')}" name="birth"><br>
+        <label>성별</label>
+        <div class="select-buttons">
+            <input type="radio" th:field="*{gender}" value="m" id="male" hidden>
+            <label for="male">남자</label>
+            <input type="radio" th:field="*{gender}" value="f" id="female" hidden>
+            <label for="female">여자</label>
+        </div>
 
-    <label>주소</label><br>
-    <input type="text" th:field="*{p_code}" id="sample4_postcode" placeholder="우편번호" required>
-    <input type="button" class="address btn-secondary" onclick="sample4_execDaumPostcode()" value="우편번호 찾기"><br>
+        <label for="birth">생년월일</label>
+        <input type="date" th:value="${#temporals.format(loginUser.birth, 'yyyy-MM-dd')}" name="birth">
 
-    <input type="text" th:field="*{loadAddr}" id="sample4_roadAddress" placeholder="도로명주소" required><br>
-    <input type="text" th:field="*{lotAddr}" id="sample4_jibunAddress" placeholder="지번주소" required><br>
-    <input type="text" th:field="*{detailAddr}" id="sample4_detailAddress" placeholder="상세주소" required><br>
-    <input type="text" id="sample4_extraAddress" placeholder="참고항목"><br>
-    <span id="guide" style="color:#999;display:none"></span><br>
+        <label>주소</label>
+        <div class="flex-group">
+            <input type="text" th:field="*{p_code}" id="sample4_postcode" placeholder="우편번호" required>
+            <input type="button" onclick="sample4_execDaumPostcode()" value="우편번호 찾기">
+        </div>
+        <input type="text" th:field="*{loadAddr}" id="sample4_roadAddress" placeholder="도로명주소" required>
+        <input type="text" th:field="*{lotAddr}" id="sample4_jibunAddress" placeholder="지번주소" required>
+        <input type="text" th:field="*{detailAddr}" id="sample4_detailAddress" placeholder="상세주소" required>
+        <input type="text" id="sample4_extraAddress" placeholder="참고항목">
+        <span id="guide" style="display:none"></span>
 
-    가구 유형 선택 :<br>
-    <input type="radio" th:field="*{residenceType}" value="1" id="single">
-    <label for="single">자취 (1인가구)</label><br>
-    <input type="radio" th:field="*{residenceType}" value="2" id="shared">
-    <label for="shared">동거 (다인가구)</label><br>
-    <input type="radio" th:field="*{residenceType}" value="0" id="none">
-    <label for="none">미선택</label><br>
+        <label>가구 유형</label>
+        <div class="select-buttons">
+            <input type="radio" th:field="*{residenceType}" value="1" id="res1" hidden>
+            <label for="res1">1인가구</label>
+            <input type="radio" th:field="*{residenceType}" value="2" id="res2" hidden>
+            <label for="res2">다인가구</label>
+            <input type="radio" th:field="*{residenceType}" value="0" id="res0" hidden>
+            <label for="res0">미선택</label>
+        </div>
 
-    <input type="submit" value="정보 수정">
-</form>
+        <input type="submit" value="정보 수정">
+    </form>
+</main>
 
-<!-- SCRIPT -->
-<script th:inline="javascript">
+<script>
     // 비밀번호 확인
     document.addEventListener('DOMContentLoaded', function () {
         const userPwInput = document.getElementById('userPw');
@@ -68,6 +193,11 @@
         const pwCheckResult = document.getElementById('pwCheckResult');
 
         function checkPasswordsMatch() {
+            if (userPwInput.value === '' && checkPwInput.value === '') {
+                pwCheckResult.textContent = '';
+                pwCheckResult.className = '';
+                return;
+            }
             if (userPwInput.value === checkPwInput.value) {
                 pwCheckResult.textContent = '비밀번호가 일치합니다.';
                 pwCheckResult.className = 'success';
@@ -81,10 +211,9 @@
         checkPwInput.addEventListener('input', checkPasswordsMatch);
     });
 
-    // 전화번호 불러오기 및 hidden 필드 업데이트
+    // 전화번호 분리 입력 → hidden 통합
     window.addEventListener("DOMContentLoaded", function () {
         const fullPhone = /*[[${loginUser.phone}]]*/ '';
-
         if (fullPhone && fullPhone.length === 11) {
             document.getElementById("phone1").value = fullPhone.substring(0, 3);
             document.getElementById("phone2").value = fullPhone.substring(3, 7);
@@ -92,12 +221,11 @@
             document.getElementById("phone").value = fullPhone;
         }
 
-        // 입력할 때마다 hidden 값 갱신
         function updatePhoneValue() {
-            const phone1 = document.getElementById("phone1").value;
-            const phone2 = document.getElementById("phone2").value;
-            const phone3 = document.getElementById("phone3").value;
-            document.getElementById("phone").value = phone1 + phone2 + phone3;
+            const p1 = document.getElementById("phone1").value;
+            const p2 = document.getElementById("phone2").value;
+            const p3 = document.getElementById("phone3").value;
+            document.getElementById("phone").value = p1 + p2 + p3;
         }
 
         document.getElementById("phone1").addEventListener("input", updatePhoneValue);
@@ -105,36 +233,49 @@
         document.getElementById("phone3").addEventListener("input", updatePhoneValue);
     });
 
-    // 다음 주소 API
+    // 성별, 가구유형 토글 스타일 적용
+    document.addEventListener("DOMContentLoaded", function () {
+        const selectGroups = document.querySelectorAll(".select-buttons");
+        selectGroups.forEach(group => {
+            const labels = group.querySelectorAll("label");
+            labels.forEach(label => {
+                label.addEventListener("click", () => {
+                    labels.forEach(l => l.classList.remove("active"));
+                    label.classList.add("active");
+                });
+            });
+            const checked = group.querySelector("input:checked");
+            if (checked) {
+                const matched = group.querySelector(`label[for="${checked.id}"]`);
+                if (matched) matched.classList.add("active");
+            }
+        });
+    });
+
+    // 주소 API
     function sample4_execDaumPostcode() {
         new daum.Postcode({
             oncomplete: function (data) {
-                const roadAddr = data.roadAddress;
                 let extraRoadAddr = '';
-
-                if (data.bname !== '' && /[동|로|가]$/g.test(data.bname)) {
+                if (data.bname && /[동|로|가]$/g.test(data.bname)) {
                     extraRoadAddr += data.bname;
                 }
-                if (data.buildingName !== '' && data.apartment === 'Y') {
-                    extraRoadAddr += (extraRoadAddr !== '' ? ', ' + data.buildingName : data.buildingName);
+                if (data.buildingName && data.apartment === 'Y') {
+                    extraRoadAddr += (extraRoadAddr ? ', ' + data.buildingName : data.buildingName);
                 }
-                if (extraRoadAddr !== '') {
-                    extraRoadAddr = ' (' + extraRoadAddr + ')';
-                }
+                if (extraRoadAddr) extraRoadAddr = ' (' + extraRoadAddr + ')';
 
                 document.getElementById("sample4_postcode").value = data.zonecode;
-                document.getElementById("sample4_roadAddress").value = roadAddr;
+                document.getElementById("sample4_roadAddress").value = data.roadAddress;
                 document.getElementById("sample4_jibunAddress").value = data.jibunAddress;
                 document.getElementById("sample4_extraAddress").value = extraRoadAddr;
 
                 const guideTextBox = document.getElementById("guide");
                 if (data.autoRoadAddress) {
-                    const expRoadAddr = data.autoRoadAddress + extraRoadAddr;
-                    guideTextBox.innerHTML = '(예상 도로명 주소 : ' + expRoadAddr + ')';
+                    guideTextBox.innerHTML = '(예상 도로명 주소 : ' + data.autoRoadAddress + extraRoadAddr + ')';
                     guideTextBox.style.display = 'block';
                 } else if (data.autoJibunAddress) {
-                    const expJibunAddr = data.autoJibunAddress;
-                    guideTextBox.innerHTML = '(예상 지번 주소 : ' + expJibunAddr + ')';
+                    guideTextBox.innerHTML = '(예상 지번 주소 : ' + data.autoJibunAddress + ')';
                     guideTextBox.style.display = 'block';
                 } else {
                     guideTextBox.innerHTML = '';
@@ -144,6 +285,6 @@
         }).open();
     }
 </script>
-
+<div th:replace="~{index/footer :: footer}"></div>
 </body>
 </html>

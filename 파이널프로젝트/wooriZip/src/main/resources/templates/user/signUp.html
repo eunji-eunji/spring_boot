@@ -2,159 +2,403 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>회원가입</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Stardos+Stencil:wght@400;700&display=swap" rel="stylesheet">
     <script src="https://t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #fff;
+            color: #4A4947;
+        }
+        main {
+            max-width: 500px;
+            margin: 120px auto;
+            background-color: #F9F7F0;
+            border: 1px solid #ddd;
+            border-radius: 12px;
+            padding: 40px 30px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+        }
+        h2 {
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 24px;
+        }
+        label {
+            display: block;
+            margin-top: 16px;
+            margin-bottom: 6px;
+            font-weight: bold;
+        }
+        input[type="text"],
+        input[type="email"],
+        input[type="password"],
+        input[type="tel"],
+        input[type="date"],
+        input[type="button"] {
+            width: 100%;
+            padding: 12px 14px;
+            font-size: 15px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            box-sizing: border-box;
+            margin-bottom: 10px;
+        }
+        .flex-group {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+        .flex-group input[type="email"],
+        .flex-group input[type="text"]:not(.zip-only) {
+            flex: 1;
+        }
+        .flex-group button {
+            padding: 6px 12px;
+            font-size: 13px;
+            white-space: nowrap;
+            height: 40px;
+            background-color: #D8D2C2;
+            color: #4A4947;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+        .flex-group button:hover {
+            background-color: #B17457;
+            color: #F9F7F0;
+        }
+        .radio-group {
+            margin-top: 10px;
+        }
+        .radio-group input {
+            margin-right: 6px;
+        }
+        .success {
+            color: green;
+            font-size: 14px;
+        }
+        .error {
+            color: red;
+            font-size: 14px;
+        }
+        #guide {
+            font-size: 13px;
+            color: #888;
+        }
+        input[type="submit"] {
+            width: 100%;
+            padding: 12px;
+            background-color: #D8D2C2;
+            color: #4A4947;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 20px;
+            transition: background-color 0.3s ease;
+        }
+        input[type="submit"]:hover {
+            background-color: #B17457;
+            color: #F9F7F0;
+        }
+        .select-buttons {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(0, 1fr));
+            gap: 10px;
+            margin-top: 8px;
+        }
+        .select-buttons label {
+            padding: 12px 0;
+            text-align: center;
+            background-color: #eee;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            cursor: pointer;
+            user-select: none;
+            transition: background-color 0.2s ease;
+            width: 100%;
+        }
+        .select-buttons label:hover {
+            background-color: #ddd;
+        }
+        .select-buttons input:checked + label,
+        .select-buttons label.active {
+            background-color: #B17457;
+            color: #fff;
+            border-color: #B17457;
+        }
+    </style>
 </head>
-<body>
-<h2>회원가입</h2>
-<form action="/user/signup" method="post">
-    이메일 : <input type="email" name="email"><br>
-    비밀번호 : <input type="password" name="userPw" id="userPw"><br>
-    비밀번호 번호 : <input type="password" name="checkPw" id="checkPw"><br>
-    <div id="pwCheckResult"></div> <br/>
-
-    <label for="phone">휴대전화</label>
-    <label for="phone">
-        <input id="phone" name="phone" type="hidden" value="">
-        <input id="phone1" name="phone1" maxlength="3" size="3" type="tel" required pattern="[0-9]*" oninput="this.value=this.value.replace(/[^0-9]/g,'');"> -
-        <input id="phone2" name="phone2" maxlength="4" size="4" type="tel" required pattern="[0-9]*" oninput="this.value=this.value.replace(/[^0-9]/g,'');"> -
-        <input id="phone3" name="phone3" maxlength="4" size="4" type="tel" required pattern="[0-9]*" oninput="this.value=this.value.replace(/[^0-9]/g,'');">
-    </label>
-    <br>
-
-    닉네임 : <input type="text" name="nickname"><br>
-
-    성별 :
-    <input type="radio" name="gender" value="m" checked>남자
-    <input type="radio" name="gender" value="f">여자<br>
-
-    생년월일 : <input type="date" name="birth"><br>
-
-    <label class="col-sm-2 col-form-label">주소</label>
-    <div class="address-group">
-        <input type="text" class="address form-control" id="sample4_postcode" name="p_code" placeholder="우편번호" required>
-        <input type="button" class="address btn-secondary" onclick="sample4_execDaumPostcode()" value="우편번호 찾기">
-    </div>
-    <div class="address-group">
-        <input type="text" class="address form-control" id="sample4_roadAddress" name="loadAddr" placeholder="도로명주소" required>
-        <input type="text" class="address form-control" id="sample4_jibunAddress" name="lotAddr" placeholder="지번주소" required>
-    </div>
-    <div class="address-group">
-        <input type="text" class="address form-control" id="sample4_detailAddress" name="detailAddr" placeholder="상세주소" required>
-        <input type="text" class="address form-control" id="sample4_extraAddress" placeholder="참고항목">
-    </div>
-    <span id="guide" style="color:#999;display:none"></span>
-
-    가구 유형 선택 :<br>
-    <input type="radio" name="residenceType" value="1">자취 (1인가구)<br>
-    <input type="radio" name="residenceType" value="2">동거 (다인가구)<br>
-    <input type="radio" name="residenceType" value="0" checked>미선택<br>
-
-    <input type="submit" value="회원가입">
-</form>
-</body>
-</html>
 
 <script>
-    // 비밀번호 확인
-    document.addEventListener('DOMContentLoaded', function () {
-        var userPwInput = document.getElementById('userPw');
-        var checkPwInput = document.getElementById('checkPw');
-        var pwCheckResult = document.getElementById('pwCheckResult');
-
-        function checkPasswordsMatch() {
-            if (userPwInput.value === checkPwInput.value) {
-                pwCheckResult.textContent = '비밀번호가 일치합니다.';
-                pwCheckResult.className = 'success';
-            } else {
-                pwCheckResult.textContent = '비밀번호가 일치하지 않습니다. 다시 입력해 주세요.';
-                pwCheckResult.className = 'error';
-            }
+    window.addEventListener('scroll', function () {
+        const header = document.querySelector('.header');
+        if (window.scrollY > 10) {
+            header.classList.add('scrolled');
+        } else {
+            header.classList.remove('scrolled');
         }
-
-        userPwInput.addEventListener('input', checkPasswordsMatch);
-        checkPwInput.addEventListener('input', checkPasswordsMatch);
     });
+</script>
 
-    // 전화번호 입력 값 합치기 및 유효성 검사 함수
-    function updatePhoneValue() {
-        var phone1 = document.getElementById("phone1").value;
-        var phone2 = document.getElementById("phone2").value;
-        var phone3 = document.getElementById("phone3").value;
-        let phone = document.getElementById("phone");
-        phone.value = phone1 + phone2 + phone3;
-    }
+<body>
+    <div th:replace="~{index/header :: header}"></div>
 
-    function validatePhoneNumber() {
-        updatePhoneValue(); // 전화번호 값 업데이트
+    <main>
+        <h2>회원가입</h2>
 
-        const phone = document.getElementById('phone').value;
+        <form action="/user/signup" method="post" onsubmit="return validatePhoneNumber();">
 
-        if (phone.length !== 11) {
-            alert('전화번호를 다시 한 번 확인해 주세요.');
-            document.getElementById('phone1').focus();
-            return false;
+            <!-- 이메일 + 중복확인 -->
+            <label for="email">이메일</label>
+            <div class="flex-group">
+                <input type="email" id="email" name="email" required>
+                <button type="button" onclick="checkEmailDuplicate()">중복확인</button>
+            </div>
+            <div id="emailCheckMsg"></div>
+
+            <!-- 비밀번호 -->
+            <label for="userPw">비밀번호</label>
+            <input type="password" name="userPw" id="userPw" required>
+
+            <!-- 비밀번호 확인 -->
+            <label for="checkPw">비밀번호 확인</label>
+            <input type="password" name="checkPw" id="checkPw" required>
+            <div id="pwCheckResult"></div>
+
+            <!-- 휴대전화 (한 줄 구성) -->
+            <label for="phone1">휴대전화</label>
+            <div class="flex-group">
+                <input id="phone" name="phone" type="hidden">
+                <input id="phone1" name="phone1" maxlength="3" type="tel" required>
+                <input id="phone2" name="phone2" maxlength="4" type="tel" required>
+                <input id="phone3" name="phone3" maxlength="4" type="tel" required>
+            </div>
+
+            <!-- 닉네임 + 중복확인 -->
+            <label for="nickname">닉네임</label>
+            <div class="flex-group">
+                <input type="text" id="nickname" name="nickname" required>
+                <button type="button" onclick="checkNicknameDuplicate()">중복확인</button>
+            </div>
+            <div id="nicknameCheckMsg"></div>
+
+            <!-- 성별 -->
+            <label>성별</label>
+            <div class="select-buttons" id="genderGroup">
+                <input type="radio" name="gender" id="genderM" value="m" checked hidden>
+                <label for="genderM">남자</label>
+                <input type="radio" name="gender" id="genderF" value="f" hidden>
+                <label for="genderF">여자</label>
+            </div>
+
+            <!-- 생년월일 -->
+            <label for="birth">생년월일</label>
+            <input type="date" name="birth" id="birth" required>
+
+            <!-- 주소: 우편번호 + 버튼 한 줄 -->
+            <label>주소</label>
+            <div class="flex-group">
+                <input type="text" id="sample4_postcode" class="zip-only" name="p_code" placeholder="우편번호" required>
+                <button type="button" onclick="sample4_execDaumPostcode()">우편번호 찾기</button>
+            </div>
+
+            <input type="text" id="sample4_roadAddress" name="loadAddr" placeholder="도로명주소" required>
+            <input type="text" id="sample4_jibunAddress" name="lotAddr" placeholder="지번주소" required>
+            <input type="text" id="sample4_detailAddress" name="detailAddr" placeholder="상세주소" required>
+            <input type="text" id="sample4_extraAddress" placeholder="참고항목">
+            <span id="guide" style="display:none"></span>
+
+            <!-- 가구 유형 -->
+            <label>가구 유형</label>
+            <div class="select-buttons" id="residenceGroup">
+                <input type="radio" name="residenceType" id="res1" value="1" hidden>
+                <label for="res1">1인가구</label>
+                <input type="radio" name="residenceType" id="res2" value="2" hidden>
+                <label for="res2">다인가구</label>
+                <input type="radio" name="residenceType" id="res0" value="0" checked hidden>
+                <label for="res0">미선택</label>
+            </div>
+
+            <!-- 회원가입 버튼 -->
+            <input type="submit" value="회원가입">
+        </form>
+    </main>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const params = new URLSearchParams(window.location.search);
+            if (params.get("success") === "true") {
+                Swal.fire({
+                    title: "회원가입 완료!",
+                    text: "로그인 화면으로 이동해 주세요.",
+                    icon: "success",
+                    confirmButtonText: "확인"
+                });
+            }
+        });
+
+        // 이메일 중복 확인
+        function checkEmailDuplicate() {
+            const email = document.getElementById("email").value;
+            if (!email) {
+                Swal.fire("입력 오류", "이메일을 입력해 주세요.", "warning");
+                return;
+            }
+            fetch(`/user/check-email?email=${encodeURIComponent(email)}`)
+                .then(res => res.json())
+                .then(data => {
+                    const msgEl = document.getElementById("emailCheckMsg");
+                    if (data.exists) {
+                        msgEl.textContent = "이미 사용 중인 이메일입니다.";
+                        msgEl.className = "error";
+                    } else {
+                        msgEl.textContent = "사용 가능한 이메일입니다.";
+                        msgEl.className = "success";
+                    }
+                })
+                .catch(() => {
+                    Swal.fire("오류", "서버 요청에 실패했어요 🥲", "error");
+                });
         }
-        return true;
-    }
 
-    document.getElementById("phone1").addEventListener("input", updatePhoneValue);
-    document.getElementById("phone2").addEventListener("input", updatePhoneValue);
-    document.getElementById("phone3").addEventListener("input", updatePhoneValue);
+        // 닉네임 중복 확인
+        function checkNicknameDuplicate() {
+            const nickname = document.getElementById("nickname").value;
+            if (!nickname) {
+                Swal.fire("입력 오류", "닉네임을 입력해 주세요.", "warning");
+                return;
+            }
+            fetch(`/user/check-nickname?nickname=${encodeURIComponent(nickname)}`)
+                .then(res => res.json())
+                .then(data => {
+                    const msgEl = document.getElementById("nicknameCheckMsg");
+                    if (data.exists) {
+                        msgEl.textContent = "이미 사용 중인 닉네임입니다.";
+                        msgEl.className = "error";
+                    } else {
+                        msgEl.textContent = "사용 가능한 닉네임입니다.";
+                        msgEl.className = "success";
+                    }
+                })
+                .catch(() => {
+                    Swal.fire("오류", "서버 요청에 실패했어요 😵", "error");
+                });
+        }
 
-    // 주소 API 함수
-    function sample4_execDaumPostcode() {
-        new daum.Postcode({
-            oncomplete: function(data) {
-                // 팝업에서 검색결과 항목을 클릭했을때 실행할 코드를 작성하는 부분.
+        document.addEventListener("DOMContentLoaded", function () {
+            const selectGroups = document.querySelectorAll(".select-buttons");
 
-                // 도로명 주소의 노출 규칙에 따라 주소를 표시한다.
-                // 내려오는 변수가 값이 없는 경우엔 공백('')값을 가지므로, 이를 참고하여 분기 한다.
-                var roadAddr = data.roadAddress; // 도로명 주소 변수
-                var extraRoadAddr = ''; // 참고 항목 변수
+            selectGroups.forEach(group => {
+                const labels = group.querySelectorAll("label");
+                labels.forEach(label => {
+                    label.addEventListener("click", () => {
+                        labels.forEach(l => l.classList.remove("active"));
+                        label.classList.add("active");
+                    });
+                });
 
-                // 법정동명이 있을 경우 추가한다. (법정리는 제외)
-                // 법정동의 경우 마지막 문자가 "동/로/가"로 끝난다.
-                if(data.bname !== '' && /[동|로|가]$/g.test(data.bname)){
-                    extraRoadAddr += data.bname;
+                // 처음 체크된 radio의 label에 active 주기
+                const checkedInput = group.querySelector("input:checked");
+                if (checkedInput) {
+                    const checkedLabel = group.querySelector(`label[for="${checkedInput.id}"]`);
+                    if (checkedLabel) checkedLabel.classList.add("active");
                 }
-                // 건물명이 있고, 공동주택일 경우 추가한다.
-                if(data.buildingName !== '' && data.apartment === 'Y'){
-                    extraRoadAddr += (extraRoadAddr !== '' ? ', ' + data.buildingName : data.buildingName);
-                }
-                // 표시할 참고항목이 있을 경우, 괄호까지 추가한 최종 문자열을 만든다.
-                if(extraRoadAddr !== ''){
-                    extraRoadAddr = ' (' + extraRoadAddr + ')';
+            });
+        });
+
+        // 비밀번호 확인
+        document.addEventListener('DOMContentLoaded', function () {
+            var userPwInput = document.getElementById('userPw');
+            var checkPwInput = document.getElementById('checkPw');
+            var pwCheckResult = document.getElementById('pwCheckResult');
+
+            function checkPasswordsMatch() {
+                if (userPwInput.value === '' && checkPwInput.value === '') {
+                    pwCheckResult.textContent = '';
+                    pwCheckResult.className = '';
+                    return;
                 }
 
-                // 우편번호와 주소 정보를 해당 필드에 넣는다.
-                document.getElementById("sample4_postcode").value = data.zonecode;
-                document.getElementById("sample4_roadAddress").value = roadAddr;
-                document.getElementById("sample4_jibunAddress").value = data.jibunAddress;
-
-                // 참고항목 문자열이 있을 경우 해당 필드에 넣는다.
-                if(roadAddr !== ''){
-                    document.getElementById("sample4_extraAddress").value = extraRoadAddr;
+                if (userPwInput.value === checkPwInput.value) {
+                    pwCheckResult.textContent = '비밀번호가 일치합니다.';
+                    pwCheckResult.className = 'success';
                 } else {
-                    document.getElementById("sample4_extraAddress").value = '';
-                }
-
-                var guideTextBox = document.getElementById("guide");
-                // 사용자가 '선택 안함'을 클릭한 경우, 예상 주소라는 표시를 해준다.
-                if(data.autoRoadAddress) {
-                    var expRoadAddr = data.autoRoadAddress + extraRoadAddr;
-                    guideTextBox.innerHTML = '(예상 도로명 주소 : ' + expRoadAddr + ')';
-                    guideTextBox.style.display = 'block';
-
-                } else if(data.autoJibunAddress) {
-                    var expJibunAddr = data.autoJibunAddress;
-                    guideTextBox.innerHTML = '(예상 지번 주소 : ' + expJibunAddr + ')';
-                    guideTextBox.style.display = 'block';
-                } else {
-                    guideTextBox.innerHTML = '';
-                    guideTextBox.style.display = 'none';
+                    pwCheckResult.textContent = '비밀번호가 일치하지 않습니다. 다시 입력해 주세요.';
+                    pwCheckResult.className = 'error';
                 }
             }
-        }).open();
-    }
-</script>
+
+            userPwInput.addEventListener('input', checkPasswordsMatch);
+            checkPwInput.addEventListener('input', checkPasswordsMatch);
+        });
+
+        // 전화번호 합치기
+        function updatePhoneValue() {
+            const phone1 = document.getElementById("phone1").value;
+            const phone2 = document.getElementById("phone2").value;
+            const phone3 = document.getElementById("phone3").value;
+            document.getElementById("phone").value = phone1 + phone2 + phone3;
+        }
+        function validatePhoneNumber() {
+            updatePhoneValue();
+            const phone = document.getElementById('phone').value;
+            if (phone.length !== 11) {
+                alert('전화번호를 다시 한 번 확인해 주세요.');
+                document.getElementById('phone1').focus();
+                return false;
+            }
+            return true;
+        }
+
+        document.getElementById("phone1").addEventListener("input", updatePhoneValue);
+        document.getElementById("phone2").addEventListener("input", updatePhoneValue);
+        document.getElementById("phone3").addEventListener("input", updatePhoneValue);
+
+        // 주소 API
+        function sample4_execDaumPostcode() {
+            new daum.Postcode({
+                oncomplete: function(data) {
+                    var roadAddr = data.roadAddress;
+                    var extraRoadAddr = '';
+
+                    if(data.bname !== '' && /[동|로|가]$/g.test(data.bname)){
+                        extraRoadAddr += data.bname;
+                    }
+                    if(data.buildingName !== '' && data.apartment === 'Y'){
+                        extraRoadAddr += (extraRoadAddr !== '' ? ', ' + data.buildingName : data.buildingName);
+                    }
+                    if(extraRoadAddr !== ''){
+                        extraRoadAddr = ' (' + extraRoadAddr + ')';
+                    }
+
+                    document.getElementById("sample4_postcode").value = data.zonecode;
+                    document.getElementById("sample4_roadAddress").value = roadAddr;
+                    document.getElementById("sample4_jibunAddress").value = data.jibunAddress;
+                    document.getElementById("sample4_extraAddress").value = extraRoadAddr;
+
+                    var guideTextBox = document.getElementById("guide");
+                    if(data.autoRoadAddress) {
+                        guideTextBox.innerHTML = '(예상 도로명 주소 : ' + data.autoRoadAddress + extraRoadAddr + ')';
+                        guideTextBox.style.display = 'block';
+                    } else if(data.autoJibunAddress) {
+                        guideTextBox.innerHTML = '(예상 지번 주소 : ' + data.autoJibunAddress + ')';
+                        guideTextBox.style.display = 'block';
+                    } else {
+                        guideTextBox.innerHTML = '';
+                        guideTextBox.style.display = 'none';
+                    }
+                }
+            }).open();
+        }
+    </script>
+
+    <div th:replace="~{index/footer :: footer}"></div>
+</body>
+</html>

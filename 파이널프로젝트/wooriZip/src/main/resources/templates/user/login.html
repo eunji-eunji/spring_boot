@@ -3,16 +3,130 @@
 <head>
   <meta charset="UTF-8">
   <title>Title</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Stardos+Stencil:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    main {
+      max-width: 400px;
+      margin: 150px auto;
+      background-color: #F9F7F0;
+      border: 1px solid #ddd;
+      border-radius: 12px;
+      padding: 40px 30px;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+      font-family: 'Arial', sans-serif;
+      color: #4A4947;
+    }
+    main h2 {
+      text-align: center;
+      margin-bottom: 30px;
+      font-size: 24px;
+      color: #4A4947;
+    }
+    main input[type="email"],
+    main input[type="password"] {
+      width: 100%;
+      padding: 12px;
+      margin-bottom: 20px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      box-sizing: border-box;
+      font-size: 14px;
+    }
+    main button {
+      width: 100%;
+      padding: 12px;
+      background-color: #D8D2C2;
+      color: #4A4947;
+      border: none;
+      border-radius: 6px;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+      margin-bottom: 10px;
+      transition: background-color 0.3s ease;
+    }
+    main button:hover {
+      background-color: #B17457;
+      color: #F9F7F0;
+      font-size: 16px;
+      font-weight: bold;
+    }
+    main a[role="button"] {
+      display: block !important;
+      width: 100% !important;
+      box-sizing: border-box;
+      text-align: center;
+      padding: 12px;
+      margin-top: 10px;
+      border-radius: 6px;
+      font-weight: bold;
+      font-size: 16px;
+      text-decoration: none;
+    }
+    main a[role="button"]:hover {
+      opacity: 0.9;
+    }
+    a[href*="google"] {
+      background-color: #3791db;
+      color: white;
+    }
+    a[href*="naver"] {
+      background-color: #03C75A;
+      color: white;
+    }
+    a[href*="kakao"] {
+      background-color: #FEE500;
+      color: #3c1e1e;
+    }
+    /*에러 메세지 영역*/
+    .error-msg {
+      background-color: #fff4f4;
+      border: 1px solid #f5c2c2;
+      color: #d20000;
+      padding: 10px 14px;
+      margin-bottom: 20px;
+      border-radius: 6px;
+      font-size: 14px;
+      text-align: center;
+    }
+
+  </style>
 </head>
+
+<script>
+  window.addEventListener('scroll', function () {
+    const header = document.querySelector('.header');
+    if (window.scrollY > 10) {
+      header.classList.add('scrolled');
+    } else {
+      header.classList.remove('scrolled');
+    }
+  });
+</script>
+
 <body>
+<div th:replace="~{index/header :: header}"></div>
+
+<main>
 <h2>로그인</h2>
-<form action="/user/login" method="post">
-  아이디 : <input type="email" name="email" placeholder="이메일" required><br>
-  비밀번호 : <input type="password" name="userPw" placeholder="비밀번호" required><br>
-  <button type="submit">로그인</button>
-</form>
-<a href="/oauth2/authorization/google" class="btn btn-success active" role="button">Google Login</a>
-<a href="/oauth2/authorization/naver" class="btn btn-secondary active" role="button">Naver Login</a>
-<a href="/oauth2/authorization/kakao" class="btn btn-secondary active" role="button">Kakao Login</a>
+  <p class="error-msg" th:if="${error}" th:text="${error}"></p> <!-- 에러 메세지 영역 -->
+  <form action="/user/login" method="post">
+    이메일 <input type="email" name="username" placeholder="이메일" required><br>
+    비밀번호 <input type="password" name="password" placeholder="비밀번호" required><br>
+    <button type="submit">로그인</button>
+  </form>
+
+  <form action="/user/signup" method="get" style="margin-top: 10px;">
+    <button type="submit">회원가입</button>
+  </form>
+
+  <a href="/oauth2/authorization/google" class="btn btn-success active" role="button">Google Login</a>
+  <a href="/oauth2/authorization/naver" class="btn btn-secondary active" role="button">Naver Login</a>
+  <a href="/oauth2/authorization/kakao" class="btn btn-secondary active" role="button">Kakao Login</a>
+</main>
+
+<div th:replace="~{index/footer :: footer}"></div>
 </body>
 </html>

@@ -1,261 +1,240 @@
 <!DOCTYPE html>
 <html lang="ko">
-    <head>
-        <meta charset="UTF-8"/>
-        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-        <title>우리집</title>
-        <link rel="stylesheet" href="../css/style.css"/>
-        <link
-            rel="stylesheet"
-            href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css"/>
-    </head>
-    <body>
-        <!-- ✅ HEADER -->
-        <header class="header">
-            <div class="header-inner">
-                <h1 class="logo">
-                    <a href="#">RUHENS</a>
-                </h1>
-                <nav class="gnb">
-                    <ul>
-                        <li>
-                            <a href="#">정수기</a>
-                        </li>
-                        <li>
-                            <a href="#">공기청정기</a>
-                        </li>
-                        <li>
-                            <a href="#">비데</a>
-                        </li>
-                        <li>
-                            <a href="#">기타제품</a>
-                        </li>
-                        <li>
-                            <a href="#">BRAND</a>
-                        </li>
-                        <li>
-                            <a href="#">이벤트/공지사항</a>
-                        </li>
-                        <li>
-                            <a href="#">고객센터</a>
-                        </li>
-                    </ul>
-                </nav>
-                <div class="util-menu">
-                    <a href="#">로그인</a>
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>우리집</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Stardos+Stencil:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../../static/css/style.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css"/>
+
+    <!-- ✅ 스크롤 헤더 효과용 스타일 추가 -->
+    <style>
+        body {
+            margin: 0;
+            padding-top: 100px; /* 헤더 영역 만큼 띄우기 */
+        }
+
+        .header {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background-color: transparent;
+            transition: all 0.3s ease;
+            z-index: 1000;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        .header.scrolled {
+            background-color: #F9F7F0;
+        }
+
+        .header-inner {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .logo a {
+            font-size: 24px;
+            font-weight: bold;
+            color: #4A4947;
+            text-decoration: none;
+        }
+
+        .gnb-wrap {
+            display: flex;
+            align-items: center;
+            gap: 20px; /* 그룹 간 여백 최소화 */
+        }
+
+        .gnb-group {
+            display: flex;
+            align-items: center;
+            gap: 12px; /* 메뉴 글자 간 간격 좁힘 */
+        }
+
+        .divider {
+            width: 1px;
+            height: 16px;
+            background-color: #ddd;
+            margin: 0 10px; /* 양쪽 여백 줄임 */
+        }
+
+        .gnb-group a {
+            color: #4A4947;
+            font-size: 15px;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+    </style>
+</head>
+<body>
+
+<!-- ✅ 헤더 -->
+<header class="header">
+    <div class="header-inner">
+        <h1 class="logo">
+            <a href="/">WOORIZIP</a>
+        </h1>
+        <div class="gnb-wrap">
+            <div class="gnb-group">
+                <a href="#">쇼핑</a>
+                <a href="#">커뮤니티</a>
+                <a href="#">BRAND</a>
+            </div>
+            <div class="divider"></div>
+            <div class="gnb-group">
+                <a href="#">고객센터</a>
+                <a href="#">이벤트/공지</a>
+                <a th:if="${loginUser == null}" href="/user/login">마이페이지</a>
+                <a th:if="${loginUser != null}" href="/user/mypage">마이페이지</a>
+                <a th:if="${loginUser == null}" href="/user/login">로그인</a>
+                <a th:if="${loginUser != null}" href="/user/logout">로그아웃</a>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- ✅ MAIN VISUAL -->
+<section class="main-visual">
+    <div class="swiper mainSwiper">
+        <div class="swiper-wrapper">
+            <div class="swiper-slide slide1">
+                <div class="text-box">
+                    <p class="label">루헨스 리뉴얼</p>
+                    <h2>편리함은 물론,<br/>친환경까지!</h2>
+                    <p class="desc">루헨스 무전원 연소용 정수기<br/>WHF-3000</p>
                 </div>
             </div>
-        </header>
-
-        <!-- ✅ MAIN VISUAL -->
-        <section class="main-visual">
-            <div class="swiper mainSwiper">
-                <div class="swiper-wrapper">
-                    <div class="swiper-slide slide1">
-                        <div class="text-box">
-                            <p class="label">루헨스 리뉴얼</p>
-                            <h2>편리함은 물론,<br/>친환경까지!</h2>
-                            <p class="desc">루헨스 무전원 연소용 정수기<br/>WHF-3000</p>
-                        </div>
-                    </div>
-                    <div class="swiper-slide slide2">
-                        <div class="text-box">
-                            <p class="label">루헨스 리뉴얼</p>
-                            <h2>더 심플하고<br/>단정해진</h2>
-                            <p class="desc">루헨스 무전원 정수기 슬림형<br/>WHF-3200</p>
-                        </div>
-                    </div>
-                    <!-- 필요시 슬라이드 추가 -->
-                </div>
-                <div class="swiper-pagination"></div>
-            </div>
-        </section>
-
-        <!-- ✅ PRODUCT SECTION: 루헨스 리뉴얼 -->
-        <section class="product-renewal">
-            <div class="inner">
-                <h3 class="section-title">루헨스 리뉴얼</h3>
-                <ul class="product-list">
-                    <li>
-                        <img src="../../../../../../../Dev/.vscode/Fullstack/Myo/woorizip/img/product1.jpg" alt="WHF-3200">
-                        <p class="model">WHF-3200</p>
-                        <p class="name">무전원 정수기</p>
-                        <p class="price">27,900원~</p>
-                    </li>
-                    <li>
-                        <img src="../../../../../../../Dev/.vscode/Fullstack/Myo/woorizip/img/product2.jpg" alt="공기청정기">
-                        <p class="model">공기청정기</p>
-                        <p class="name">스마트 케어</p>
-                        <p class="price">41,900원~</p>
-                    </li>
-                    <li>
-                        <img src="../../../../../../../Dev/.vscode/Fullstack/Myo/woorizip/img/product3.jpg" alt="비데 B200">
-                        <p class="model">비데 B200</p>
-                        <p class="name">자형세척</p>
-                        <p class="price">17,900원~</p>
-                    </li>
-                    <li>
-                        <img src="../../../../../../../Dev/.vscode/Fullstack/Myo/woorizip/img/product4.jpg" alt="프리미엄 필터택">
-                        <p class="model">필터택</p>
-                        <p class="name">디테일한 정수 필터기</p>
-                        <p class="price">29,900원~</p>
-                    </li>
-                </ul>
-            </div>
-        </section>
-
-        <!-- ✅ RUHENS VIDEO SECTION -->
-        <section class="video-section">
-            <div class="inner">
-                <div class="video-left">
-                    <h3 class="section-title">루헨스 영상</h3>
-                    <p class="video-desc">더 심플하고 단정해진<br>루헨스 무전원 정수기</p>
-                </div>
-                <div class="video-right">
-                    <div class="youtube-thumbnail">
-                        <img src="img/youtube-thumbnail.jpg" alt="루헨스 유튜브 영상">
-                        <div class="play-button">&#9658;</div>
-                    </div>
-                    <div class="pagination">
-                        <span class="page active">1</span>
-                        <span class="page">2</span>
-                        <span class="page">3</span>
-                        <span class="page">4</span>
-                    </div>
+            <div class="swiper-slide slide2">
+                <div class="text-box">
+                    <p class="label">루헨스 리뉴얼</p>
+                    <h2>더 심플하고<br/>단정해진</h2>
+                    <p class="desc">루헨스 무전원 정수기 슬림형<br/>WHF-3200</p>
                 </div>
             </div>
-        </section>
+        </div>
+        <div class="swiper-pagination"></div>
+    </div>
+</section>
 
-        <!-- ✅ 맞춤 제품 추천 SECTION -->
-        <section class="recommend-section">
-            <div class="inner">
-                <h3 class="section-title">내게 꼭 맞는 제품은?</h3>
+<!-- ✅ PRODUCT SECTION -->
+<section class="product-renewal">
+    <div class="inner">
+        <h3 class="section-title">루헨스 리뉴얼</h3>
+        <ul class="product-list">
+            <li><img src="img/product1.jpg" alt="WHF-3200"><p class="model">WHF-3200</p><p class="name">무전원 정수기</p><p class="price">27,900원~</p></li>
+            <li><img src="img/product2.jpg" alt="공기청정기"><p class="model">공기청정기</p><p class="name">스마트 케어</p><p class="price">41,900원~</p></li>
+            <li><img src="img/product3.jpg" alt="비데 B200"><p class="model">비데 B200</p><p class="name">자형세척</p><p class="price">17,900원~</p></li>
+            <li><img src="img/product4.jpg" alt="프리미엄 필터택"><p class="model">필터택</p><p class="name">디테일한 정수 필터기</p><p class="price">29,900원~</p></li>
+        </ul>
+    </div>
+</section>
 
-                <!-- 상단 4종 카테고리 아이콘 -->
-                <div class="category-icons">
-                    <div class="category-box active">
-                        <img src="../../../../../../../Dev/.vscode/Fullstack/Myo/woorizip/img/icon-filter-blue.png" alt="정수기">
-                        <p>정수기</p>
-                    </div>
-                    <div class="category-box">
-                        <img src="../../../../../../../Dev/.vscode/Fullstack/Myo/woorizip/img/icon-air.png" alt="공기청정기">
-                        <p>공기청정기</p>
-                    </div>
-                    <div class="category-box">
-                        <img src="../../../../../../../Dev/.vscode/Fullstack/Myo/woorizip/img/icon-bidet.png" alt="비데">
-                        <p>비데</p>
-                    </div>
-                    <div class="category-box">
-                        <img src="../../../../../../../Dev/.vscode/Fullstack/Myo/woorizip/img/icon-care.png" alt="기타헬스">
-                        <p>기타헬스</p>
-                    </div>
-                </div>
-
-                <!-- 중간 버튼 필터 -->
-                <div class="filter-buttons">
-                    <button>냉온정수기</button>
-                    <button>냉정수기</button>
-                    <button>냉수기</button>
-                    <button>무전원정수기</button>
-                    <button>가습형</button>
-                    <button>대용량</button>
-                    <button>자외선관리</button>
-                    <button>직수형</button>
-                    <button>배터리모델</button>
-                </div>
-
-                <!-- 직접 찾기 버튼 -->
-                <div class="find-btn-wrap">
-                    <button class="find-btn">🔍 직접 찾기</button>
-                </div>
+<!-- ✅ VIDEO SECTION -->
+<section class="video-section">
+    <div class="inner">
+        <div class="video-left">
+            <h3 class="section-title">루헨스 영상</h3>
+            <p class="video-desc">더 심플하고 단정해진<br>루헨스 무전원 정수기</p>
+        </div>
+        <div class="video-right">
+            <div class="youtube-thumbnail">
+                <img src="" alt="루헨스 유튜브 영상">
+                <div class="play-button">&#9658;</div>
             </div>
-        </section>
-
-        <!-- ✅ NOTICE + PROMOTION SECTION -->
-        <section class="notice-section">
-            <div class="inner">
-                <div class="notice-left">
-                    <img src="../../../../../../../Dev/.vscode/Fullstack/Myo/woorizip/img/notice-banner.jpg" alt="이벤트 배너">
-                </div>
-                <div class="notice-right">
-                    <h3 class="section-title">공지사항</h3>
-                    <ul class="notice-list">
-                        <li>
-                            <a href="#">[이벤트] 여름맞이 무전원 정수기 할인 프로모션</a>
-                            <span>2025.06.20</span></li>
-                        <li>
-                            <a href="#">[공지] 고객센터 운영시간 변경 안내</a>
-                            <span>2025.06.15</span></li>
-                        <li>
-                            <a href="#">[이벤트] 루헨스 제품 후기 이벤트 (6월)</a>
-                            <span>2025.06.10</span></li>
-                        <li>
-                            <a href="#">[공지] 필터 교체 서비스 지역 확대</a>
-                            <span>2025.06.01</span></li>
-                    </ul>
-                </div>
+            <div class="pagination">
+                <span class="page active">1</span>
+                <span class="page">2</span>
+                <span class="page">3</span>
+                <span class="page">4</span>
             </div>
-        </section>
+        </div>
+    </div>
+</section>
 
-        <!-- ✅ FOOTER SECTION -->
-        <footer class="footer">
-            <div class="inner">
-                <div class="footer-top">
-                    <ul class="footer-menu">
-                        <li>
-                            <a href="#">이용약관</a>
-                        </li>
-                        <li>
-                            <a href="#">
-                                <strong>개인정보처리방침</strong>
-                            </a>
-                        </li>
-                        <li>
-                            <a href="#">이메일무단수집거부</a>
-                        </li>
-                        <li>
-                            <a href="#">고객센터</a>
-                        </li>
-                    </ul>
-                </div>
+<!-- ✅ RECOMMEND SECTION -->
+<section class="recommend-section">
+    <div class="inner">
+        <h3 class="section-title">내게 꼭 맞는 제품은?</h3>
+        <div class="category-icons">
+            <div class="category-box active"><img src="img/icon-filter-blue.png" alt="정수기"><p>정수기</p></div>
+            <div class="category-box"><img src="img/icon-air.png" alt="공기청정기"><p>공기청정기</p></div>
+            <div class="category-box"><img src="img/icon-bidet.png" alt="비데"><p>비데</p></div>
+            <div class="category-box"><img src="img/icon-care.png" alt="기타헬스"><p>기타헬스</p></div>
+        </div>
+        <div class="filter-buttons">
+            <button>냉온정수기</button><button>냉정수기</button><button>냉수기</button>
+            <button>무전원정수기</button><button>가습형</button><button>대용량</button>
+            <button>자외선관리</button><button>직수형</button><button>배터리모델</button>
+        </div>
+        <div class="find-btn-wrap"><button class="find-btn">🔍 직접 찾기</button></div>
+    </div>
+</section>
 
-                <div class="footer-info">
-                    <p>
-                        <strong>(주)원봉</strong>
-                        ｜ 대표자: 정철웅 ｜ 사업자등록번호: 123-45-67890</p>
-                    <p>주소: 경기도 성남시 중원구 갈마치로 214 ｜ 고객센터: 1566-8977</p>
-                    <p>Copyright ⓒ RUHENS. All Rights Reserved.</p>
-                </div>
-            </div>
-        </footer>
+<!-- ✅ NOTICE SECTION -->
+<section class="notice-section">
+    <div class="inner">
+        <div class="notice-left"><img src="img/notice-banner.jpg" alt="이벤트 배너"></div>
+        <div class="notice-right">
+            <h3 class="section-title">공지사항</h3>
+            <ul class="notice-list">
+                <li><a href="#">[이벤트] 여름맞이 무전원 정수기 할인 프로모션</a><span>2025.06.20</span></li>
+                <li><a href="#">[공지] 고객센터 운영시간 변경 안내</a><span>2025.06.15</span></li>
+                <li><a href="#">[이벤트] 루헨스 제품 후기 이벤트 (6월)</a><span>2025.06.10</span></li>
+                <li><a href="#">[공지] 필터 교체 서비스 지역 확대</a><span>2025.06.01</span></li>
+            </ul>
+        </div>
+    </div>
+</section>
 
-        <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
-        <script>
-            const swiper = new Swiper(".mainSwiper", {
-                loop: true,
-                pagination: {
-                    el: ".swiper-pagination",
-                    clickable: true
-                },
-                autoplay: {
-                    delay: 4000
-                }
-            });
-        </script>
-        <script>
-            window.addEventListener("scroll", function () {
-                const header = document.querySelector(".header");
-                if (window.scrollY > 50) {
-                    header
-                        .classList
-                        .add("scrolled");
-                } else {
-                    header
-                        .classList
-                        .remove("scrolled");
-                }
-            });
-        </script>
+<!-- ✅ FOOTER SECTION -->
+<footer class="footer">
+    <div class="inner">
+        <div class="footer-top">
+            <ul class="footer-menu">
+                <li><a href="#">이용약관</a></li>
+                <li><a href="#"><strong>개인정보처리방침</strong></a></li>
+                <li><a href="#">이메일무단수집거부</a></li>
+                <li><a href="#">고객센터</a></li>
+            </ul>
+        </div>
+        <div class="footer-info">
+            <p><strong>(주)원봉</strong> ｜ 대표자: 정철웅 ｜ 사업자등록번호: 123-45-67890</p>
+            <p>주소: 경기도 성남시 중원구 갈마치로 214 ｜ 고객센터: 1566-8977</p>
+            <p>Copyright ⓒ RUHENS. All Rights Reserved.</p>
+        </div>
+    </div>
+</footer>
 
-    </body>
+<script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+<script>
+    const swiper = new Swiper(".mainSwiper", {
+        loop: true,
+        pagination: {
+            el: ".swiper-pagination",
+            clickable: true
+        },
+        autoplay: {
+            delay: 4000
+        }
+    });
+
+    window.addEventListener("scroll", function () {
+        const header = document.querySelector(".header");
+        if (window.scrollY > 50) {
+            header.classList.add("scrolled");
+        } else {
+            header.classList.remove("scrolled");
+        }
+    });
+</script>
+
+</body>
 </html>
