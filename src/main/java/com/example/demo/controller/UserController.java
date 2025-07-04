@@ -2,9 +2,11 @@ package com.example.demo.controller;
 
 import com.example.demo.dto.UserDto;
 import com.example.demo.entity.Users;
+import com.example.demo.security.CustomUserDetails;
 import com.example.demo.service.UserService;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -28,9 +30,8 @@ public class UserController {
     }
 
     @GetMapping("/mypage")
-    public String myPage(HttpSession session, Model model){
-        Users loginUser = (Users) session.getAttribute("loginUser");
-        model.addAttribute("loginUser", loginUser);
+    public String myPage(@AuthenticationPrincipal CustomUserDetails userDetails, Model model) {
+        model.addAttribute("loginUser", userDetails.getUser()); // Users 엔티티 전달
         return "/user/mypage";
     }
 
