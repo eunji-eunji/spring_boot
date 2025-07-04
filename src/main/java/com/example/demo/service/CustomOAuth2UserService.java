@@ -1,5 +1,6 @@
 package com.example.demo.service;
 
+import com.example.demo.entity.CustomOAuth2User;
 import com.example.demo.entity.Users;
 import com.example.demo.oauth2.OAuthAttributes;
 import com.example.demo.repository.UserRepository;
@@ -33,10 +34,8 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         //이메일로 기존 회원 조회
         Users user = userRepository.findByEmail(attributes.getEmail())
                 .orElseGet(() -> saveUser(attributes)); // 없으면 저장
-        //세션에 로그인 사용자 정보 저장
-        session.setAttribute("loginUser", user);
-        //반환값은 사용하지 않음, 단순히 인증 완료 트리거용
-        return oAuth2User;
+        //Security가 사용하도록 OAuth2User 구현체 반환
+        return new CustomOAuth2User(user, attributes.getAttributes());
     }
 
     private Users saveUser(OAuthAttributes attr) {

@@ -1,0 +1,61 @@
+<!-- templates/index/board.html -->
+<div class="board-section" th:fragment="board">
+  <style>
+    .board-section {
+      max-width: 1200px;
+      margin: 60px auto;
+      padding: 40px;
+      background: #fffdf9;
+      border-radius: 20px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+    }
+    .board-title {
+      font-size: 24px;
+      margin-bottom: 20px;
+      color: #B17457;
+      font-weight: bold;
+      text-align: center;
+    }
+    .board-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+    .board-box {
+      padding: 20px;
+      background: #fafafa;
+      border: 1px solid #eee;
+      border-radius: 10px;
+    }
+    .board-box h3 {
+      font-size: 18px;
+      color: #4A4947;
+      margin-bottom: 10px;
+    }
+    .board-box a {
+      display: inline-block;
+      margin-right: 10px;
+      text-decoration: none;
+      color: #007bff;
+      font-size: 14px;
+    }
+  </style>
+
+  <div class="board-title">게시판 바로가기</div>
+
+  <div class="board-grid">
+    <!-- 인테리어 게시판 -->
+    <div class="board-box">
+      <h3>🏠 인테리어 자랑 게시판</h3>
+      <a href="/interior">글 목록 보기</a>
+      <a href="/interior/write">글 쓰기</a>
+    </div>
+
+    <!-- 리뷰 게시판 -->
+    <div class="board-box">
+      <h3>📝 상품 리뷰 게시판</h3>
+      <a href="/review">리뷰 목록 보기</a>
+      <a href="/review/write">리뷰 쓰기</a>
+    </div>
+  </div>
+</div>
