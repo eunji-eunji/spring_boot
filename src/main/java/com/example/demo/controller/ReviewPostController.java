@@ -37,6 +37,7 @@ public class ReviewPostController {
         Page<ReviewPostDto> postPage = service.findPagedPosts(page, pageSize);
 
         model.addAttribute("postPage", postPage);
+        model.addAttribute("postList", postPage.getContent());
         model.addAttribute("currentPage", page);
         model.addAttribute("totalPages", postPage.getTotalPages());
         model.addAttribute("loginUser", loginUser);

@@ -1,8 +1,11 @@
 package com.example.demo.interceptor;
 
+import com.example.demo.security.CustomUserDetails;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.util.StopWatch;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
@@ -20,8 +23,19 @@ public class MonitoringInterceptor implements HandlerInterceptor {
         StopWatch stopWatch = new StopWatch(handler.toString());
         stopWatch.start(handler.toString());
         stopWatchLocal.set(stopWatch);
+
+        String nickname = null;
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        if (principal instanceof UserDetails) {
+            CustomUserDetails userDetails = (CustomUserDetails) principal;
+            nickname = userDetails.getNickname();
+        }
+
+        log.info("User: {}", nickname);
         log.info("URL: {}", getURLPath(request));
         log.info("RequestStart: {}", getCurrentTime());
+
         return true;
     }
 

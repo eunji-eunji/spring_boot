@@ -35,24 +35,25 @@ public class UserController {
         return "/user/mypage";
     }
 
-    @GetMapping("/edit/{id}")
-    public String editForm(@PathVariable("id") Long id, Model model){
-        model.addAttribute("loginUser", userService.findById(id));
+    @GetMapping("/edit")
+    public String editForm(@AuthenticationPrincipal CustomUserDetails userDetails, Model model) {
+        Users user = userService.findById(userDetails.getId());
+        model.addAttribute("loginUser", user);
         return "/user/edit";
     }
 
-    @PostMapping("/edit/{id}")
-    public String editInfo(@PathVariable("id") Long id, @ModelAttribute UserDto dto, HttpSession session){
-        Users updateUser = userService.edit(dto, id);
-        session.setAttribute("loginUser", updateUser);
-        return "redirect:/user/mypage";
+    @PostMapping("/edit")
+    public String editInfo(@ModelAttribute UserDto dto,
+                           @AuthenticationPrincipal CustomUserDetails userDetails) {
+        userService.edit(dto, userDetails.getId());
+        return "redirect:/mypage";
     }
 
-    @GetMapping("/delete/{id}")
-    public String delete(@PathVariable("id") Long id, HttpSession session) {
-        userService.delete(id);
-        session.invalidate();
-        return "redirect:/";
+    @GetMapping("/delete")
+    public String delete(@AuthenticationPrincipal CustomUserDetails userDetails) {
+        userService.delete(userDetails.getId());
+        return "redirect:/logout"; // Spring Security logout 처리 URL
     }
+
 
 }
