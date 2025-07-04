@@ -15,7 +15,9 @@ import com.example.demo.repository.WishlistRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.security.access.AccessDeniedException;
 
 import java.io.File;
 import java.io.IOException;
@@ -31,11 +33,14 @@ public class ProductService {
     private final WishlistRepository wishlistRepository;
 
     // ✅ 상품 등록
-    public Long createProduct(ProductForm productForm, List<MultipartFile> productImgFileList) throws Exception {
+    public Long createProduct(ProductForm productForm,
+                              List<MultipartFile> productImgFileList,
+                              Users loginUser) throws Exception {
         log.info("상품 등록 시작: {}", productForm);
 
         // 1. Product 엔티티 생성 및 저장
         Product product = productForm.createProduct();
+        product.setUser(loginUser); // ✅ 작성자 설정
         product = productRepository.save(product);
         productRepository.flush();
 
@@ -121,4 +126,43 @@ public class ProductService {
         }
     }
 
+    public void updateProduct(Long id, ProductForm form, Users user) {
+        Product product = productRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("상품 없음"));
+
+        if (!product.getUser().getId().equals(user.getId())) {
+            throw new AccessDeniedException("수정 권한 없음");
+        }
+
+        product.setName(form.getName());
+        product.setDescription(form.getDescription());
+        product.setPrice(form.getPrice());
+        // 추가 변경 사항...
+        productRepository.save(product);
+    }
+
+    public Product findById(Long id) {
+        return productRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("상품이 존재하지 않습니다."));
+    }
+
+    @Transactional
+    public void deleteProduct(Long id, Users user) throws Exception {
+        log.info("삭제할 상품 ID: {}", user);
+
+        Product product = productRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("상품이 존재하지 않습니다."));
+
+        // 🔐 삭제 권한 확인
+        if (product.getUser() == null || !product.getUser().getId().equals(user.getId())) {
+            throw new AccessDeniedException("상품 삭제 권한이 없습니다.");
+        }
+
+        // ✅ 연관된 이미지와 모델들은 CascadeType.ALL 설정으로 자동 삭제되지만,
+        // 명시적으로 이미지 레코드 삭제를 먼저 할 수도 있음
+        imageRepository.deleteAll(product.getImages());
+        product.getProductModels().clear(); // 모델 리스트도 비움
+
+
+        productRepository.delete(product);
+    }
 }
