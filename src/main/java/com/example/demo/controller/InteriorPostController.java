@@ -49,7 +49,6 @@ public class InteriorPostController {
         return "interior/list";
     }
 
-
     /** 글 작성 폼 */
     @GetMapping("/write")
     public String writeForm(Model model, HttpSession session) {
@@ -84,9 +83,6 @@ public class InteriorPostController {
         return "success";
     }
 
-
-
-
     /** 상세 보기 + 조회수 증가 + 댓글 조회 */
     @GetMapping("/{id}")
     public String detail(@PathVariable Long id,
@@ -105,7 +101,6 @@ public class InteriorPostController {
         return "interior/detail";
     }
 
-
     /** 수정 폼 */
     @GetMapping("/edit/{id}")
     public String editForm(@PathVariable Long id,
@@ -120,7 +115,6 @@ public class InteriorPostController {
 
         return "interior/edit";
     }
-
 
     /** 수정 */
     @PostMapping("/edit")
@@ -173,8 +167,6 @@ public class InteriorPostController {
         service.save(dto);
         return "success";
     }
-
-
 
     /** 삭제 */
     @PostMapping("/delete/{id}")
@@ -283,7 +275,6 @@ public class InteriorPostController {
 
         return new List[]{filePaths, fileNames};
     }
-
 
     /** 좋아요 */
     @PostMapping("/{postId}/like")
