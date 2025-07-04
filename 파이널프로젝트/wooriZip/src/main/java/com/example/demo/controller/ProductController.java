@@ -23,7 +23,6 @@ public class ProductController {
 
     private final ProductService productService;
 
-
     @GetMapping("/admin/products")
     public String showProductForm(Model model) {
         model.addAttribute("productForm", new ProductForm()); // 초기 빈 폼 생성

@@ -63,7 +63,7 @@ public class Users {
     public Users(String name, String email, String userPw, String phone, String nickname, String gender, LocalDate birth,
                  String p_code, String loadAddr, String lotAddr, String detailAddr, String extraAddr,
                  int residenceType, String social, Role role){
-      
+
         this.name = name;
         this.email = email;
         this.userPw = userPw;
@@ -98,7 +98,7 @@ public class Users {
                 .detailAddr(dto.getDetailAddr())
                 .extraAddr(dto.getExtraAddr())
                 .residenceType(dto.getResidenceType())
-                .role(Role.ADMIN)
+                .role(Role.USER)
                 .build();
     }
 
