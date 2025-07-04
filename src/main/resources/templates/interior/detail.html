@@ -22,10 +22,17 @@
 </div>
 
 <!-- 이미지 미리보기 -->
-<div th:if="${dto.filePathList != null}">
-  <strong>첨부 이미지:</strong><br/>
-  <div th:each="path : ${dto.filePathList}">
-    <img th:src="@{${path}}" alt="첨부 이미지" width="400"><br/><br/>
+<div>
+  <h4>첨부 이미지</h4>
+  <div th:if="${dto.filePathList != null}">
+    <img th:each="img : ${dto.filePathList}"
+         th:if="${!#strings.isEmpty(img)}"
+         th:src="@{${img}}"
+         alt="첨부 이미지"
+         class="image-preview"/>
+  </div>
+  <div th:if="${dto.filePathList == null or dto.filePathList.isEmpty()}">
+    <p>첨부 이미지 없음</p>
   </div>
 </div>
 
@@ -38,8 +45,12 @@
 
 <!-- 수정/삭제 -->
 <div th:if="${loginUser != null and dto.email == loginUser.email}">
-  <a th:href="@{'/interior/edit/' + ${dto.postId}}">수정</a>
-  <form th:action="@{'/interior/delete/' + ${dto.postId}}" method="post" style="display:inline;">
+  <button type="button" th:onclick="|location.href='@{/interior/edit/{id}(id=${dto.postId})}'|">
+    수정
+  </button>
+
+  <form th:action="@{'/interior/delete/' + ${dto.postId}}" method="post"
+        onsubmit="return confirm('정말 삭제하시겠습니까?');" style="display:inline;">
     <button type="submit">삭제</button>
   </form>
 </div>
@@ -90,7 +101,7 @@
 </div>
 
 <br/>
-<a th:href="@{/interior}">목록으로</a>
+<button type="button" onclick="location.href='/interior'">목록으로</button>
 
 <script>
   document.getElementById('likeBtn').addEventListener('click', function () {
