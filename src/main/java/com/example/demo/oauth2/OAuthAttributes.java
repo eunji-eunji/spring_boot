@@ -6,12 +6,14 @@ import java.util.Map;
 
 @Getter
 public class OAuthAttributes {
-    private String name;
-    private String email;
-    private String provider;
+    private final Map<String, Object> attributes;
+    private final String name;
+    private final String email;
+    private final String provider;
 
     @Builder
-    public OAuthAttributes(String name, String email, String provider){
+    public OAuthAttributes(Map<String, Object> attributes, String name, String email, String provider){
+        this.attributes=attributes;
         this.name = name;
         this.email = email;
         this.provider = provider;
@@ -21,6 +23,7 @@ public class OAuthAttributes {
         if (registrationId.equals("naver")) {
             Map<String, Object> response = (Map<String, Object>) attributes.get("response");
             return new OAuthAttributes(
+                    attributes,
                     (String) response.get("name"),
                     (String) response.get("email"),
                     "naver"
@@ -29,6 +32,7 @@ public class OAuthAttributes {
             Map<String, Object> kakaoAccount = (Map<String, Object>) attributes.get("kakao_account");
             Map<String, Object> profile = (Map<String, Object>) kakaoAccount.get("profile");
             return new OAuthAttributes(
+                    attributes,
                     (String) profile.get("nickname"),
                     (String) kakaoAccount.get("email"),
                     "kakao"
@@ -37,6 +41,7 @@ public class OAuthAttributes {
 
         // google
         return new OAuthAttributes(
+                attributes,
                 (String) attributes.get("name"),
                 (String) attributes.get("email"),
                 "google"

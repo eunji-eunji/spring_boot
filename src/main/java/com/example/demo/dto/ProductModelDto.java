@@ -9,4 +9,5 @@ import lombok.Setter;
 public class ProductModelDto {
     private ProductModelSelect productModelSelect; // 예: SMALL, MEDIUM, LARGE
     private Integer prStock; // 기종별 재고 수량
+    private String imageUrl;                       // ✅ 모델별 이미지 URL
 }
