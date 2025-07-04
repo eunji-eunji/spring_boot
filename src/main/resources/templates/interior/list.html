@@ -2,25 +2,31 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <title>인테리어 자랑 게시판</title>
+    <meta charset="UTF-8">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Stardos+Stencil:wght@400;700&display=swap" rel="stylesheet">
-    <meta charset="UTF-8">
     <style>
         .pagination a {
-            margin: 0 5px;
-            text-decoration: none;
+          margin: 0 5px;
+          text-decoration: none;
         }
         .pagination .active {
-            font-weight: bold;
-            color: red;
+          font-weight: bold;
+          color: blue;
         }
     </style>
 </head>
 <body>
+
 <h1>인테리어 자랑 게시판</h1>
 
-<a th:if="${loginUser != null}" th:href="@{/interior/write}">+ 글쓰기</a>
+<!-- 글쓰기 버튼 -->
+<button type="button"
+        th:if="${loginUser != null}"
+        th:onclick="'location.href=\'/interior/write\''">
+    자랑글 작성하기
+</button>
 
 <br/><br/>
 
@@ -35,40 +41,41 @@
     </tr>
     </thead>
     <tbody>
-    <!-- 게시글이 없는 경우 안내 메시지 -->
     <tr th:if="${postPage.content.empty}">
         <td colspan="5" style="text-align: center;">게시글이 없습니다.</td>
     </tr>
-
-    <!-- 게시글 출력 -->
     <tr th:each="post : ${postPage.content}">
-        <td th:text="${post.postId}"></td>
-        <td>
-            <a th:href="@{|/interior/${post.postId}|}" th:text="${post.title}"></a>
-        </td>
-        <td th:text="${post.nickname}"></td>
-        <td th:text="${post.views}"></td>
-        <td th:text="${#temporals.format(post.createdAt, 'yyyy-MM-dd HH:mm')}"></td>
+        <td th:text="${post.postId}">1</td>
+        <td><a th:href="@{|/interior/${post.postId}|}" th:text="${post.title}">제목</a></td>
+        <td th:text="${post.nickname}">작성자</td>
+        <td th:text="${post.views}">0</td>
+        <td th:text="${#temporals.format(post.createdAt, 'yyyy-MM-dd HH:mm')}">날짜</td>
     </tr>
     </tbody>
 </table>
 
-<!-- 페이지네이션 (게시글 있을 때만 보이게) -->
-<div class="pagination" th:if="${totalPages > 0}">
-    <span th:if="${currentPage > 1}">
-        <a th:href="@{/interior(page=${currentPage - 1})}">이전</a>
-    </span>
+<!-- 페이지네이션 (항상 출력됨) -->
+<div class="pagination" th:with="total=${totalPages > 0 ? totalPages : 1}">
+  <span th:if="${currentPage > 1}">
+    <a th:href="@{/interior(page=${currentPage - 1})}">이전</a>
+  </span>
+    <span th:if="${currentPage == 1}">
+    <span>이전</span>
+  </span>
 
-    <span th:each="i : ${#numbers.sequence(1, totalPages)}">
-        <a th:href="@{/interior(page=${i})}"
-           th:text="${i}"
-           th:classappend="${i == currentPage} ? 'active' : ''">
-        </a>
-    </span>
+    <span th:each="i : ${#numbers.sequence(1, total)}">
+    <a th:href="@{/interior(page=${i})}"
+       th:text="${i}"
+       th:classappend="${i == currentPage} ? 'active' : ''">
+    </a>
+  </span>
 
-    <span th:if="${currentPage < totalPages}">
-        <a th:href="@{/interior(page=${currentPage + 1})}">다음</a>
-    </span>
+    <span th:if="${currentPage < total}">
+    <a th:href="@{/interior(page=${currentPage + 1})}">다음</a>
+  </span>
+    <span th:if="${currentPage == total}">
+    <span>다음</span>
+  </span>
 </div>
 
 </body>

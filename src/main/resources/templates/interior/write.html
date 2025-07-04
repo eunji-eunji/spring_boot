@@ -41,8 +41,12 @@
   <!-- 미리보기 영역 -->
   <div id="previewContainer"></div><br/>
 
-  <button type="button" id="submitBtn">등록</button>
-  <a th:href="@{/interior}">취소</a>
+  <!-- 등록/취소 버튼 영역 -->
+  <div>
+    <button type="button" id="submitBtn">등록</button>
+    <button type="button" onclick="location.href='/interior'">취소</button>
+  </div>
+
 </form>
 
 <script>

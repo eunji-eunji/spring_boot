@@ -68,6 +68,10 @@ public class InteriorPostService {
                     && dto.getFilePaths() != null && !dto.getFilePaths().isEmpty()) {
                 post.setFileName(dto.getFileNames());
                 post.setFilePath(dto.getFilePaths());
+            } else {
+                // 이미지 다 삭제했을 경우 경로 null 처리
+                post.setFileName(null);
+                post.setFilePath(null);
             }
             // else: 기존 이미지 유지
         } else {
