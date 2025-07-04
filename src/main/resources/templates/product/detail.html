@@ -30,6 +30,30 @@
         <input type="hidden" name="productId" th:value="${product.id}" />
         <button type="submit" th:text="${product.liked} ? '찜 취소' : '찜하기'"></button>
     </form>
+
+<!--    <div th:if="${product.user.id == #authentication.principal.id}">-->
+<!--        <a th:href="@{'/products/' + ${product.id} + '/edit'}">수정</a>-->
+<!--        <form th:action="@{'/products/' + ${product.id} + '/delete'}" method="post">-->
+<!--            <button type="submit">삭제</button>-->
+<!--        </form>-->
+<!--    </div> 시큐리티 방식-->
+    <p>작성자 ID: <span th:text="${product.user?.id}"></span></p>
+    <p>로그인 유저 ID: <span th:text="${loginUser?.id}"></span></p>
+
+    <!-- 로그인한 사용자와 상품 작성자가 동일할 때만 노출 -->
+    <div th:if="${loginUser != null and product.user != null and product.user.id == loginUser.id}">
+        <!-- 수정 버튼 (GET 방식) -->
+        <form th:action="@{'/products/' + ${product.id} + '/edit'}" method="get" style="display:inline;">
+            <button type="submit">수정</button>
+        </form>
+
+        <!-- 삭제 버튼 (POST 방식) -->
+        <form th:action="@{'/products/' + ${product.id} + '/delete'}" method="post" style="display:inline;">
+            <button type="submit">삭제</button>
+        </form>
+    </div>
+
+
 </div>
 
 </body>
