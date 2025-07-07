@@ -7,59 +7,157 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Stardos+Stencil:wght@400;700&display=swap" rel="stylesheet">
   <style>
-    .form-group { margin-bottom: 15px; }
-    .image-preview { width: 120px; height: 120px; object-fit: cover; margin: 5px; }
-    .image-container { display: inline-block; position: relative; }
+    body {
+      margin: 0;
+      background-color: #F9F7F0;
+      font-family: 'Arial', sans-serif;
+      color: #4A4947;
+    }
+
+    .container {
+      width: 90%;
+      max-width: 1000px;
+      margin: 100px auto;
+      background-color: #ffffff;
+      border-radius: 24px;
+      padding: 60px;
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.08);
+      box-sizing: border-box;
+    }
+
+    h2 {
+      text-align: center;
+      font-size: 28px;
+      margin-bottom: 40px;
+    }
+
+    label {
+      display: block;
+      margin: 16px 0 8px;
+      font-weight: bold;
+    }
+
+    input[type="text"],
+    textarea {
+      width: 100%;
+      padding: 16px;
+      font-size: 16px;
+      border-radius: 12px;
+      border: 1px solid #ccc;
+      background-color: #F9F7F0;
+      box-sizing: border-box;
+    }
+
+    input[type="file"] {
+      margin-top: 10px;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    .image-container {
+      display: inline-block;
+      position: relative;
+      margin: 10px;
+    }
+
+    .image-preview {
+      width: 150px;
+      height: 150px;
+      object-fit: cover;
+      border-radius: 12px;
+      border: 1px solid #ccc;
+    }
+
     .remove-btn {
-      position: absolute; top: 0; right: 0;
-      background: red; color: white; border: none;
-      border-radius: 50%; width: 20px; height: 20px; cursor: pointer;
+      position: absolute;
+      top: -8px;
+      right: -8px;
+      background: #B17457;
+      color: white;
+      border: none;
+      border-radius: 50%;
+      width: 24px;
+      height: 24px;
+      font-weight: bold;
+      cursor: pointer;
+      box-shadow: 0 0 4px rgba(0,0,0,0.2);
+    }
+
+    .btn-box {
+      text-align: center;
+      margin-top: 40px;
+    }
+
+    .btn-box button {
+      padding: 14px 28px;
+      font-size: 16px;
+      font-weight: bold;
+      background-color: #D8D2C2;
+      color: #4A4947;
+      border: none;
+      border-radius: 16px;
+      margin: 0 10px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    .btn-box button:hover {
+      background-color: #B17457;
+      color: #F9F7F0;
     }
   </style>
 </head>
 <body>
 
-<h2>글 수정</h2>
+<div th:replace="~{index/header :: header}"></div>
 
-<form id="editForm" enctype="multipart/form-data" th:object="${dto}">
-  <input type="hidden" name="postId" th:value="*{postId}"/>
-  <input type="hidden" name="filePaths" th:value="*{filePaths}"/>
-  <input type="hidden" name="fileNames" th:value="*{fileNames}"/>
-  <input type="hidden" name="deleteIndexes" id="deleteIndexes"/>
+<div class="container">
+  <h2>글 수정</h2>
 
-  <div class="form-group">
-    <label>제목</label><br/>
-    <input type="text" name="title" th:value="*{title}" required style="width: 300px;"/>
-  </div>
+  <form id="editForm" enctype="multipart/form-data" th:object="${dto}">
+    <input type="hidden" name="postId" th:value="*{postId}"/>
+    <input type="hidden" name="filePaths" th:value="*{filePaths}"/>
+    <input type="hidden" name="fileNames" th:value="*{fileNames}"/>
+    <input type="hidden" name="deleteIndexes" id="deleteIndexes"/>
 
-  <div class="form-group">
-    <label>내용</label><br/>
-    <textarea name="content" rows="8" cols="60" required th:text="*{content}"></textarea>
-  </div>
+    <div class="form-group">
+      <label>제목</label>
+      <input type="text" name="title" th:value="*{title}" required>
+    </div>
 
-  <div class="form-group">
-    <label>기존 이미지</label><br/>
-    <div id="existingImages">
-      <div th:each="path, stat : ${#strings.arraySplit(dto.filePaths, ',')}"
-           class="image-container"
-           th:data-index="${stat.index}">
-        <img th:src="@{${path}}" class="image-preview"/>
-        <button type="button" class="remove-btn" onclick="removeExistingImage(this)">X</button>
+    <div class="form-group">
+      <label>내용</label>
+      <textarea name="content" rows="8" required th:text="*{content}"></textarea>
+    </div>
+
+    <div class="form-group">
+      <label>기존 이미지</label>
+      <div id="existingImages">
+        <div th:each="path, stat : ${#strings.arraySplit(dto.filePaths, ',')}"
+             class="image-container"
+             th:data-index="${stat.index}">
+          <img th:src="@{${path}}" class="image-preview"/>
+          <button type="button" class="remove-btn" onclick="removeExistingImage(this)">×</button>
+        </div>
       </div>
     </div>
-  </div>
 
-  <div class="form-group">
-    <label>이미지 추가 (최대 4장)</label><br/>
-    <input type="file" id="imageInput" accept="image/*" multiple>
-    <div id="previewArea"></div>
-  </div>
+    <div class="form-group">
+      <label>이미지 추가 (최대 4장)</label>
+      <input type="file" id="imageInput" accept="image/*" multiple>
+      <div id="previewArea"></div>
+    </div>
 
-  <button type="submit">수정 완료</button>
+    <div class="btn-box">
+      <button type="submit">수정 완료</button>
+      <button type="button" th:onclick="'location.href=\'/interior/\' + ' + ${dto.postId}">수정 취소</button>
+    </div>
+  </form>
+</div>
 
-  <button type="button" th:onclick="'location.href=\'/interior/\' + ' + ${dto.postId}">수정 취소</button>
-
-</form>
+<div th:replace="~{index/footer :: footer}"></div>
 
 <script>
   let selectedFiles = [];
@@ -97,7 +195,7 @@
         const btn = document.createElement('button');
         btn.type = 'button';
         btn.className = 'remove-btn';
-        btn.innerText = 'X';
+        btn.innerText = '×';
         btn.onclick = () => {
           const idx = Array.from(preview.children).indexOf(container);
           selectedFiles.splice(idx, 1);
@@ -130,14 +228,14 @@
       method: "POST",
       body: formData
     }).then(res => res.text())
-      .then(result => {
-        if (result === "success") {
-          alert("수정 완료");
-          location.href = "/interior/" + form.postId.value;
-        } else {
-          alert("수정 실패");
-        }
-      });
+            .then(result => {
+              if (result === "success") {
+                alert("수정 완료");
+                location.href = "/interior/" + form.postId.value;
+              } else {
+                alert("수정 실패");
+              }
+            });
   });
 </script>
 
