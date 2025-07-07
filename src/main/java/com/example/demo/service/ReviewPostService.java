@@ -17,6 +17,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -92,5 +93,61 @@ public class ReviewPostService {
         Pageable pageable = PageRequest.of(page - 1, size, Sort.by(Sort.Direction.DESC, "id"));
         return reviewRepository.findAll(pageable).map(ReviewPostDto::fromEntity);
     }
+
+    /** 특정 상품의 리뷰 리스트 조회 */
+    public List<ReviewPostDto> findByProductId(Long productId) {
+        return reviewRepository.findByProductId(productId).stream()
+                .map(ReviewPostDto::fromEntity)
+                .collect(Collectors.toList());
+    }
+
+    /** 특정 상품에 대해 로그인 사용자가 이미 리뷰 작성했는지 여부 */
+    public boolean hasUserReviewedProduct(Users user, Long productId) {
+        Product product = productRepository.findById(productId)
+                .orElseThrow(() -> new IllegalArgumentException("상품 없음"));
+        return reviewRepository.existsByUserAndProduct(user, product);
+    }
+
+    /** 정렬 + 페이징 처리 */
+    public Page<ReviewPostDto> findPagedByProductSorted(Long productId, int page, int size, String sortType) {
+        Sort sort = switch (sortType) {
+            case "rating" -> Sort.by(Sort.Direction.DESC, "rating");
+            case "latest" -> Sort.by(Sort.Direction.DESC, "createdAt");
+            default -> Sort.by(Sort.Direction.DESC, "createdAt");
+        };
+        Pageable pageable = PageRequest.of(page - 1, size, sort);
+        return reviewRepository.findByProductId(productId, pageable)
+                .map(ReviewPostDto::fromEntity);
+    }
+
+    /** 평균 평점 */
+    public double getAverageRating(Long productId) {
+        List<ReviewPost> posts = reviewRepository.findByProductId(productId);
+        if (posts.isEmpty()) return 0.0;
+
+        double sum = posts.stream().mapToInt(ReviewPost::getRating).sum();
+        return Math.round((sum / posts.size()) * 10.0) / 10.0; // 소수점 1자리
+    }
+
+    /** 리뷰 총 개수 */
+    public long getReviewCount(Long productId) {
+        return reviewRepository.countByProductId(productId);
+    }
+
+    /** 점수별 분포 */
+    public Map<Integer, Long> getRatingDistribution(Long productId) {
+        List<ReviewPost> posts = reviewRepository.findByProductId(productId);
+
+        Map<Integer, Long> counts = posts.stream()
+                .collect(Collectors.groupingBy(ReviewPost::getRating, Collectors.counting()));
+
+        // 1~5점 모두 포함되도록 초기값 보정
+        for (int i = 1; i <= 5; i++) {
+            counts.putIfAbsent(i, 0L);
+        }
+
+        return counts;
+    }
+
 
 }

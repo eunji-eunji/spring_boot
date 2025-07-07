@@ -11,6 +11,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Map;
+
 @Controller
 @RequiredArgsConstructor
 @RequestMapping("/user")
@@ -46,13 +48,20 @@ public class UserController {
     public String editInfo(@ModelAttribute UserDto dto,
                            @AuthenticationPrincipal CustomUserDetails userDetails) {
         userService.edit(dto, userDetails.getId());
-        return "redirect:/mypage";
+        return "redirect:/user/mypage";
     }
 
-    @GetMapping("/delete")
+    @PostMapping("/delete")
     public String delete(@AuthenticationPrincipal CustomUserDetails userDetails) {
         userService.delete(userDetails.getId());
-        return "redirect:/logout"; // Spring Security logout 처리 URL
+        return "redirect:/logout";
+    }
+
+    @GetMapping("/checkEmail")
+    @ResponseBody
+    public Map<String, Boolean> checkEmail(@RequestParam String email) {
+        boolean exists = userService.existsByEmail(email);
+        return Map.of("exists", exists);
     }
 
 

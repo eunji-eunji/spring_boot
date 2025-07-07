@@ -50,6 +50,13 @@ public class ReviewPostDto {
                     .collect(Collectors.toList());
         }
 
+        //  null 방어 코드 추가
+        String nickname = (post.getUser() != null) ? post.getUser().getNickname() : "알 수 없음";
+        String email = (post.getUser() != null) ? post.getUser().getEmail() : "";
+
+        Long productId = (post.getProduct() != null) ? post.getProduct().getId() : null;
+        String productName = (post.getProduct() != null) ? post.getProduct().getName() : "알 수 없음";
+
         return ReviewPostDto.builder()
                 .id(post.getId())
                 .title(post.getTitle())
