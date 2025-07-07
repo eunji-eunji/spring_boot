@@ -2,11 +2,13 @@ package com.example.demo.controller;
 
 import com.example.demo.dto.InteriorPostDto;
 import com.example.demo.dto.PostCommentDto;
+import com.example.demo.dto.ReviewPostDto;
 import com.example.demo.entity.Users;
 import com.example.demo.security.CustomUserDetails;
 import com.example.demo.service.InteriorPostService;
 import com.example.demo.service.PostCommentService;
 import com.example.demo.service.PostLikeService;
+import com.example.demo.service.ReviewPostService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -29,6 +31,7 @@ public class InteriorPostController {
     private final InteriorPostService service;
     private final PostCommentService commentService;
     private final PostLikeService postLikeService;
+    private final ReviewPostService reviewPostService;
 
     /** 글 목록 + 페이지네이션 추가 */
     @GetMapping
@@ -293,4 +296,5 @@ public class InteriorPostController {
 
         return postLikeService.toggleLike(postId, loginUser.getEmail());
     }
+
 }
