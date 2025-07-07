@@ -16,17 +16,17 @@
         }
         main {
             max-width: 900px;
-            margin: 100px auto;
+            margin: 120px auto 10px;
             background-color: #fff;
             border: 1px solid #ddd;
             border-radius: 12px;
-            padding: 40px 30px;
+            padding: 10px 30px 20px;
             box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
         }
-        h2 {
-            text-align: center;
+        main > h1 {
+            margin-top: 0;
             margin-bottom: 30px;
-            font-size: 24px;
+            font-size: 32px;
         }
 
         form {
@@ -167,7 +167,7 @@
 <div th:replace="~{index/header :: header}"></div>
 
 <main>
-    <h2>회원가입</h2>
+    <h1>회원가입</h1>
     <form action="/user/signup" method="post" onsubmit="return validatePhoneNumber();">
         <!-- 좌측 컬럼 -->
         <div class="form-group-left">

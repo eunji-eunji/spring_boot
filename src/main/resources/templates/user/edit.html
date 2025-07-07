@@ -15,17 +15,17 @@
         }
         main {
             max-width: 900px;
-            margin: 100px auto;
+            margin: 120px auto 10px;
             background-color: #fff;
             border: 1px solid #ddd;
             border-radius: 12px;
-            padding: 40px 30px;
+            padding: 20px 30px;
             box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
         }
-        h2 {
-            text-align: center;
+        main > h1 {
+            margin-top: 0;
             margin-bottom: 30px;
-            font-size: 24px;
+            font-size: 32px;
         }
 
         form {
@@ -161,8 +161,7 @@
 <body>
 <div th:replace="~{index/header :: header}"></div>
 
-<main>
-    <h2>회원 정보 수정</h2>
+<main><h1>회원 정보 수정</h1>
     <form th:action="'/user/edit/' + ${loginUser.id}" method="post" th:object="${loginUser}">
         <!-- 좌측 컬럼 -->
         <div class="form-group-left">
