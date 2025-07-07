@@ -1,82 +1,165 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>인테리어 자랑 게시판</title>
     <meta charset="UTF-8">
+    <title>인테리어 자랑 게시판</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Stardos+Stencil:wght@400;700&display=swap" rel="stylesheet">
     <style>
-        .pagination a {
-          margin: 0 5px;
-          text-decoration: none;
+        body {
+            margin: 0;
+            background-color: #F9F7F0;
+            font-family: 'Arial', sans-serif;
+            color: #4A4947;
         }
+
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 140px auto 80px;
+        }
+
+        h1 {
+            text-align: center;
+            font-size: 36px;
+            margin-bottom: 40px;
+        }
+
+        button.write-btn {
+            display: block;
+            margin: 50px auto 40px;
+            padding: 14px 28px;
+            font-size: 18px;
+            font-weight: bold;
+            background-color: #D8D2C2;
+            color: #4A4947;
+            border: none;
+            border-radius: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        button.write-btn:hover {
+            background-color: #B17457;
+            color: #F9F7F0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background-color: #ffffff;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+        }
+
+        th, td {
+            padding: 18px;
+            text-align: center;
+            font-size: 16px;
+            border-bottom: 1px solid #eee;
+        }
+
+        thead {
+            background-color: #D8D2C2;
+        }
+
+        tbody tr:hover {
+            background-color: #f2ede4;
+            transition: background-color 0.2s ease;
+        }
+
+        .pagination {
+            margin-top: 40px;
+            text-align: center;
+        }
+
+        .pagination a {
+            margin: 0 6px;
+            text-decoration: none;
+            color: #4A4947;
+            font-weight: bold;
+            padding: 8px 12px;
+            border-radius: 12px;
+            transition: background-color 0.2s ease;
+        }
+
+        .pagination a:hover {
+            background-color: #D8D2C2;
+        }
+
         .pagination .active {
-          font-weight: bold;
-          color: blue;
+            background-color: #B17457;
+            color: #F9F7F0;
         }
     </style>
 </head>
 <body>
 
-<h1>인테리어 자랑 게시판</h1>
+<div th:replace="~{index/header :: header}"></div>
 
-<!-- 글쓰기 버튼 -->
-<button type="button"
-        th:if="${loginUser != null}"
-        th:onclick="'location.href=\'/interior/write\''">
-    자랑글 작성하기
-</button>
+<div class="container">
+    <h1>인테리어 자랑 게시판</h1>
 
-<br/><br/>
+    <!-- 글쓰기 버튼 -->
+    <button type="button"
+            class="write-btn"
+            th:if="${loginUser != null}"
+            th:onclick="'location.href=\'/interior/write\''">
+        자랑글 작성하기
+    </button>
 
-<table border="1" width="100%" cellpadding="10">
-    <thead>
-    <tr>
-        <th>번호</th>
-        <th>제목</th>
-        <th>작성자</th>
-        <th>조회수</th>
-        <th>작성일</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr th:if="${postPage.content.empty}">
-        <td colspan="5" style="text-align: center;">게시글이 없습니다.</td>
-    </tr>
-    <tr th:each="post : ${postPage.content}">
-        <td th:text="${post.postId}">1</td>
-        <td><a th:href="@{|/interior/${post.postId}|}" th:text="${post.title}">제목</a></td>
-        <td th:text="${post.nickname}">작성자</td>
-        <td th:text="${post.views}">0</td>
-        <td th:text="${#temporals.format(post.createdAt, 'yyyy-MM-dd HH:mm')}">날짜</td>
-    </tr>
-    </tbody>
-</table>
+    <table>
+        <thead>
+        <tr>
+            <th>번호</th>
+            <th>제목</th>
+            <th>작성자</th>
+            <th>조회수</th>
+            <th>작성일</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:if="${postPage.content.empty}">
+            <td colspan="5">게시글이 없습니다.</td>
+        </tr>
+        <tr th:each="post : ${postPage.content}">
+            <td th:text="${post.postId}">1</td>
+            <td><a th:href="@{|/interior/${post.postId}|}" th:text="${post.title}">제목</a></td>
+            <td th:text="${post.nickname}">작성자</td>
+            <td th:text="${post.views}">0</td>
+            <td th:text="${#temporals.format(post.createdAt, 'yyyy-MM-dd HH:mm')}">날짜</td>
+        </tr>
+        </tbody>
+    </table>
 
-<!-- 페이지네이션 (항상 출력됨) -->
-<div class="pagination" th:with="total=${totalPages > 0 ? totalPages : 1}">
-  <span th:if="${currentPage > 1}">
-    <a th:href="@{/interior(page=${currentPage - 1})}">이전</a>
-  </span>
-    <span th:if="${currentPage == 1}">
-    <span>이전</span>
-  </span>
+    <!-- 페이지네이션 -->
+    <div class="pagination" th:with="total=${totalPages > 0 ? totalPages : 1}">
+    <span th:if="${currentPage > 1}">
+      <a th:href="@{/interior(page=${currentPage - 1})}">이전</a>
+    </span>
+        <span th:if="${currentPage == 1}">
+      <span>이전</span>
+    </span>
 
-    <span th:each="i : ${#numbers.sequence(1, total)}">
-    <a th:href="@{/interior(page=${i})}"
-       th:text="${i}"
-       th:classappend="${i == currentPage} ? 'active' : ''">
-    </a>
-  </span>
+        <span th:each="i : ${#numbers.sequence(1, total)}">
+      <a th:href="@{/interior(page=${i})}"
+         th:text="${i}"
+         th:classappend="${i == currentPage} ? 'active' : ''">
+      </a>
+    </span>
 
-    <span th:if="${currentPage < total}">
-    <a th:href="@{/interior(page=${currentPage + 1})}">다음</a>
-  </span>
-    <span th:if="${currentPage == total}">
-    <span>다음</span>
-  </span>
+        <span th:if="${currentPage < total}">
+      <a th:href="@{/interior(page=${currentPage + 1})}">다음</a>
+    </span>
+        <span th:if="${currentPage == total}">
+      <span>다음</span>
+    </span>
+    </div>
 </div>
+
+<div th:replace="~{index/footer :: footer}"></div>
 
 </body>
 </html>
