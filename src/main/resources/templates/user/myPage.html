@@ -11,7 +11,10 @@
 <h2>마이페이지</h2>
 <p th:if="${loginUser != null}" th:text="${loginUser.nickname}+'님'"></p>
 <a href="/user/logout">로그아웃</a><br/>
-<a th:href="'edit/'+${loginUser.id}">정보 수정</a>
-<a th:href="'/user/delete/'+ ${loginUser.id}">회원 탈퇴</a>
+<a th:href="@{/user/edit}">정보 수정</a>
+<form th:action="@{/user/delete}" method="post" onsubmit="return confirm('정말 탈퇴하시겠습니까?');">
+    <button type="submit">회원 탈퇴</button>
+</form>
+
 </body>
 </html>

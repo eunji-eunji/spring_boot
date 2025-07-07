@@ -8,6 +8,8 @@
   <link rel="stylesheet" th:href="@{/css/style.css}">
 </head>
 <body>
+
+<div th:replace="~{index/header :: header}"></div>
 <h2>전체 상품</h2>
 
 <form method="get" th:action="@{/products}">
