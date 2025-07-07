@@ -26,6 +26,10 @@ public class ProductDetailDto {
         return product.getName();
     }
 
+    public Long getWriterId() {
+        return product.getUser() != null ? product.getUser().getId() : null;
+    }
+
     public int getPrice() {
         return product.getPrice();
     }
