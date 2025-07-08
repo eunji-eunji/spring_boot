@@ -198,9 +198,15 @@
             <label for="phone">휴대전화</label>
             <div class="flex-group">
                 <input id="phone" name="phone" type="hidden" th:value="*{phone}" />
-                <input id="phone1" name="phone1" maxlength="3" type="tel" th:value="${loginUser.phone.substring(0,3)}" required />
-                <input id="phone2" name="phone2" maxlength="4" type="tel" th:value="${loginUser.phone.substring(3,7)}" required />
-                <input id="phone3" name="phone3" maxlength="4" type="tel" th:value="${loginUser.phone.substring(7)}" required />
+<!--                <input id="phone1" name="phone1" maxlength="3" type="tel" th:value="${loginUser.phone.substring(0,3)}" required />-->
+<!--                <input id="phone2" name="phone2" maxlength="4" type="tel" th:value="${loginUser.phone.substring(3,7)}" required />-->
+<!--                <input id="phone3" name="phone3" maxlength="4" type="tel" th:value="${loginUser.phone.substring(7)}" required />-->
+                <input id="phone1" name="phone1" maxlength="3" type="tel"
+                       th:value="${loginUser.phone != '' ? loginUser.phone.substring(0,3) : ''}" />
+                <input id="phone2" name="phone2" maxlength="4" type="tel"
+                       th:value="${loginUser.phone != '' ? loginUser.phone.substring(3,7) : ''}" />
+                <input id="phone3" name="phone3" maxlength="4" type="tel"
+                       th:value="${loginUser.phone != '' ? loginUser.phone.substring(7) : ''}" />
                 <span id="guide" style="color:#999;display:none"></span>
             </div>
 
@@ -256,12 +262,20 @@
 
     // 전화번호 합치기
     window.addEventListener("DOMContentLoaded", function () {
-        const fullPhone = /*[[${loginUser.phone}]]*/ '';
+        let fullPhone = /*[[${loginUser.phone}]]*/ '';
+
+         // null, undefined, 'null' 문자열 등 예외 처리
+        if (fullPhone == null || fullPhone === 'null' || fullPhone.trim() === '') {
+            fullPhone = '';
+        } else {
+            fullPhone = fullPhone.replace(/[^0-9]/g, ''); // 숫자만 추출
+        }
+
         if (fullPhone && fullPhone.length === 11) {
             document.getElementById("phone1").value = fullPhone.substring(0, 3);
             document.getElementById("phone2").value = fullPhone.substring(3, 7);
             document.getElementById("phone3").value = fullPhone.substring(7);
-            document.getElementById("phone").value = fullPhone;
+            // document.getElementById("phone").value = fullPhone;
         }
 
         function updatePhoneValue() {
@@ -269,6 +283,17 @@
             const p2 = document.getElementById("phone2").value;
             const p3 = document.getElementById("phone3").value;
             document.getElementById("phone").value = p1 + p2 + p3;
+
+<!--            const p1 = document.getElementById("phone1").value.trim();-->
+<!--            const p2 = document.getElementById("phone2").value.trim();-->
+<!--            const p3 = document.getElementById("phone3").value.trim();-->
+
+<!--            // 전체가 빈값이면 phone 도 빈 문자열 처리-->
+<!--            if (p1 === '' && p2 === '' && p3 === '') {-->
+<!--                document.getElementById("phone").value = '';-->
+<!--            } else {-->
+<!--                document.getElementById("phone").value = p1 + p2 + p3;-->
+<!--            }-->
         }
 
         document.getElementById("phone1").addEventListener("input", updatePhoneValue);
