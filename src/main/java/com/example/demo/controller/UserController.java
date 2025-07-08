@@ -3,12 +3,13 @@ package com.example.demo.controller;
 import com.example.demo.dto.UserDto;
 import com.example.demo.entity.PasswordResetToken;
 import com.example.demo.entity.Users;
+import com.example.demo.oauth2.CustomOAuth2User;
 import com.example.demo.security.CustomUserDetails;
 import com.example.demo.service.EmailService;
 import com.example.demo.service.PasswordResetService;
 import com.example.demo.service.UserService;
-import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -32,33 +33,49 @@ public class UserController {
     }
 
     @PostMapping("signup")
-    public String signUp(@ModelAttribute UserDto dto) {
+    public String signUp(@ModelAttribute UserDto dto){
         userService.signUp(dto);
         return "redirect:/";
     }
 
     @GetMapping("/mypage")
-    public String myPage(@AuthenticationPrincipal CustomUserDetails userDetails, Model model) {
-        model.addAttribute("loginUser", userDetails.getUser()); // Users 엔티티 전달
+    public String myPage(Authentication authentication, Model model) {
+        if (authentication != null && authentication.getPrincipal() instanceof CustomUserDetails userDetails) {
+            model.addAttribute("loginUser", userDetails.getUser());
+        } else if (authentication != null && authentication.getPrincipal() instanceof CustomOAuth2User oauth2User) {
+            model.addAttribute("loginUser", oauth2User.getUser());
+        }
         return "/user/mypage";
     }
 
     @GetMapping("/edit")
-    public String editForm(@AuthenticationPrincipal CustomUserDetails userDetails, Model model) {
-        Users user = userService.findById(userDetails.getId());
-        model.addAttribute("loginUser", user);
+    public String editForm(Authentication authentication, Model model) {
+        if (authentication != null && authentication.getPrincipal() instanceof CustomUserDetails userDetails) {
+            model.addAttribute("loginUser", userService.findById(userDetails.getId()));
+        } else if (authentication != null && authentication.getPrincipal() instanceof CustomOAuth2User oauth2User) {
+            model.addAttribute("loginUser", userService.findById(oauth2User.getUser().getId()));
+        }
         return "/user/edit";
     }
 
     @PostMapping("/edit")
-    public String editInfo(@ModelAttribute UserDto dto, @AuthenticationPrincipal CustomUserDetails userDetails) {
-        userService.edit(dto, userDetails.getId());
+    public String editInfo(@ModelAttribute UserDto dto,
+                           Authentication authentication) {
+        if (authentication != null && authentication.getPrincipal() instanceof CustomUserDetails userDetails) {
+            userService.edit(dto, userDetails.getId());
+        } else if (authentication != null && authentication.getPrincipal() instanceof CustomOAuth2User oauth2User) {
+            userService.edit(dto, oauth2User.getUser().getId());
+        }
         return "redirect:/user/mypage";
     }
 
     @PostMapping("/delete")
-    public String delete(@AuthenticationPrincipal CustomUserDetails userDetails) {
-        userService.delete(userDetails.getId());
+    public String delete(Authentication authentication) {
+        if (authentication != null && authentication.getPrincipal() instanceof CustomUserDetails userDetails) {
+            userService.delete(userDetails.getId());
+        } else if (authentication != null && authentication.getPrincipal() instanceof CustomOAuth2User oauth2User) {
+            userService.delete(oauth2User.getUser().getId());
+        }
         return "redirect:/logout";
     }
 
@@ -144,5 +161,4 @@ public class UserController {
 
         return "redirect:/user/login?resetSuccess";
     }
-
 }

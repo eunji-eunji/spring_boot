@@ -35,7 +35,7 @@ public class EmailService {
             helper.setTo(email);
             helper.setFrom(new InternetAddress(fromEmail, fromName));  // 이름 + 이메일
             helper.setSubject("[우리ZIP] 비밀번호 재설정 안내");
-            helper.setText("비밀번호를 재설정하려면 아래 링크를 클릭하세요:\n" + resetUrl + "\n\n이 링크는 30분간 유효합니다.", false);
+            helper.setText("비밀번호를 재설정하려면 아래 링크를 클릭하세요:\n" + resetUrl + "\n\n이 링크는 10분간 유효합니다.", false);
 
             mailSender.send(message);
         } catch (MessagingException | UnsupportedEncodingException e) {
