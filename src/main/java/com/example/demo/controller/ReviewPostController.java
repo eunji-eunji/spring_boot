@@ -17,6 +17,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Controller
 @RequiredArgsConstructor
@@ -169,26 +171,6 @@ public class ReviewPostController {
 
         service.delete(id);
         return "redirect:/review";
-    }
-
-    /** 상품 리뷰 프래그먼트 */
-    @GetMapping("/fragment/{productId}")
-    public String reviewFragment(@PathVariable Long productId,
-                                 Model model,
-                                 @AuthenticationPrincipal CustomUserDetails userDetails) {
-
-        Users loginUser = (userDetails != null) ? userDetails.getUser() : null;
-
-        List<ReviewPostDto> reviews = service.findByProductId(productId);
-        boolean hasWrittenReview = (loginUser != null) && service.hasUserReviewedProduct(loginUser, productId);
-
-        model.addAttribute("productId", productId);
-        model.addAttribute("reviews", reviews);
-        model.addAttribute("hasWrittenReview", hasWrittenReview);
-        model.addAttribute("isLoggedIn", loginUser != null);
-        model.addAttribute("loginUser", loginUser);
-
-        return "review/review :: reviewBoard";
     }
 
     /** 파일 업로드 처리 */
