@@ -191,15 +191,18 @@
                 <button type="button" onclick="sample4_execDaumPostcode()">우편번호 찾기</button>
             </div>
 
-            <input type="text" id="sample4_roadAddress" name="loadAddr" placeholder="도로명주소" required />
-            <input type="text" id="sample4_jibunAddress" name="lotAddr" placeholder="지번주소" required />
-            <input type="text" id="sample4_detailAddress" name="detailAddr" placeholder="상세주소" required />
+            <input type="text" id="sample4_roadAddress" name="loadAddr" placeholder="도로명주소" required/>
+            <input type="text" id="sample4_jibunAddress" name="lotAddr" placeholder="지번주소" required/>
+            <input type="text" id="sample4_detailAddress" name="detailAddr" placeholder="상세주소" required/>
             <input type="text" id="sample4_extraAddress" name="extraAddr" placeholder="참고항목" readonly>
             <span id="guide" style="color:#999;display:none"></span>
         </div>
 
         <!-- 우측 컬럼 -->
         <div class="form-group-right">
+            <label for="name">이름</label>
+            <input type="text" name="name" id="name" required>
+
             <label for="nickname">닉네임</label>
             <div class="flex-group">
                 <input type="text" id="nickname" name="nickname" required>
@@ -319,30 +322,6 @@
 
         xhr.send();
     }
-
-    /* 닉네임 중복 확인
-    function checkNicknameDuplicate() {
-        const nickname = document.getElementById("nickname").value;
-        if (!nickname) {
-            Swal.fire("입력 오류", "닉네임을 입력해 주세요.", "warning");
-            return;
-        }
-        fetch(`/user/check-nickname?nickname=${encodeURIComponent(nickname)}`)
-            .then(res => res.json())
-            .then(data => {
-                const msgEl = document.getElementById("nicknameCheckMsg");
-                if (data.exists) {
-                    msgEl.textContent = "이미 사용 중인 닉네임입니다.";
-                    msgEl.className = "error";
-                } else {
-                    msgEl.textContent = "사용 가능한 닉네임입니다.";
-                    msgEl.className = "success";
-                }
-            })
-            .catch(() => {
-                Swal.fire("오류", "서버 요청에 실패했어요 😵", "error");
-            });
-    }*/
 
     document.addEventListener("DOMContentLoaded", function () {
         const selectGroups = document.querySelectorAll(".select-buttons");
