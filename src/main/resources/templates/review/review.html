@@ -5,22 +5,24 @@
       <h5 class="mb-2">⭐ 평균 평점: <span th:text="${averageRating}">0.0</span> / 5</h5>
       <p class="mb-3">총 리뷰 수: <span th:text="${reviewCount}">0</span>개</p>
 
-      <div th:each="star : ${#numbers.sequence(5,1)}"
-           th:with="count=${ratingCounts[star]}, percent=${count != null and reviewCount > 0 ? #numbers.formatDecimal(count * 100.0 / reviewCount, 1, 1) : 0}">
-        <div class="d-flex align-items-center mb-2">
-          <span th:text="|${star}점|" style="width: 40px;"></span>
-          <div class="progress mx-2" style="width: 200px; height: 16px;">
-            <div class="progress-bar bg-warning"
-                 role="progressbar"
-                 th:style="'width:' + percent + '%'"
-                 th:text="${count != null ? count + '명' : '0명'}">
+      <!-- 평점 막대 루프 시작 -->
+      <div th:each="star : ${#numbers.sequence(5,1)}">
+        <div th:with="count=${ratingCounts[star + '']}, percent=${count != null and reviewCount > 0 ? count * 100.0 / reviewCount : 0}">
+          <div class="d-flex align-items-center mb-2">
+            <span th:text="|${star}점|" style="width: 40px;"></span>
+            <div class="progress mx-2" style="width: 200px; height: 16px;">
+              <div class="progress-bar bg-warning"
+                   role="progressbar"
+                   th:style="|width: ${percent}%|"
+                   th:text="${count != null ? count + '명' : '0명'}">
+              </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
 
-    <!-- 정렬 & 리뷰작성 버튼 -->
+
+      <!-- 정렬 & 리뷰작성 버튼 -->
     <div class="d-flex justify-content-between align-items-center mb-3">
       <form method="get" th:action="@{'/products/' + ${productId}}">
         <select name="sort" class="form-select form-select-sm" onchange="this.form.submit()">
