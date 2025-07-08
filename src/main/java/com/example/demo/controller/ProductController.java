@@ -1,6 +1,5 @@
 package com.example.demo.controller;
 
-
 import com.example.demo.dto.ProductDetailDto;
 import com.example.demo.dto.ProductForm;
 import com.example.demo.dto.ReviewPostDto;
@@ -19,6 +18,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.Arrays;
 import java.util.List;
 
 @Controller
@@ -38,11 +38,11 @@ public class ProductController {
 
     @PostMapping("/admin/products")
     public String createProduct(@ModelAttribute ProductForm form,
-                                @RequestParam("images") List<MultipartFile> images,
+                                @RequestParam("images") MultipartFile[] images,
                                 @AuthenticationPrincipal CustomUserDetails customUserDetails) {
         try {
             Users loginUser = customUserDetails.getUser();
-            productService.createProduct(form, images, loginUser);
+            productService.createProduct(form, Arrays.asList(images), loginUser);
         } catch (Exception e) {
             e.printStackTrace();
             return "redirect:/error";
@@ -127,12 +127,11 @@ public class ProductController {
     @PostMapping("/products/{id}/edit")
     public String updateProduct(@PathVariable Long id,
                                 @ModelAttribute ProductForm form,
+                                @RequestParam(value = "images", required = false) MultipartFile[] images,
+                                @RequestParam(value = "deleteIndexes", required = false) String deleteIndexes,
                                 @AuthenticationPrincipal CustomUserDetails customUserDetails) {
-        Users loginUser = customUserDetails != null ? customUserDetails.getUser() : null;
-        if (loginUser == null) {
-            return "redirect:/user/login";
-        }
-        productService.updateProduct(id, form, loginUser);
+        Users loginUser = customUserDetails.getUser();
+        productService.updateProduct(id, form, images, deleteIndexes, loginUser);
         return "redirect:/products/" + id;
     }
 
@@ -146,5 +145,4 @@ public class ProductController {
         productService.deleteProduct(id, loginUser);
         return "redirect:/products";
     }
-
 }

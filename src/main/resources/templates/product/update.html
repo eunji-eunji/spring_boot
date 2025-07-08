@@ -6,12 +6,26 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Stardos+Stencil:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        .image-preview { width: 120px; height: 120px; object-fit: cover; margin: 5px; }
+        .image-container { display: inline-block; position: relative; }
+        .remove-btn {
+            position: absolute; top: 0; right: 0;
+            background: red; color: white; border: none;
+            border-radius: 50%; width: 20px; height: 20px; cursor: pointer;
+        }
+    </style>
 </head>
 <body>
 
 <h2>상품 수정</h2>
 
-<form th:action="@{'/products/' + ${productForm.id} + '/edit'}" method="post" enctype="multipart/form-data">
+<form id="editForm" enctype="multipart/form-data">
+    <input type="hidden" name="id" th:value="${productForm.id}" />
+
+    <!-- 삭제할 기존 이미지 인덱스 -->
+    <input type="hidden" name="deleteIndexes" id="deleteIndexes" />
+
     <label>상품명:
         <input type="text" name="name" th:value="${productForm.name}" required />
     </label><br/>
@@ -28,18 +42,22 @@
         <textarea name="description" th:text="${productForm.description}"></textarea>
     </label><br/>
 
+    <!-- ✅ 기존 이미지 미리보기 + 삭제 버튼 -->
     <label>기존 이미지:</label><br/>
-    <div th:if="${productForm.imageUrls != null}">
-        <div th:each="url : ${productForm.imageUrls}">
-            <img th:src="${url}" alt="기존 이미지" width="200" />
+    <div id="existingImages" th:if="${productForm.imageUrls != null}">
+        <div th:each="url, iterStat : ${productForm.imageUrls}" class="image-container"
+             th:data-index="${iterStat.index}">
+            <img th:src="${url}" class="image-preview" />
+            <button type="button" class="remove-btn" onclick="removeExistingImage(this)">X</button>
         </div>
     </div>
 
-    <label>새 이미지 업로드:
-        <input type="file" name="images" multiple />
-    </label><br/>
+    <!-- ✅ 새 이미지 업로드 + 미리보기 -->
+    <label>새 이미지 업로드:</label><br/>
+    <input type="file" id="imageInput" multiple accept="image/*" />
+    <div id="previewArea"></div><br/>
 
-    <!-- 모델/옵션 정보 출력 -->
+    <!-- 모델/옵션 -->
     <div th:each="model, iterStat : ${productForm.productModelDtoList}">
         <h4>모델 [[${iterStat.index + 1}]]</h4>
         <label>옵션:
@@ -54,6 +72,88 @@
 
     <button type="submit">상품 수정</button>
 </form>
+
+<script>
+    let selectedFiles = [];
+    let deleteIndexes = [];
+
+    function removeExistingImage(btn) {
+        const container = btn.parentElement;
+        const index = container.getAttribute("data-index");
+        deleteIndexes.push(index);
+        document.getElementById("deleteIndexes").value = deleteIndexes.join(",");
+        container.remove();
+    }
+
+    document.getElementById("imageInput").addEventListener("change", function (event) {
+        const previewArea = document.getElementById("previewArea");
+        const newFiles = Array.from(event.target.files);
+
+        if (selectedFiles.length + newFiles.length > 4) {
+            alert("이미지는 최대 4장까지 업로드할 수 있습니다.");
+            return;
+        }
+
+        newFiles.forEach(file => {
+            selectedFiles.push(file);
+
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                const container = document.createElement('div');
+                container.className = 'image-container';
+
+                const img = document.createElement('img');
+                img.src = e.target.result;
+                img.className = 'image-preview';
+
+                const btn = document.createElement('button');
+                btn.type = 'button';
+                btn.className = 'remove-btn';
+                btn.innerText = 'X';
+                btn.onclick = () => {
+                    const idx = selectedFiles.indexOf(file);
+                    if (idx > -1) selectedFiles.splice(idx, 1);
+                    container.remove();
+                };
+
+                container.appendChild(img);
+                container.appendChild(btn);
+                previewArea.appendChild(container);
+            };
+            reader.readAsDataURL(file);
+        });
+
+        // input 초기화해서 같은 파일 다시 선택 가능하게
+        event.target.value = '';
+    });
+
+    document.getElementById("editForm").addEventListener("submit", function (e) {
+        e.preventDefault();
+
+        const form = e.target;
+        const formData = new FormData(form);
+
+        selectedFiles.forEach(file => {
+            formData.append("images", file); // 반드시 'images'로
+        });
+
+        fetch(`/products/${form.id.value}/edit`, {
+            method: "POST",
+            body: formData
+        })
+        .then(res => {
+            if (!res.ok) throw new Error("서버 오류");
+            return res.text();
+        })
+        .then(result => {
+            alert("상품 수정 완료");
+            window.location.href = `/products/${form.id.value}`;
+        })
+        .catch(err => {
+            alert("수정 실패: " + err.message);
+        });
+    });
+</script>
 
 </body>
 </html>
