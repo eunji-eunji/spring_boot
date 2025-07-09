@@ -1,59 +1,150 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
+    <meta charset="UTF-8">
     <title>상품 수정</title>
-    <link rel="stylesheet" th:href="@{/css/style.css}">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Stardos+Stencil:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            margin: 0;
+            background-color: #F9F7F0;
+            font-family: 'Arial', sans-serif;
+            color: #4A4947;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 1000px;
+            margin: 100px auto;
+            background-color: #ffffff;
+            border-radius: 24px;
+            padding: 60px;
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.08);
+            box-sizing: border-box;
+        }
+
+        h2 {
+            font-size: 28px;
+            margin-bottom: 30px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 15px;
+            font-weight: bold;
+        }
+
+        input[type="text"],
+        input[type="number"],
+        textarea {
+            width: 100%;
+            padding: 10px;
+            margin-top: 5px;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            box-sizing: border-box;
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        input[type="file"] {
+            margin-top: 10px;
+        }
+
+        img {
+            display: block;
+            margin: 10px 0;
+            border-radius: 12px;
+            max-width: 200px;
+        }
+
+        .btn {
+            margin-top: 30px;
+            padding: 12px 24px;
+            background-color: #D8D2C2;
+            color: #4A4947;
+            border: none;
+            border-radius: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .btn:hover {
+            background-color: #B17457;
+            color: #F9F7F0;
+        }
+
+        h4 {
+            margin-top: 30px;
+        }
+    </style>
 </head>
+
+    <script>
+        window.addEventListener('scroll', function () {
+            const header = document.querySelector('.header');
+            if (window.scrollY > 10) {
+                header.classList.add('scrolled');
+            } else {
+                header.classList.remove('scrolled');
+            }
+        });
+    </script>
+
 <body>
+<div th:replace="~{index/header :: header}"></div>
 
-<h2>상품 수정</h2>
+<div class="container">
+    <h2>상품 수정</h2>
 
-<form th:action="@{'/products/' + ${productForm.id} + '/edit'}" method="post" enctype="multipart/form-data">
-    <label>상품명:
-        <input type="text" name="name" th:value="${productForm.name}" required />
-    </label><br/>
+    <form th:action="@{'/products/' + ${productForm.id} + '/edit'}" method="post" enctype="multipart/form-data">
+        <label>상품명:
+            <input type="text" name="name" th:value="${productForm.name}" required />
+        </label>
 
-    <label>가격:
-        <input type="number" name="price" th:value="${productForm.price}" required />
-    </label><br/>
+        <label>가격:
+            <input type="number" name="price" th:value="${productForm.price}" required />
+        </label>
 
-    <label>카테고리:
-        <input type="text" name="category" th:value="${productForm.category}" />
-    </label><br/>
+        <label>카테고리:
+            <input type="text" name="category" th:value="${productForm.category}" />
+        </label>
 
-    <label>설명:
-        <textarea name="description" th:text="${productForm.description}"></textarea>
-    </label><br/>
+        <label>설명:
+            <textarea name="description" th:text="${productForm.description}"></textarea>
+        </label>
 
-    <label>기존 이미지:</label><br/>
-    <div th:if="${productForm.imageUrls != null}">
-        <div th:each="url : ${productForm.imageUrls}">
-            <img th:src="${url}" alt="기존 이미지" width="200" />
+        <label>기존 이미지:</label>
+        <div th:if="${productForm.imageUrls != null}">
+            <div th:each="url : ${productForm.imageUrls}">
+                <img th:src="${url}" alt="기존 이미지" />
+            </div>
         </div>
-    </div>
 
-    <label>새 이미지 업로드:
-        <input type="file" name="images" multiple />
-    </label><br/>
-
-    <!-- 모델/옵션 정보 출력 -->
-    <div th:each="model, iterStat : ${productForm.productModelDtoList}">
-        <h4>모델 [[${iterStat.index + 1}]]</h4>
-        <label>옵션:
-            <input type="text" name="productModelDtoList[__${iterStat.index}__].productModelSelect"
-                   th:value="${model.productModelSelect}" />
+        <label>새 이미지 업로드:
+            <input type="file" name="images" multiple />
         </label>
-        <label>재고:
-            <input type="number" name="productModelDtoList[__${iterStat.index}__].prStock"
-                   th:value="${model.prStock}" />
-        </label>
-    </div>
 
-    <button type="submit">상품 수정</button>
-</form>
+        <div th:each="model, iterStat : ${productForm.productModelDtoList}">
+            <h4>모델 [[${iterStat.index + 1}]]</h4>
+            <label>옵션:
+                <input type="text" name="productModelDtoList[__${iterStat.index}__].productModelSelect" th:value="${model.productModelSelect}" />
+            </label>
+            <label>재고:
+                <input type="number" name="productModelDtoList[__${iterStat.index}__].prStock" th:value="${model.prStock}" />
+            </label>
+        </div>
 
+        <button type="submit" class="btn">상품 수정</button>
+    </form>
+</div>
+
+<div th:replace="~{index/footer :: footer}"></div>
 </body>
 </html>
