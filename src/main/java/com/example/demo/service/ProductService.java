@@ -4,10 +4,8 @@ import com.example.demo.constant.ProductModelSelect;
 import com.example.demo.dto.ProductDetailDto;
 import com.example.demo.dto.ProductForm;
 import com.example.demo.dto.ProductModelDto;
-import com.example.demo.entity.Product;
-import com.example.demo.entity.ProductImage;
-import com.example.demo.entity.ProductModel;
-import com.example.demo.entity.Users;
+import com.example.demo.entity.*;
+import com.example.demo.repository.CategoryRepository;
 import com.example.demo.repository.ProductImageRepository;
 import com.example.demo.repository.ProductRepository;
 import com.example.demo.repository.WishlistRepository;
@@ -31,21 +29,25 @@ public class ProductService {
     private final ProductRepository productRepository;
     private final ProductImageRepository imageRepository;
     private final WishlistRepository wishlistRepository;
+    private final CategoryRepository categoryRepository;
 
     // ✅ 상품 등록
-    public Long createProduct(ProductForm productForm,
+    public Long createProduct(ProductForm form,
                               List<MultipartFile> productImgFileList,
                               Users loginUser) throws Exception {
-        log.info("상품 등록 시작: {}", productForm);
+        log.info("상품 등록 시작: {}", form);
 
-        // 1. Product 생성 및 저장
-        Product product = productForm.createProduct();
-        product.setUser(loginUser);
+        // 1. 카테고리 조회
+        Category category = categoryRepository.findById(form.getCategoryId())
+                .orElseThrow(() -> new IllegalArgumentException("카테고리를 찾을 수 없습니다."));
+
+        // 2. Product 생성
+        Product product = form.createProduct(category, loginUser);
         product = productRepository.save(product);
 
-        // 2. 모델 저장 및 재고 합산
+        // 3. 모델 생성 및 재고 계산
         int totalStock = 0;
-        for (ProductModelDto dto : productForm.getProductModelDtoList()) {
+        for (ProductModelDto dto : form.getProductModelDtoList()) {
             ProductModel model = new ProductModel();
             model.setProductModelSelect(
                     dto.getProductModelSelect() != null ? dto.getProductModelSelect() : ProductModelSelect.DEFAULT_MODEL);
@@ -55,29 +57,76 @@ public class ProductService {
             totalStock += model.getPrStock();
         }
         product.setStockQuantity(totalStock);
-        productRepository.save(product);
 
-        // 3. 이미지 업로드 및 저장 (게시판 방식 적용)
+        // 4. 이미지 업로드
         if (productImgFileList != null && !productImgFileList.isEmpty()) {
-            List<String>[] result = handleAndReturnFiles(productImgFileList.toArray(new MultipartFile[0]));
-            for (String path : result[0]) {
-                ProductImage img = new ProductImage();
-                img.setImageUrl(path);
-                img.setProduct(product);
-                imageRepository.save(img);
+            List<String> imagePaths = handleAndReturnFiles(productImgFileList.toArray(new MultipartFile[0]));
+            for (String path : imagePaths) {
+                ProductImage image = new ProductImage();
+                image.setImageUrl(path);
+                image.setProduct(product);
+                imageRepository.save(image);
             }
         }
 
         return product.getId();
     }
 
-    // ✅ 상품 목록 조회
-    public List<Product> findProducts(String category) {
-        if (category != null && !category.isEmpty()) {
-            return productRepository.findByCategory(category);
+    // 이미지 저장 유틸 (변경 없음)
+    private List<String> handleAndReturnFiles(MultipartFile[] files) {
+        List<String> filePaths = new ArrayList<>();
+        String uploadDir = System.getProperty("user.dir") + "/uploads/";
+
+        File dir = new File(uploadDir);
+        if (!dir.exists()) dir.mkdirs();
+
+        for (MultipartFile file : files) {
+            if (!file.isEmpty()) {
+                try {
+                    String originalName = file.getOriginalFilename();
+                    String uniqueName = System.currentTimeMillis() + "_" + originalName;
+                    File dest = new File(uploadDir + uniqueName);
+                    file.transferTo(dest);
+
+                    filePaths.add("/uploads/" + uniqueName);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
         }
-        return productRepository.findAll();
+
+        return filePaths;
     }
+
+
+    // ✅ 상품 목록 조회
+    public List<Product> findProducts(Long categoryId) {
+        if (categoryId == null) {
+            return productRepository.findAll(); // 아무 카테고리도 선택 안 했을 경우
+        }
+
+        // 선택한 카테고리와 그 하위 카테고리 포함하여 검색
+        List<Long> idsToSearch = new ArrayList<>();
+        idsToSearch.add(categoryId);
+        idsToSearch.addAll(getChildCategoryIds(categoryId));
+
+        return productRepository.findByCategoryIdIn(idsToSearch);
+    }
+
+    // 선택된 카테고리의 모든 하위 카테고리 ID를 재귀적으로 가져옴
+    private List<Long> getChildCategoryIds(Long parentId) {
+        List<Category> children = categoryRepository.findByParentId(parentId);
+        List<Long> result = new ArrayList<>();
+
+        for (Category child : children) {
+            result.add(child.getId());
+            result.addAll(getChildCategoryIds(child.getId())); // 재귀 호출
+        }
+
+        return result;
+    }
+
+
 
     // ✅ 상품 상세 조회 (찜 여부 포함)
     public ProductDetailDto getProductDetail(Long productId, Users user) {
@@ -114,8 +163,8 @@ public class ProductService {
 
         // 새 이미지 업로드
         if (images != null) {
-            List<String>[] result = handleAndReturnFiles(images);
-            for (String path : result[0]) {
+            List<String> imagePaths = handleAndReturnFiles(images);
+            for (String path : imagePaths) {
                 ProductImage image = new ProductImage();
                 image.setImageUrl(path);
                 image.setProduct(product);
@@ -126,14 +175,14 @@ public class ProductService {
         // 상품 정보 업데이트
         product.setName(form.getName());
         product.setPrice(form.getPrice());
-        product.setCategory(form.getCategory());
+     //   product.setCategory(form.getCategory());
         product.setDescription(form.getDescription());
 
         productRepository.save(product);
     }
 
     // ✅ 파일 업로드 처리 및 경로 반환
-    private List<String>[] handleAndReturnFiles(MultipartFile[] files) {
+    private List<String>[] handleAndReturnFilesWithNames(MultipartFile[] files) {
         List<String> filePaths = new ArrayList<>();
         List<String> fileNames = new ArrayList<>();
         String uploadDir = System.getProperty("user.dir") + "/uploads/";
@@ -167,6 +216,8 @@ public class ProductService {
         File file = new File(absolutePath);
         if (file.exists()) file.delete();
     }
+
+
 
     public Product findById(Long id) {
         return productRepository.findById(id)

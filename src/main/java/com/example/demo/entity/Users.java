@@ -98,7 +98,7 @@ public class Users {
                 .detailAddr(dto.getDetailAddr())
                 .extraAddr(dto.getExtraAddr())
                 .residenceType(dto.getResidenceType())
-                .role(Role.USER)
+                .role(Role.ADMIN)
                 .build();
     }
 

@@ -2,9 +2,10 @@ package com.example.demo.controller;
 
 import com.example.demo.dto.ProductDetailDto;
 import com.example.demo.dto.ProductForm;
+import com.example.demo.dto.ProductModelDto;
 import com.example.demo.dto.ReviewPostDto;
-import com.example.demo.entity.Product;
-import com.example.demo.entity.Users;
+import com.example.demo.entity.*;
+import com.example.demo.repository.CategoryRepository;
 import com.example.demo.security.CustomUserDetails;
 import com.example.demo.service.ProductService;
 import com.example.demo.service.ReviewPostService;
@@ -29,6 +30,7 @@ public class ProductController {
     private final ProductService productService;
     private final WishlistService wishlistService;
     private final ReviewPostService reviewPostService;
+    private final CategoryRepository categoryRepository;
 
     @GetMapping("/admin/products")
     public String showProductForm(Model model) {
@@ -36,6 +38,7 @@ public class ProductController {
         return "product/products";
     }
 
+    // 상품등록
     @PostMapping("/admin/products")
     public String createProduct(@ModelAttribute ProductForm form,
                                 @RequestParam("images") MultipartFile[] images,
@@ -50,11 +53,14 @@ public class ProductController {
         return "redirect:/products";
     }
 
+
+
+
     @GetMapping("/products")
-    public String listProducts(@RequestParam(required = false) String category, Model model) {
-        List<Product> products = productService.findProducts(category);
-        model.addAttribute("products", products);
-        return "product/list";
+    public String showProductList(@RequestParam(name = "category", required = false) Long categoryId, Model model) {
+        List<Product> productList = productService.findProducts(categoryId);
+        model.addAttribute("products", productList);
+        return "product/list"; // 실제 Thymeleaf 템플릿 경로에 맞게 조정
     }
 
     // ✅ ProductController.java
