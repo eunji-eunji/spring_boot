@@ -1,15 +1,13 @@
 package com.example.demo.controller;
 
 import com.example.demo.dto.UserDto;
-import com.example.demo.entity.Users;
-import com.example.demo.security.CustomUserDetails;
 import com.example.demo.service.UserService;
-import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
 @RequiredArgsConstructor
@@ -26,32 +24,6 @@ public class UserController {
     @PostMapping("signup")
     public String signUp(@ModelAttribute UserDto dto){
         userService.signUp(dto);
-        return "redirect:/";
-    }
-
-    @GetMapping("/mypage")
-    public String myPage(@AuthenticationPrincipal CustomUserDetails userDetails, Model model) {
-        model.addAttribute("loginUser", userDetails.getUser()); // Users 엔티티 전달
-        return "/user/mypage";
-    }
-
-    @GetMapping("/edit/{id}")
-    public String editForm(@PathVariable("id") Long id, Model model){
-        model.addAttribute("loginUser", userService.findById(id));
-        return "/user/edit";
-    }
-
-    @PostMapping("/edit/{id}")
-    public String editInfo(@PathVariable("id") Long id, @ModelAttribute UserDto dto, HttpSession session){
-        Users updateUser = userService.edit(dto, id);
-        session.setAttribute("loginUser", updateUser);
-        return "redirect:/user/mypage";
-    }
-
-    @GetMapping("/delete/{id}")
-    public String delete(@PathVariable("id") Long id, HttpSession session) {
-        userService.delete(id);
-        session.invalidate();
         return "redirect:/";
     }
 
