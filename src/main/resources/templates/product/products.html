@@ -6,71 +6,19 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Stardos+Stencil:wght@400;700&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" th:href="@{/css/style.css}">
     <style>
-        body {
-            margin: 0;
-            background-color: #F9F7F0;
-            font-family: 'Arial', sans-serif;
-            color: #4A4947;
+        .img-box {
+            display: inline-block;
+            margin: 10px;
+            position: relative;
         }
-
-        .container {
-            width: 90%;
-            max-width: 1000px;
-            margin: 100px auto;
-            background-color: #ffffff;
-            border-radius: 24px;
-            padding: 60px;
-            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.08);
-            box-sizing: border-box;
-        }
-
-        h2 {
-            font-size: 28px;
-            margin-bottom: 30px;
-        }
-
-        label {
-            display: block;
-            margin-bottom: 15px;
-            font-weight: bold;
-        }
-
-        input[type="text"],
-        input[type="number"],
-        textarea {
-            width: 100%;
-            padding: 10px;
-            margin-top: 5px;
+        .img-box img {
+            width: 150px;
+            height: auto;
             border: 1px solid #ccc;
-            border-radius: 10px;
-            box-sizing: border-box;
-        }
 
-        textarea {
-            resize: vertical;
-            min-height: 100px;
-        }
-
-        input[type="file"] {
-            margin-top: 10px;
-        }
-
-        .btn {
-            margin-top: 30px;
-            padding: 12px 24px;
-            background-color: #D8D2C2;
-            color: #4A4947;
-            border: none;
-            border-radius: 16px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
-        }
-
-        .btn:hover {
-            background-color: #B17457;
-            color: #F9F7F0;
         }
     </style>
 </head>
@@ -87,27 +35,16 @@
     </script>
 
 <body>
-<div th:replace="~{index/header :: header}"></div>
 
-<div class="container">
-    <h2>상품 등록</h2>
 
-    <form th:action="@{/admin/products}" method="post" enctype="multipart/form-data" th:object="${productForm}">
-        <label>상품명:
-            <input type="text" th:field="*{name}" required />
-        </label>
+<h2>상품 등록</h2>
 
-        <label>가격:
-            <input type="number" th:field="*{price}" required />
-        </label>
+<form id="productForm" th:action="@{/admin/products}" method="post" enctype="multipart/form-data" th:object="${productForm}">
+    <label>상품명: <input type="text" th:field="*{name}" required /></label><br/>
+    <label>가격: <input type="number" th:field="*{price}" required /></label><br/>
+    <label>카테고리: <input type="text" th:field="*{category}" /></label><br/>
+    <label>설명: <textarea th:field="*{description}"></textarea></label><br/>
 
-        <label>카테고리:
-            <input type="text" th:field="*{category}" />
-        </label>
-
-        <label>설명:
-            <textarea th:field="*{description}"></textarea>
-        </label>
 
         <label>모델 및 재고:</label>
         <div th:each="model, i : *{productModelDtoList}">
@@ -119,14 +56,98 @@
             </label>
         </div>
 
-        <label>이미지 업로드:
-            <input type="file" name="images" multiple />
-        </label>
+    <label>이미지 업로드 (최대 4장):</label><br/>
+    <input type="file" id="imageInput" accept="image/*" multiple /><br/><br/>
+
+    <div id="previewContainer"></div><br/>
+
 
         <button type="submit" class="btn">등록하기</button>
     </form>
 </div>
 
-<div th:replace="~{index/footer :: footer}"></div>
+
+<script>
+    const input = document.getElementById('imageInput');
+    const preview = document.getElementById('previewContainer');
+    const form = document.getElementById('productForm');
+    let selectedFiles = [];
+
+    input.addEventListener('change', function () {
+        const newFiles = Array.from(this.files);
+
+        if (selectedFiles.length + newFiles.length > 4) {
+            alert("이미지는 최대 4장까지 업로드할 수 있습니다.");
+            return;
+        }
+
+        newFiles.forEach(file => {
+      selectedFiles.push(file);
+
+      const reader = new FileReader();
+      reader.onload = e => {
+        const box = document.createElement('div');
+        box.className = 'img-box';
+        box.style.position = 'relative';
+        box.style.display = 'inline-block';
+        box.style.margin = '10px';
+
+        const img = document.createElement('img');
+        img.src = e.target.result;
+        img.style.width = '150px';
+        img.style.height = 'auto';
+        img.style.border = '1px solid #ccc';
+
+        const delBtn = document.createElement('button');
+        delBtn.innerText = 'X';
+        delBtn.type = 'button';
+        delBtn.style.position = 'absolute';
+        delBtn.style.top = '0';
+        delBtn.style.right = '0';
+        delBtn.style.background = 'red';
+        delBtn.style.color = 'white';
+        delBtn.style.border = 'none';
+        delBtn.style.borderRadius = '50%';
+        delBtn.style.width = '20px';
+        delBtn.style.height = '20px';
+        delBtn.style.cursor = 'pointer';
+
+        delBtn.onclick = () => {
+          const idx = Array.from(preview.children).indexOf(box);
+          selectedFiles.splice(idx, 1);
+          box.remove();
+        };
+
+        box.appendChild(img);
+        box.appendChild(delBtn);
+        preview.appendChild(box);
+      };
+      reader.readAsDataURL(file);
+    });
+
+        this.value = '';
+    });
+
+    form.addEventListener('submit', function (e) {
+        e.preventDefault();
+        const formData = new FormData(form);
+
+        selectedFiles.forEach(file => {
+            formData.append("images", file);
+        });
+
+        fetch(form.action, {
+            method: 'POST',
+            body: formData
+        }).then(res => {
+            if (res.redirected) {
+                location.href = res.url;
+            } else {
+                alert("등록 실패");
+            }
+        }).catch(() => alert("에러 발생"));
+    });
+</script>
+
 </body>
 </html>

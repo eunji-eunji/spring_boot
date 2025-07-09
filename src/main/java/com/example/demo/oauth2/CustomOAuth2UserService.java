@@ -1,15 +1,14 @@
-package com.example.demo.service;
+package com.example.demo.oauth2;
 
-import com.example.demo.entity.CustomOAuth2User;
+import com.example.demo.constant.Role;
 import com.example.demo.entity.Users;
-import com.example.demo.oauth2.OAuthAttributes;
 import com.example.demo.repository.UserRepository;
-import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 
@@ -17,10 +16,10 @@ import java.time.LocalDate;
 @RequiredArgsConstructor
 public class CustomOAuth2UserService extends DefaultOAuth2UserService {
     private final UserRepository userRepository;
-    private final HttpSession session;
 
 
     @Override
+    @Transactional
     public OAuth2User loadUser(OAuth2UserRequest request) {
         OAuth2User oAuth2User = super.loadUser(request);
 
@@ -40,13 +39,13 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 
     private Users saveUser(OAuthAttributes attr) {
         Users user = Users.builder()
+                .name(attr.getName())
                 .email(attr.getEmail())
                 .nickname(attr.getName())
                 .userPw("")
                 .phone("")
                 .gender("")
-                .birth(LocalDate.now())
-                //생일 정보 수정 권유 팝업 띄우기
+                .birth(LocalDate.now()) //생일 정보 수정 권유 팝업 띄우기
                 .p_code("")
                 .loadAddr("")
                 .lotAddr("")
@@ -54,6 +53,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
                 .extraAddr("")
                 .residenceType(0)
                 .social(attr.getProvider())
+                .role(Role.USER)
                 .build();
         return userRepository.save(user);
     }

@@ -2,10 +2,12 @@ package com.example.demo.controller;
 
 import com.example.demo.dto.UserDto;
 import com.example.demo.entity.Users;
+import com.example.demo.oauth2.CustomOAuth2User;
 import com.example.demo.security.CustomUserDetails;
 import com.example.demo.service.LoginService;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -24,27 +26,17 @@ public class LoginController {
         return "user/login";
     }
 
-    /*@PostMapping("/user/login")
-    public String login(UserDto dto, HttpSession session){
-        Users user = loginService.login(dto);
-        if(user != null){
-            session.setAttribute("loginUser", user);
-            return "redirect:/";
-        }else{
-            return "redirect:/user/login?error=true";
-        }
-    }*/
-
     @GetMapping("/user/logout")
-    public String logout(HttpSession session){
-        session.invalidate();
-        return "redirect:/";
+    public String logout(){
+        return "redirect:/logout";
     }
 
     @GetMapping("/")
-    public String welcome(@AuthenticationPrincipal CustomUserDetails userDetails, Model model) {
-        if (userDetails != null) {
+    public String welcome(Authentication authentication, Model model) {
+        if (authentication != null && authentication.getPrincipal() instanceof CustomUserDetails userDetails) {
             model.addAttribute("loginUser", userDetails.getUser());
+        } else if (authentication != null && authentication.getPrincipal() instanceof CustomOAuth2User oauth2User) {
+            model.addAttribute("loginUser", oauth2User.getUser());
         }
         return "welcome";
     }

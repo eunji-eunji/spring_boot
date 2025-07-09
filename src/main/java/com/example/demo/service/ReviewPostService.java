@@ -135,19 +135,28 @@ public class ReviewPostService {
     }
 
     /** 점수별 분포 */
-    public Map<Integer, Long> getRatingDistribution(Long productId) {
+    public Map<String, Long> getRatingDistribution(Long productId) {
         List<ReviewPost> posts = reviewRepository.findByProductId(productId);
 
-        Map<Integer, Long> counts = posts.stream()
-                .collect(Collectors.groupingBy(ReviewPost::getRating, Collectors.counting()));
+        Map<String, Long> counts = posts.stream()
+                .collect(Collectors.groupingBy(
+                        r -> String.valueOf(r.getRating()),
+                        Collectors.counting()
+                ));
 
-        // 1~5점 모두 포함되도록 초기값 보정
+        // 1~5점 모두 포함되도록 보정
         for (int i = 1; i <= 5; i++) {
-            counts.putIfAbsent(i, 0L);
+            String key = String.valueOf(i);
+            counts.putIfAbsent(key, 0L);
         }
 
         return counts;
     }
+
+
+
+
+
 
 
 }

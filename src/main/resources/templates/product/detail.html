@@ -1,153 +1,65 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8">
     <title>상품 상세</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Stardos+Stencil:wght@400;700&display=swap" rel="stylesheet">
-    <style>
-        body {
-            margin: 0;
-            background-color: #F9F7F0;
-            font-family: 'Arial', sans-serif;
-            color: #4A4947;
-        }
 
-        .container {
-            width: 90%;
-            max-width: 1000px;
-            margin: 100px auto;
-            background-color: #ffffff;
-            border-radius: 24px;
-            padding: 60px;
-            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.08);
-            box-sizing: border-box;
-        }
-
-        h2 {
-            font-size: 28px;
-            margin-bottom: 20px;
-        }
-
-        p {
-            margin-bottom: 10px;
-        }
-
-        img {
-            max-width: 100%;
-            height: auto;
-            border-radius: 16px;
-            margin-bottom: 20px;
-        }
-
-        .product-models {
-            margin-top: 30px;
-        }
-
-        ul {
-            padding-left: 20px;
-        }
-
-        li {
-            margin-bottom: 8px;
-        }
-
-        .btn {
-            padding: 10px 20px;
-            background-color: #D8D2C2;
-            color: #4A4947;
-            border: none;
-            border-radius: 16px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
-        }
-
-        .btn:hover {
-            background-color: #B17457;
-            color: #F9F7F0;
-        }
-
-        .btn-group {
-            margin-top: 30px;
-        }
-
-        .btn-group form {
-            display: inline;
-        }
-
-        .back-btn {
-            margin-top: 40px;
-            display: inline-block;
-            padding: 10px 24px;
-            font-weight: bold;
-            border: 2px solid #4A4947;
-            border-radius: 999px;
-            background-color: transparent;
-            color: #4A4947;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .back-btn:hover {
-            background-color: #4A4947;
-            color: #F9F7F0;
-        }
-    </style>
-    <script>
-        window.addEventListener('scroll', function () {
-            const header = document.querySelector('.header');
-            if (window.scrollY > 10) {
-                header.classList.add('scrolled');
-            } else {
-                header.classList.remove('scrolled');
-            }
-        });
-    </script>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
-<div th:replace="~{index/header :: header}"></div>
 
-<div class="container">
+<div>
     <h2 th:text="${product.name}">상품 이름</h2>
     <p th:text="'₩' + ${product.price}">가격</p>
     <p th:text="${product.description}">상품 설명</p>
 
     <div th:each="img : ${product.images}">
-        <img th:src="${img.imageUrl}" alt="상품 이미지" />
+        <img th:src="${img.imageUrl}" alt="상품 이미지" width="300"/>
     </div>
 
-    <div class="product-models">
-        <h4>모델/옵션</h4>
-        <ul>
-            <li th:each="model : ${product.productModels}">
-                모델: <span th:text="${model.productModelSelect}"></span>,
-                재고: <span th:text="${model.prStock}"></span>
-            </li>
-        </ul>
-    </div>
+    <h4>모델/옵션</h4>
+    <ul>
+        <li th:each="model : ${product.productModels}">
+            모델: <span th:text="${model.productModelSelect}"></span>,
+            재고: <span th:text="${model.prStock}"></span>
+        </li>
+    </ul>
 
+    <!-- 찜하기 버튼 -->
     <form th:action="@{/wishlist/toggle}" method="post">
         <input type="hidden" name="productId" th:value="${product.id}" />
-        <button type="submit" class="btn" th:text="${product.liked} ? '찜 취소' : '찜하기'"></button>
+        <button type="submit" th:text="${product.liked} ? '찜 취소' : '찜하기'"></button>
     </form>
 
+    <!-- 디버깅용 -->
     <p>작성자 ID: <span th:text="${product.writerId}">작성자 ID</span></p>
     <p>로그인 유저 ID: <span th:text="${loginUser?.id}">로그인 ID</span></p>
 
-    <div class="btn-group" th:if="${loginUser != null and product.writerId == loginUser.id}">
-        <form th:action="@{'/products/' + ${product.id} + '/edit'}" method="get">
-            <button type="submit" class="btn">수정</button>
+    <!-- 수정/삭제 버튼: 작성자만 보이게 -->
+    <div th:if="${loginUser != null and product.writerId == loginUser.id}">
+        <form th:action="@{'/products/' + ${product.id} + '/edit'}" method="get" style="display:inline;">
+            <button type="submit">수정</button>
         </form>
-        <form th:action="@{'/products/' + ${product.id} + '/delete'}" method="post">
-            <button type="submit" class="btn">삭제</button>
+        <form th:action="@{'/products/' + ${product.id} + '/delete'}" method="post" style="display:inline;">
+            <button type="submit">삭제</button>
         </form>
     </div>
 
-    <button type="button" class="back-btn" onclick="location.href='/products'">목록으로 돌아가기</button>
+    <!-- 🔙 목록으로 돌아가기 (항상 표시) -->
+    <div style="margin-top: 20px;">
+        <a th:href="@{/products}">
+            <button type="button">목록으로 돌아가기</button>
+        </a>
 
-    <div th:replace="~{review/review :: reviewBoard(
+    </div>
+</div>
+
+
+<div th:replace="~{review/review :: reviewBoard(
+
     ${product.id},
     ${loginUser},
     ${reviews},
@@ -161,6 +73,5 @@
   )}"></div>
 </div>
 
-<div th:replace="~{index/footer :: footer}"></div>
 </body>
 </html>

@@ -1,7 +1,7 @@
 package com.example.demo.config;
 
 import com.example.demo.security.CustomUserDetailsService;
-import com.example.demo.service.CustomOAuth2UserService;
+import com.example.demo.oauth2.CustomOAuth2UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -40,12 +40,17 @@ public class SecurityConfig {
                 )
 
                 .logout(logout -> logout
+                        .logoutUrl("/logout")
                         .logoutSuccessUrl("/")
-                        .permitAll()
+                        .invalidateHttpSession(true)      // 세션 무효화
+                        .deleteCookies("JSESSIONID")
                 )
                 .oauth2Login(oauth2 -> oauth2
+                        .loginPage("/user/login")
+                        .failureUrl("/user/login?error")
                         .userInfoEndpoint(userInfo -> userInfo
                                 .userService(customOAuth2UserService))
+                        .defaultSuccessUrl("/", false)
                 );
 
         return http.build();
