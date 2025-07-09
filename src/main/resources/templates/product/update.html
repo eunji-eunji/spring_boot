@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8">
     <title>상품 수정</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Stardos+Stencil:wght@400;700&display=swap" rel="stylesheet">
@@ -13,27 +13,12 @@
             position: absolute; top: 0; right: 0;
             background: red; color: white; border: none;
             border-radius: 50%; width: 20px; height: 20px; cursor: pointer;
-
         }
     </style>
 </head>
-
-    <script>
-        window.addEventListener('scroll', function () {
-            const header = document.querySelector('.header');
-            if (window.scrollY > 10) {
-                header.classList.add('scrolled');
-            } else {
-                header.classList.remove('scrolled');
-            }
-        });
-    </script>
-
 <body>
-<div th:replace="~{index/header :: header}"></div>
 
-<div class="container">
-    <h2>상품 수정</h2>
+<h2>상품 수정</h2>
 
 <form id="editForm" enctype="multipart/form-data">
     <input type="hidden" name="id" th:value="${productForm.id}" />
@@ -45,17 +30,17 @@
         <input type="text" name="name" th:value="${productForm.name}" required />
     </label><br/>
 
-        <label>가격:
-            <input type="number" name="price" th:value="${productForm.price}" required />
-        </label>
+    <label>가격:
+        <input type="number" name="price" th:value="${productForm.price}" required />
+    </label><br/>
 
-        <label>카테고리:
-            <input type="text" name="category" th:value="${productForm.category}" />
-        </label>
+    <label>카테고리:
+        <input type="text" name="category" th:value="${productForm.category}" />
+    </label><br/>
 
-        <label>설명:
-            <textarea name="description" th:text="${productForm.description}"></textarea>
-        </label>
+    <label>설명:
+        <textarea name="description" th:text="${productForm.description}"></textarea>
+    </label><br/>
 
     <!-- ✅ 기존 이미지 미리보기 + 삭제 버튼 -->
     <label>기존 이미지:</label><br/>
@@ -82,22 +67,11 @@
         <label>재고:
             <input type="number" name="productModelDtoList[__${iterStat.index}__].prStock"
                    th:value="${model.prStock}" />
-
         </label>
+    </div>
 
-        <div th:each="model, iterStat : ${productForm.productModelDtoList}">
-            <h4>모델 [[${iterStat.index + 1}]]</h4>
-            <label>옵션:
-                <input type="text" name="productModelDtoList[__${iterStat.index}__].productModelSelect" th:value="${model.productModelSelect}" />
-            </label>
-            <label>재고:
-                <input type="number" name="productModelDtoList[__${iterStat.index}__].prStock" th:value="${model.prStock}" />
-            </label>
-        </div>
-
-        <button type="submit" class="btn">상품 수정</button>
-    </form>
-</div>
+    <button type="submit">상품 수정</button>
+</form>
 
 <script>
     let selectedFiles = [];
@@ -180,5 +154,6 @@
         });
     });
 </script>
+
 </body>
 </html>

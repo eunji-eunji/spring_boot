@@ -1,133 +1,38 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-  <meta charset="UTF-8">
   <title>상품 목록</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Stardos+Stencil:wght@400;700&display=swap" rel="stylesheet">
-  <style>
-    body {
-      margin: 0;
-      background-color: #F9F7F0;
-      font-family: 'Arial', sans-serif;
-      color: #4A4947;
-    }
-
-    .container {
-      width: 90%;
-      max-width: 1000px;
-      margin: 100px auto;
-      background-color: #ffffff;
-      border-radius: 24px;
-      padding: 60px;
-      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.08);
-      box-sizing: border-box;
-    }
-
-    h2 {
-      font-size: 28px;
-      margin-bottom: 20px;
-    }
-
-    form {
-      margin-bottom: 40px;
-    }
-
-    label {
-      display: block;
-      margin-bottom: 10px;
-    }
-
-    input[type="text"] {
-      padding: 10px;
-      width: 300px;
-      border: 1px solid #ccc;
-      border-radius: 10px;
-    }
-
-    button {
-      padding: 10px 20px;
-      background-color: #D8D2C2;
-      color: #4A4947;
-      border: none;
-      border-radius: 16px;
-      font-weight: bold;
-      cursor: pointer;
-      transition: background-color 0.3s ease;
-    }
-
-    button:hover {
-      background-color: #B17457;
-      color: #F9F7F0;
-    }
-
-    .product-item {
-      margin-bottom: 40px;
-      padding: 20px;
-      border: 1px solid #ddd;
-      border-radius: 16px;
-      background-color: #fff;
-      display: flex;
-      align-items: center;
-      gap: 20px;
-    }
-
-    .product-item img {
-      width: 150px;
-      height: 150px;
-      border-radius: 12px;
-      object-fit: cover;
-    }
-
-    .product-info strong {
-      font-size: 20px;
-      display: block;
-      margin-bottom: 8px;
-    }
-
-    .product-info span {
-      font-size: 16px;
-    }
-  </style>
+  <link rel="stylesheet" th:href="@{/css/style.css}">
 </head>
-
-  <script>
-    window.addEventListener('scroll', function () {
-      const header = document.querySelector('.header');
-      if (window.scrollY > 10) {
-        header.classList.add('scrolled');
-      } else {
-        header.classList.remove('scrolled');
-      }
-    });
-  </script>
-
 <body>
+
 <div th:replace="~{index/header :: header}"></div>
+<h2>전체 상품</h2>
 
-<div class="container">
-  <h2>전체 상품</h2>
+<form method="get" th:action="@{/products}">
+  <label>카테고리: <input type="text" name="category" /></label>
+  <button type="submit">검색</button>
+</form>
 
-  <form method="get" th:action="@{/products}">
-    <label>카테고리: <input type="text" name="category" /></label>
-    <button type="submit">검색</button>
-  </form>
-
-  <div th:each="product : ${products}" class="product-item">
+<div th:each="product : ${products}">
+  <div>
     <img th:if="${product.thumbnailUrl != null}"
          th:src="@{${product.thumbnailUrl}}"
-         alt="썸네일" />
-    <div class="product-info">
-      <a th:href="@{'/products/' + ${product.id}}">
-        <strong th:text="${product.name}">상품명</strong>
-      </a>
-      <span th:text="'₩' + ${product.price}">가격</span>
-    </div>
+         alt="썸네일"
+         width="150" height="150" />
+  </div>
+  <div>
+    <a th:href="@{'/products/' + ${product.id}}">
+      <strong th:text="${product.name}"></strong>
+    </a>
+  </div>
+  <div>
+    <span th:text="'₩' + ${product.price}"></span>
   </div>
 </div>
-
-<div th:replace="~{index/footer :: footer}"></div>
 
 </body>
 </html>

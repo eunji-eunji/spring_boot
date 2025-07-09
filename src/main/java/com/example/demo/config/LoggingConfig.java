@@ -12,6 +12,6 @@ public class LoggingConfig implements WebMvcConfigurer {
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(new MonitoringInterceptor())
         .excludePathPatterns("/js/**", "/css/**", "/img/**", "/error/**",
-                "/favicon.ico", "/.well-known/**", "/user/checkEmail");
+                "/favicon.ico", "/.well-known/**", "/user/checkEmail", "/uploads/**");
     }
 }
