@@ -26,7 +26,21 @@
 <form id="productForm" th:action="@{/admin/products}" method="post" enctype="multipart/form-data" th:object="${productForm}">
     <label>상품명: <input type="text" th:field="*{name}" required /></label><br/>
     <label>가격: <input type="number" th:field="*{price}" required /></label><br/>
-    <label>카테고리: <input type="text" th:field="*{category}" /></label><br/>
+
+    <!-- 대분류 선택 -->
+    <label>대분류:
+        <select id="parentCategory" onchange="loadChildCategories()">
+            <option value="">대분류 선택</option>
+        </select>
+    </label><br/>
+
+    <!-- 소분류 선택 (실제 categoryId가 이 값으로 들어감) -->
+    <label>소분류:
+        <select id="childCategory" name="categoryId" required>
+            <option value="">소분류 선택</option>
+        </select>
+    </label><br/>
+
     <label>설명: <textarea th:field="*{description}"></textarea></label><br/>
 
     <label>모델 및 재고:</label><br/>
@@ -44,6 +58,41 @@
 </form>
 
 <script>
+    // 카테고리 드롭다운 로딩
+    document.addEventListener("DOMContentLoaded", function () {
+        fetch("/categories/parents")
+            .then(res => res.json())
+            .then(data => {
+                const parentSelect = document.getElementById("parentCategory");
+                data.forEach(c => {
+                    const option = document.createElement("option");
+                    option.value = c.id;
+                    option.text = c.name;
+                    parentSelect.appendChild(option);
+                });
+            });
+    });
+
+    function loadChildCategories() {
+        const parentId = document.getElementById("parentCategory").value;
+        const childSelect = document.getElementById("childCategory");
+        childSelect.innerHTML = '<option value="">소분류 선택</option>';
+
+        if (!parentId) return;
+
+        fetch(`/categories/children?parentId=${parentId}`)
+            .then(res => res.json())
+            .then(data => {
+                data.forEach(c => {
+                    const option = document.createElement("option");
+                    option.value = c.id;
+                    option.text = c.name;
+                    childSelect.appendChild(option);
+                });
+            });
+    }
+
+    // 이미지 미리보기 및 삭제 기능
     const input = document.getElementById('imageInput');
     const preview = document.getElementById('previewContainer');
     const form = document.getElementById('productForm');
@@ -58,52 +107,47 @@
         }
 
         newFiles.forEach(file => {
-      selectedFiles.push(file);
+            selectedFiles.push(file);
 
-      const reader = new FileReader();
-      reader.onload = e => {
-        const box = document.createElement('div');
-        box.className = 'img-box';
-        box.style.position = 'relative';
-        box.style.display = 'inline-block';
-        box.style.margin = '10px';
+            const reader = new FileReader();
+            reader.onload = e => {
+                const box = document.createElement('div');
+                box.className = 'img-box';
 
-        const img = document.createElement('img');
-        img.src = e.target.result;
-        img.style.width = '150px';
-        img.style.height = 'auto';
-        img.style.border = '1px solid #ccc';
+                const img = document.createElement('img');
+                img.src = e.target.result;
 
-        const delBtn = document.createElement('button');
-        delBtn.innerText = 'X';
-        delBtn.type = 'button';
-        delBtn.style.position = 'absolute';
-        delBtn.style.top = '0';
-        delBtn.style.right = '0';
-        delBtn.style.background = 'red';
-        delBtn.style.color = 'white';
-        delBtn.style.border = 'none';
-        delBtn.style.borderRadius = '50%';
-        delBtn.style.width = '20px';
-        delBtn.style.height = '20px';
-        delBtn.style.cursor = 'pointer';
+                const delBtn = document.createElement('button');
+                delBtn.innerText = 'X';
+                delBtn.type = 'button';
+                delBtn.style.position = 'absolute';
+                delBtn.style.top = '0';
+                delBtn.style.right = '0';
+                delBtn.style.background = 'red';
+                delBtn.style.color = 'white';
+                delBtn.style.border = 'none';
+                delBtn.style.borderRadius = '50%';
+                delBtn.style.width = '20px';
+                delBtn.style.height = '20px';
+                delBtn.style.cursor = 'pointer';
 
-        delBtn.onclick = () => {
-          const idx = Array.from(preview.children).indexOf(box);
-          selectedFiles.splice(idx, 1);
-          box.remove();
-        };
+                delBtn.onclick = () => {
+                    const idx = Array.from(preview.children).indexOf(box);
+                    selectedFiles.splice(idx, 1);
+                    box.remove();
+                };
 
-        box.appendChild(img);
-        box.appendChild(delBtn);
-        preview.appendChild(box);
-      };
-      reader.readAsDataURL(file);
-    });
+                box.appendChild(img);
+                box.appendChild(delBtn);
+                preview.appendChild(box);
+            };
+            reader.readAsDataURL(file);
+        });
 
         this.value = '';
     });
 
+    // 폼 제출 시 이미지 포함해서 FormData로 전송
     form.addEventListener('submit', function (e) {
         e.preventDefault();
         const formData = new FormData(form);

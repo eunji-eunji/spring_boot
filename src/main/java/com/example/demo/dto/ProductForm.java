@@ -1,8 +1,10 @@
 package com.example.demo.dto;
 
 
+import com.example.demo.entity.Category;
 import com.example.demo.entity.Product;
 import com.example.demo.entity.ProductImage;
+import com.example.demo.entity.Users;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -19,19 +21,22 @@ public class ProductForm {
     private String category;
     private int stockQuantity;
 
+    private Long categoryId;
+
     //  하위 모델들
     private List<ProductModelDto> productModelDtoList = new ArrayList<>();
     private List<String> imageUrls;
 
     // 엔티티 변환
-    public Product createProduct() {
+    public Product createProduct(Category category, Users user) {
         Product product = new Product();
-        product.setName(name);
-        product.setDescription(description);
-        product.setPrice(price);
-        product.setCategory(category);
-        product.setAverageRating(0.0); // 평점 기본값
-        product.setStockQuantity(0);   // 이후에 모델들 합산
+        product.setName(this.name);
+        product.setDescription(this.description);
+        product.setPrice(this.price);
+        product.setCategory(category); // 엔티티 기준
+        product.setUser(user);
+        product.setAverageRating(0.0);
+        product.setStockQuantity(0);
         return product;
     }
 
@@ -41,7 +46,6 @@ public class ProductForm {
         form.setName(product.getName());
         form.setDescription(product.getDescription());
         form.setPrice(product.getPrice());
-        form.setCategory(product.getCategory());
 
         // 모델 정보 매핑 (옵션)
         if (product.getProductModels() != null && !product.getProductModels().isEmpty()) {
