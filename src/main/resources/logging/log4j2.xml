@@ -30,9 +30,10 @@
     <Loggers name="com.springboot">
         <Root level="INFO">
             <AppenderRef ref="Console-Appender"/>
+            <AppenderRef ref="File-Appender"/>
         </Root>
 
-        <Logger name="com.example.demo.interceptor.MonitoringInterceptor" level="INFO" additivity="true">
+        <Logger name="com.example.demo.interceptor.MonitoringInterceptor" level="INFO" additivity="false">
             <AppenderRef ref="File-Appender"/>
         </Logger>
     </Loggers>

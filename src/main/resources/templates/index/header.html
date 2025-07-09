@@ -1,5 +1,5 @@
 <!-- templates/index/header.html -->
-<header class="header" th:fragment="header">
+<header class="header" th:fragment="header" xmlns:th="http://www.w3.org/1999/xhtml">
     <style>
         .header {
             position: fixed;
@@ -59,8 +59,8 @@
         </h1>
         <div class="gnb-wrap">
             <div class="gnb-group-1">
-                <a href="#">쇼핑</a>
-                <a href="#">커뮤니티</a>
+                <a href="/products">쇼핑</a>
+                <a href="/interior">커뮤니티</a>
                 <a href="#">공지/이벤트</a>
             </div>
             <div class="divider"></div>

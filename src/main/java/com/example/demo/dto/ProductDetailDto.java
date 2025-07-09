@@ -3,6 +3,7 @@ package com.example.demo.dto;
 
 import com.example.demo.entity.Product;
 import com.example.demo.entity.Review;
+import com.example.demo.entity.Users;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -25,6 +26,10 @@ public class ProductDetailDto {
         return product.getName();
     }
 
+    public Long getWriterId() {
+        return product.getUser() != null ? product.getUser().getId() : null;
+    }
+
     public int getPrice() {
         return product.getPrice();
     }
@@ -43,6 +48,10 @@ public class ProductDetailDto {
 
     public Long getId() {
         return product.getId();
+    }
+
+    public Users getUser() {
+        return product.getUser();
     }
 
 

@@ -14,4 +14,6 @@ public interface WishlistRepository extends JpaRepository<Wishlist, Long> {
 
     // 찜 취소를 위한 조회
     Optional<Wishlist> findByUserAndProduct(Users user, Product product);
+
+
 }

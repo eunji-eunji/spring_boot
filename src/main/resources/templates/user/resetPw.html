@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>비밀번호 재설정</title>
+    <style>
+        .success { color: green; }
+        .error { color: red; }
+    </style>
+</head>
+<body>
+<h2>비밀번호 재설정</h2>
+
+<!-- 에러 메시지 표시 -->
+<div th:if="${error}" th:text="${error}" class="error"></div>
+
+<form id="resetPwForm" th:action="@{/user/resetPw}" method="post">
+    <input type="hidden" name="token" th:value="${token}"/>
+    <label for="newPw">새 비밀번호</label>
+    <input type="password" name="newPw" id="newPw" required><br/>
+    <label for="confirmPw">비밀번호 확인</label>
+    <input type="password" name="confirmPw" id="confirmPw" required><br/>
+    <div id="pwCheckResult"></div>
+    <button type="submit">비밀번호 변경</button>
+</form>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const pw1 = document.getElementById('newPw');
+        const pw2 = document.getElementById('confirmPw');
+        const result = document.getElementById('pwCheckResult');
+
+        function checkMatch() {
+            if (pw1.value === '' && pw2.value === '') {
+                result.textContent = '';
+                result.className = '';
+                return;
+            }
+
+            if (pw1.value === pw2.value) {
+                result.textContent = '비밀번호가 일치합니다.';
+                result.className = 'success';
+            } else {
+                result.textContent = '비밀번호가 일치하지 않습니다.';
+                result.className = 'error';
+            }
+        }
+
+        pw1.addEventListener('input', checkMatch);
+        pw2.addEventListener('input', checkMatch);
+    });
+</script>
+</body>
+</html>

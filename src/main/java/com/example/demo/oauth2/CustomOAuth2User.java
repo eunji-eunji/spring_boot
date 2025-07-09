@@ -1,11 +1,13 @@
-package com.example.demo.entity;
+package com.example.demo.oauth2;
 
+import com.example.demo.entity.Users;
 import lombok.Getter;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 
 import java.util.Collection;
-import java.util.List;
+import java.util.Collections;
 import java.util.Map;
 
 @Getter
@@ -30,6 +32,9 @@ public class CustomOAuth2User  implements OAuth2User {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of(()-> "ROLE_USER");
+        String role = (user.getRole() != null) ? user.getRole().name() : "USER";
+        return Collections.singletonList(
+                new SimpleGrantedAuthority("ROLE_" + role)
+        );
     }
 }
