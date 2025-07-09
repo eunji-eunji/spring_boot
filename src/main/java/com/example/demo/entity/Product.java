@@ -18,7 +18,7 @@ public class Product { // 상품
     private String description;
     private int price;
 
-    private String category; // 예: 가구, 침대, 조명 등
+
 
     private int stockQuantity; // 전체 재고 수량
     private double averageRating; // 후기 평점 평균
@@ -33,6 +33,10 @@ public class Product { // 상품
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private Users user;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "category_id")
+    private Category category;
 
     public void addProductModel(ProductModel model) {
         this.productModels.add(model);
