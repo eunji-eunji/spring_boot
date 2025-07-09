@@ -1,10 +1,12 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
+    <meta charset="UTF-8">
     <title>상품 등록</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Stardos+Stencil:wght@400;700&display=swap" rel="stylesheet">
+
     <link rel="stylesheet" th:href="@{/css/style.css}">
     <style>
         .img-box {
@@ -16,10 +18,24 @@
             width: 150px;
             height: auto;
             border: 1px solid #ccc;
+
         }
     </style>
 </head>
+
+    <script>
+        window.addEventListener('scroll', function () {
+            const header = document.querySelector('.header');
+            if (window.scrollY > 10) {
+                header.classList.add('scrolled');
+            } else {
+                header.classList.remove('scrolled');
+            }
+        });
+    </script>
+
 <body>
+
 
 <h2>상품 등록</h2>
 
@@ -29,19 +45,27 @@
     <label>카테고리: <input type="text" th:field="*{category}" /></label><br/>
     <label>설명: <textarea th:field="*{description}"></textarea></label><br/>
 
-    <label>모델 및 재고:</label><br/>
-    <div th:each="model, i : *{productModelDtoList}">
-        모델명: <input type="text" th:field="*{productModelDtoList[__${i.index}__].productModelSelect}" />
-        재고: <input type="number" th:field="*{productModelDtoList[__${i.index}__].prStock}" /><br/>
-    </div>
+
+        <label>모델 및 재고:</label>
+        <div th:each="model, i : *{productModelDtoList}">
+            <label>모델명:
+                <input type="text" th:field="*{productModelDtoList[__${i.index}__].productModelSelect}" />
+            </label>
+            <label>재고:
+                <input type="number" th:field="*{productModelDtoList[__${i.index}__].prStock}" />
+            </label>
+        </div>
 
     <label>이미지 업로드 (최대 4장):</label><br/>
     <input type="file" id="imageInput" accept="image/*" multiple /><br/><br/>
 
     <div id="previewContainer"></div><br/>
 
-    <button type="submit">등록하기</button>
-</form>
+
+        <button type="submit" class="btn">등록하기</button>
+    </form>
+</div>
+
 
 <script>
     const input = document.getElementById('imageInput');
