@@ -151,7 +151,7 @@ public class PaymentController {
 
         OrderDto orderDto = orderService.getOrderByOrderId(orderId);
         log.info("성공 객체 : {}",orderDto);
-        model.addAttribute("order", orderDto);
+        model.addAttribute("orderDto", orderDto);
         model.addAttribute("test","테스트");
 
         return "order/orderComplete";

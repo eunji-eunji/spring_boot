@@ -28,7 +28,7 @@ import java.util.stream.Collectors;
 @Slf4j
 @Transactional
 public class OrderService {
-qwesdf
+
     private final OrderRepository orderRepository;
     private final UserRepository userRepository;
     private final CartItemRepository cartItemRepository;
